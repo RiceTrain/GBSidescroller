@@ -1,0 +1,9 @@
+# Linkfile for testGame.gb
+
+[Objects]
+testGame.obj
+
+[Libraries]
+
+[Output]
+testGame.gb
