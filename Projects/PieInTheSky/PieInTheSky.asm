@@ -170,6 +170,7 @@ start::
 	ld 		[TotalTilesScrolled], a
 	ld 		[CurrentBGMapScrollTileX], a
 	ld		[CurrentMapWidth], a
+	ld		[CurrentMapBlock], a
 	
 	; load the tiles
 	ld		bc, TileLabel
@@ -178,6 +179,7 @@ start::
 	ld		a, TestMapWidth
 	ld		[CurrentMapWidth], a
 	
+	ld		de, TestMap
 	; load the background map
 	call	LoadMapToBkg
 
@@ -301,19 +303,69 @@ LoadTiles::
 ; IN:	bc = address of map to load
 ;----------------------------------------------------
 LoadMapToBkg::
-	ld		hl, TestMap	; load the map to map bank 0
+	ld		hl, MAP_MEM_LOC_0	; load the map to map bank 0
 
-	ld		de, MAP_MEM_LOC_0
-	ld 		bc, $400
-
+	ld 		c, %11111111
+	
+	ld 		a, 0
+	ld		b, a
+	ld		[CurrentMapColumnPos], a
+	ld 		[CurrentBGMapScrollTileX], a
+	
 .load_map_loop
-	ld  a,[hli]
-	ld  [de],a
-	inc de
-	dec bc
-	ld  a,b
-	or  c
-	jr  nz,.load_map_loop
+	ld  	a,[de]
+	ld  	[hl],a
+	
+	inc 	de
+	
+	ld		a, c
+	ld 		bc, %00100000
+	add 	hl, bc
+	ld		c, a
+	
+	ld		a, [CurrentMapColumnPos]
+	inc		a
+	ld		[CurrentMapColumnPos], a
+	cp		%00100000
+	jr  	nz,.go_to_map_loop
+	
+	ld 		a, 0
+	ld		[CurrentMapColumnPos], a
+	
+	ld		a, [CurrentBGMapScrollTileX]
+	inc		a
+	ld		[CurrentBGMapScrollTileX], a
+	
+	ld		b, c
+	ld		hl, MAP_MEM_LOC_0
+	ld		a, [CurrentBGMapScrollTileX]
+	ld 		c, a
+	ld 		a, b
+	ld		b, 0
+	add		hl, bc
+	ld		c, a
+	
+.go_to_map_loop
+	dec 	bc
+	ld  	a,b
+	or  	c
+	jr  	nz,.load_map_loop
+	
+.load_next_map_block
+	ld 		c, %11111111
+	ld 		a, 0
+	ld		b, a
+	
+	ld		a, [CurrentMapBlock]
+	inc		a
+	ld		[CurrentMapBlock], a
+	cp		%00000100
+	jr  	nz,.load_map_loop
+	
+	ld		a, [CurrentMapBlock]
+	dec		a
+	ld		[CurrentMapBlock], a
+	
 	ret
 
 ;----------------------------------------------------
@@ -411,74 +463,8 @@ VBlankFunc::
 	and		%00000111				;increment tiles scrolled every 8 pixels
 	jr		nz, .vblank_do_scroll
 	
-.track_tiles_scrolled
-	ld 		a, 0
-	ld 		[PixelsScrolled], a
-	
-	ld 		a, [TotalTilesScrolled]
-	inc 	a
-	ld 		[TotalTilesScrolled], a
-	
-	ld 		a, [CurrentBGMapScrollTileX]
-	inc 	a
-	ld 		[CurrentBGMapScrollTileX], a
-	
-	cp		%00001010	;reset count if a = 10 = -22 + 32
-	jr		nz, .load_next_map_column
-	
-	ld 		a, 0
-	sub 	%00010110
-	ld 		[CurrentBGMapScrollTileX], a
-	
-.load_next_map_column
-	ld		hl, TestMap	; load the map to map bank 0
-	ld 		a, [TotalTilesScrolled]
-	add		a, %00010110 ;Add screen width: 19 + 3 = 22
-	ld		c, a
-	add		hl, bc
-	
-	ld		de, MAP_MEM_LOC_0
-	ld 		a, [CurrentBGMapScrollTileX]
-	add		a, %00010110
-	ld		c, a
-	ld		a, e
-	add		a, c
-	ld		e, a
-	
-	ld 		b, 0
-	ld 		c, %00100000
-	
-.load_next_column_loop
-	ld		a, [hl]
-	ld		[de], a
+	call HandleScroll
 
-	ld		b, c
-	
-	ld		a, [CurrentMapWidth]
-	ld		c, a
-	ld		a, b
-	ld		b, 0
-	add		hl, bc
-	
-	ld		b, h
-	ld		c, l
-	ld		h, d
-	ld		l, e 			;store hl -> bc, de -> hl
-	ld		de, %00100000	
-	add		hl, de			;add 32 to hl (current address of bg map)
-	ld		d, h
-	ld		e, l
-	ld 		h, b
-	ld 		l, c			;store hl -> de, bc -> hl
-	
-	ld		b, 0
-	ld 		c, a
-	
-	dec		c
-	ld		a, b
-	or 		c
-	jr		nz, .load_next_column_loop
-	
 .vblank_do_scroll
 	; do a background screen scroll
 	ldh		a, [SCROLL_BKG_X]		; scroll the background horiz one bit
@@ -506,6 +492,101 @@ VBlankFunc::
 	pop af
 	ei		; enable interrupts
 	reti	; and done
+
+;---------------------------------------------------
+; Handle screen scroll and load here
+;---------------------------------------------------
+HandleScroll::
+	ld 		a, 0
+	ld 		[PixelsScrolled], a
+	
+	ld 		a, [TotalTilesScrolled]
+	inc 	a
+	ld 		[TotalTilesScrolled], a
+	
+	cp		%00001000	;reset count if a = 8
+	jr		nz, .track_screen_scroll
+	
+	ld		a, [CurrentMapBlock]
+	inc 	a
+	ld		[CurrentMapBlock], a
+	
+	ld 		a, 0
+	ld 		[TotalTilesScrolled], a
+	
+.track_screen_scroll
+	ld 		a, [CurrentBGMapScrollTileX]
+	inc 	a
+	ld 		[CurrentBGMapScrollTileX], a
+	
+	cp		%00001010	;reset count if a = 10 = -22 + 32
+	jr		nz, .get_map_start_point
+	
+	ld 		a, 0
+	sub 	%00010110
+	ld 		[CurrentBGMapScrollTileX], a
+	
+.get_map_start_point
+	ld		hl, TestMap	; load the map to map bank 0
+	
+	ld		b, 0
+	ld		c, 32
+	ld		a, [TotalTilesScrolled]
+	
+.get_map_start_loop
+	cp		0
+	jr 		z, .get_map_block_loop_start
+	add		hl, bc
+	dec		a
+	jr		.get_map_start_loop
+	
+.get_map_block_loop_start
+	ld		bc, 256
+	ld		a, [CurrentMapBlock]
+	
+.get_map_block_loop
+	cp		0
+	jr 		z, .load_next_map_column
+	add		hl, bc
+	dec		a
+	jr		.get_map_block_loop
+	
+.load_next_map_column
+	
+	ld		de, MAP_MEM_LOC_0
+	ld 		a, [CurrentBGMapScrollTileX]
+	add		a, %00010110
+	ld		c, a
+	ld		a, e
+	add		a, c
+	ld		e, a
+	
+	ld 		c, %00100000
+	
+.load_next_column_loop
+	ld		a, [hli]
+	ld		[de], a
+	
+	ld		b, h
+	ld		c, l
+	ld		h, d
+	ld		l, e 			;store hl -> bc, de -> hl
+	ld		de, %00100000	
+	add		hl, de			;add 32 to hl (current address of bg map)
+	ld		d, h
+	ld		e, l
+	ld 		h, b
+	ld 		l, c			;store hl -> de, bc -> hl
+	
+	ld		b, 0
+	ld 		c, a
+	
+	dec		c
+	ld		a, b
+	or 		c
+	jr		nz, .load_next_column_loop
+	
+	ret
 
 ;-------------------------------------------------------------
 ; adjust my spaceship sprite based on d-pad presses.  This
@@ -844,7 +925,9 @@ TotalTilesScrolled:
 ds		1;
 CurrentBGMapScrollTileX:
 ds		1;
-CurrentMapPos:
+CurrentMapColumnPos:
+ds		1;
+CurrentMapBlock:
 ds		1;
 CurrentMapWidth:
 ds		1;
