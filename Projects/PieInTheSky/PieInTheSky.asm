@@ -366,6 +366,9 @@ LoadMapToBkg::
 	dec		a
 	ld		[CurrentMapBlock], a
 	
+	ld		a, 0
+	ld		[CurrentBGMapScrollTileX], a
+	
 	ret
 
 ;----------------------------------------------------
@@ -523,14 +526,14 @@ HandleScroll::
 	jr		nz, .get_map_start_point
 	
 	ld 		a, 0
-	sub 	%00010110
+	sub 	%00010110 ;22
 	ld 		[CurrentBGMapScrollTileX], a
 	
 .get_map_start_point
 	ld		hl, TestMap	; load the map to map bank 0
 	
 	ld		b, 0
-	ld		c, 32
+	ld		c, %00100000
 	ld		a, [TotalTilesScrolled]
 	
 .get_map_start_loop
@@ -541,7 +544,7 @@ HandleScroll::
 	jr		.get_map_start_loop
 	
 .get_map_block_loop_start
-	ld		bc, 256
+	ld		bc, %100000000
 	ld		a, [CurrentMapBlock]
 	
 .get_map_block_loop
@@ -552,10 +555,9 @@ HandleScroll::
 	jr		.get_map_block_loop
 	
 .load_next_map_column
-	
 	ld		de, MAP_MEM_LOC_0
 	ld 		a, [CurrentBGMapScrollTileX]
-	add		a, %00010110
+	add		a, %00011000 ;24
 	ld		c, a
 	ld		a, e
 	add		a, c
@@ -564,8 +566,12 @@ HandleScroll::
 	ld 		c, %00100000
 	
 .load_next_column_loop
-	ld		a, [hli]
+	ld		a, [hl]
 	ld		[de], a
+	
+	inc 	hl
+	
+	ld 		a, c
 	
 	ld		b, h
 	ld		c, l

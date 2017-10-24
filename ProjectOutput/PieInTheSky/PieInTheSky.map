@@ -6,46 +6,46 @@ Bank #0 (HOME):
   SECTION: $0058-$0058 ($0001 bytes)
   SECTION: $0060-$0060 ($0001 bytes)
   SECTION: $0100-$014F ($0050 bytes)
-  SECTION: $048B-$055A ($00D0 bytes)
-           $048B = TileLabel
-           $052B = TileLabelTLE10
-           $053B = TileLabelTLE11
-           $054B = TileLabelTLE12
-           $048B = TileLabelTLE0
-           $049B = TileLabelTLE1
-           $04AB = TileLabelTLE2
-           $04BB = TileLabelTLE3
-           $04CB = TileLabelTLE4
-           $04DB = TileLabelTLE5
-           $04EB = TileLabelTLE6
-           $04FB = TileLabelTLE7
-           $050B = TileLabelTLE8
-           $051B = TileLabelTLE9
-  SECTION: $055B-$253A ($1FE0 bytes)
-           $055B = TestMap
-  SECTION: $0150-$048A ($033B bytes)
-           $02A0 = VBlankFunc
+  SECTION: $0492-$0561 ($00D0 bytes)
+           $0492 = TileLabel
+           $0532 = TileLabelTLE10
+           $0542 = TileLabelTLE11
+           $0552 = TileLabelTLE12
+           $0492 = TileLabelTLE0
+           $04A2 = TileLabelTLE1
+           $04B2 = TileLabelTLE2
+           $04C2 = TileLabelTLE3
+           $04D2 = TileLabelTLE4
+           $04E2 = TileLabelTLE5
+           $04F2 = TileLabelTLE6
+           $0502 = TileLabelTLE7
+           $0512 = TileLabelTLE8
+           $0522 = TileLabelTLE9
+  SECTION: $0562-$2541 ($1FE0 bytes)
+           $0562 = TestMap
+  SECTION: $0150-$0491 ($0342 bytes)
+           $02A5 = VBlankFunc
            $01E7 = LoadTiles
            $0203 = LoadMapToBkg
-           $025B = InitPalettes
+           $0260 = InitPalettes
            $01CF = InitSprites
            $01B6 = Game_Loop
-           $0264 = ReadJoypad
-           $045A = UpdateBulletPositions
-           $0356 = MoveSpaceship
+           $0269 = ReadJoypad
+           $0461 = UpdateBulletPositions
+           $035D = MoveSpaceship
            $01F1 = LoadTiles.load_tiles_loop
-           $02E3 = HandleScroll
-           $0428 = UpdateBulletTimers
-           $0378 = MoveSpaceship.check_for_down
-           $0396 = MoveSpaceship.check_for_left
-           $03B9 = MoveSpaceship.check_for_right
-           $03D9 = MoveSpaceship.done_checking_dpad
-           $03E4 = MoveSpaceship.did_not_fire
-           $03E6 = LaunchBullet
-           $0482 = UpdateBulletPositions.update_bullets_pos_loop_end
-           $0461 = UpdateBulletPositions.update_bullets_pos_loop
+           $02E8 = HandleScroll
+           $042F = UpdateBulletTimers
+           $037F = MoveSpaceship.check_for_down
+           $039D = MoveSpaceship.check_for_left
+           $03C0 = MoveSpaceship.check_for_right
+           $03E0 = MoveSpaceship.done_checking_dpad
+           $03EB = MoveSpaceship.did_not_fire
+           $03ED = LaunchBullet
+           $0489 = UpdateBulletPositions.update_bullets_pos_loop_end
+           $0468 = UpdateBulletPositions.update_bullets_pos_loop
            $0150 = start
-    SLACK: $1BBE bytes
+    SLACK: $1BB7 bytes
 
 Bank #256:
   EMPTY
