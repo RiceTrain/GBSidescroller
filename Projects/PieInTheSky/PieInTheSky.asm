@@ -169,15 +169,11 @@ start::
 	ld 		[PixelsScrolled], a
 	ld 		[TotalTilesScrolled], a
 	ld 		[CurrentBGMapScrollTileX], a
-	ld		[CurrentMapWidth], a
 	ld		[CurrentMapBlock], a
 	
 	; load the tiles
 	ld		bc, TileLabel
 	call	LoadTiles
-
-	ld		a, TestMapWidth
-	ld		[CurrentMapWidth], a
 	
 	ld		de, TestMap
 	; load the background map
@@ -366,7 +362,7 @@ LoadMapToBkg::
 	dec		a
 	ld		[CurrentMapBlock], a
 	
-	ld		a, 0
+	ld		a, 2
 	ld		[CurrentBGMapScrollTileX], a
 	
 	ret
@@ -452,10 +448,9 @@ VBlankFunc::
 	and		%00000111
 	jr		nz, .vblank_sprite_DMA
 	
-	ld		a, [TotalTilesScrolled]
-	add		%00010100
+	ld		a, [CurrentMapBlock]
 	ld		c, a
-	ld		a,	[CurrentMapWidth]
+	ld		a,	TestMapBlockTotal
 	cp		c
 	jr		z, .vblank_sprite_DMA
 	
@@ -557,7 +552,7 @@ HandleScroll::
 .load_next_map_column
 	ld		de, MAP_MEM_LOC_0
 	ld 		a, [CurrentBGMapScrollTileX]
-	add		a, %00011000 ;24
+	add		a, %00010110 ;22
 	ld		c, a
 	ld		a, e
 	add		a, c
@@ -934,8 +929,6 @@ ds		1;
 CurrentMapColumnPos:
 ds		1;
 CurrentMapBlock:
-ds		1;
-CurrentMapWidth:
 ds		1;
 
 
