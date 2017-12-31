@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 12
+;   Tiles                : 0 to 13
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -39,5 +39,6 @@ TileLabelBank EQU 0
  GLOBAL TileLabelTLE10
  GLOBAL TileLabelTLE11
  GLOBAL TileLabelTLE12
+ GLOBAL TileLabelTLE13
 
 ; End of TESTTILES.INC

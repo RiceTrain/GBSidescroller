@@ -6,46 +6,52 @@ Bank #0 (HOME):
   SECTION: $0058-$0058 ($0001 bytes)
   SECTION: $0060-$0060 ($0001 bytes)
   SECTION: $0100-$014F ($0050 bytes)
-  SECTION: $0487-$0556 ($00D0 bytes)
-           $0487 = TileLabel
-           $0527 = TileLabelTLE10
-           $0537 = TileLabelTLE11
-           $0547 = TileLabelTLE12
-           $0487 = TileLabelTLE0
-           $0497 = TileLabelTLE1
-           $04A7 = TileLabelTLE2
-           $04B7 = TileLabelTLE3
-           $04C7 = TileLabelTLE4
-           $04D7 = TileLabelTLE5
-           $04E7 = TileLabelTLE6
-           $04F7 = TileLabelTLE7
-           $0507 = TileLabelTLE8
-           $0517 = TileLabelTLE9
-  SECTION: $0557-$2AD6 ($2580 bytes)
-           $0557 = TestMap
-  SECTION: $0150-$0486 ($0337 bytes)
-           $029D = VBlankFunc
-           $01DF = LoadTiles
-           $01FB = LoadMapToBkg
-           $0258 = InitPalettes
-           $01C7 = InitSprites
-           $01AE = Game_Loop
-           $0261 = ReadJoypad
-           $0456 = UpdateBulletPositions
-           $0352 = MoveSpaceship
-           $01E9 = LoadTiles.load_tiles_loop
-           $02DD = HandleScroll
-           $0424 = UpdateBulletTimers
-           $0374 = MoveSpaceship.check_for_down
-           $0392 = MoveSpaceship.check_for_left
-           $03B5 = MoveSpaceship.check_for_right
-           $03D5 = MoveSpaceship.done_checking_dpad
-           $03E0 = MoveSpaceship.did_not_fire
-           $03E2 = LaunchBullet
-           $047E = UpdateBulletPositions.update_bullets_pos_loop_end
-           $045D = UpdateBulletPositions.update_bullets_pos_loop
+  SECTION: $04F6-$05D5 ($00E0 bytes)
+           $04F6 = TileLabel
+           $0596 = TileLabelTLE10
+           $05A6 = TileLabelTLE11
+           $05B6 = TileLabelTLE12
+           $05C6 = TileLabelTLE13
+           $04F6 = TileLabelTLE0
+           $0506 = TileLabelTLE1
+           $0516 = TileLabelTLE2
+           $0526 = TileLabelTLE3
+           $0536 = TileLabelTLE4
+           $0546 = TileLabelTLE5
+           $0556 = TileLabelTLE6
+           $0566 = TileLabelTLE7
+           $0576 = TileLabelTLE8
+           $0586 = TileLabelTLE9
+  SECTION: $05D6-$2B55 ($2580 bytes)
+           $05D6 = TestMap
+  SECTION: $0150-$04F5 ($03A6 bytes)
+           $02AC = VBlankFunc
+           $01EE = LoadTiles
+           $020A = LoadMapToBkg
+           $0267 = InitPalettes
+           $01D0 = InitSprites
+           $01B4 = Game_Loop
+           $0270 = ReadJoypad
+           $04B3 = UpdateBulletPositions
+           $04E4 = UpdateBombPosition
+           $0364 = MoveSpaceship
+           $01F8 = LoadTiles.load_tiles_loop
+           $02EF = HandleScroll
+           $0469 = UpdateBulletTimers
+           $049B = UpdateBombTimer
+           $0386 = MoveSpaceship.check_for_down
+           $03A4 = MoveSpaceship.check_for_left
+           $03C7 = MoveSpaceship.check_for_right
+           $03E7 = MoveSpaceship.done_checking_dpad
+           $03F2 = MoveSpaceship.check_for_bomb
+           $03FF = LaunchBullet
+           $03FD = MoveSpaceship.did_not_fire
+           $0441 = LaunchBomb
+           $04DB = UpdateBulletPositions.update_bullets_pos_loop_end
+           $04BA = UpdateBulletPositions.update_bullets_pos_loop
+           $04F5 = UpdateBombPosition.update_bomb_pos_end
            $0150 = start
-    SLACK: $1622 bytes
+    SLACK: $15A3 bytes
 
 Bank #256:
   EMPTY
@@ -816,7 +822,9 @@ Bank #511:
   EMPTY
 
 BSS:
-  SECTION: $C000-$C008 ($0009 bytes)
+  SECTION: $C000-$C00C ($000D bytes)
+           $C008 = bomb_ypos
+           $C009 = bomb_xpos
            $C001 = spaceshipL_xpos
            $C000 = spaceshipL_ypos
            $C002 = spaceshipL_tile
@@ -825,19 +833,22 @@ BSS:
            $C005 = spaceshipR_xpos
            $C006 = spaceshipR_tile
            $C007 = spaceshipR_flags
-           $C008 = bullet_sprites
-  SECTION: $C0A0-$C0C8 ($0029 bytes)
+           $C00C = bullet_sprites
+           $C00A = bomb_sprite
+           $C00B = bomb_flags
+  SECTION: $C0A0-$C0CA ($002B bytes)
            $C0A0 = vblank_flag
-           $C0C4 = PixelsScrolled
-           $C0C5 = TotalTilesScrolled
-           $C0C6 = CurrentBGMapScrollTileX
-           $C0C8 = CurrentMapBlock
+           $C0C6 = PixelsScrolled
+           $C0C7 = TotalTilesScrolled
+           $C0C8 = CurrentBGMapScrollTileX
+           $C0CA = CurrentMapBlock
            $C0A3 = bullet_data
-           $C0C7 = CurrentMapColumnPos
+           $C0C3 = bomb_data
+           $C0C9 = CurrentMapColumnPos
            $C0A1 = joypad_held
            $C0A2 = joypad_down
-           $C0C3 = ScrollTimer
-    SLACK: $1FCE bytes
+           $C0C5 = ScrollTimer
+    SLACK: $1FC8 bytes
 
 VRAM:
   EMPTY

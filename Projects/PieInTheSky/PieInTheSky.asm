@@ -170,6 +170,8 @@ start::
 	ld 		[TotalTilesScrolled], a
 	ld 		[CurrentBGMapScrollTileX], a
 	ld		[CurrentMapBlock], a
+	ld		[bomb_ypos], a
+	ld		[bomb_xpos], a
 	
 	; load the tiles
 	ld		bc, TileLabel
@@ -225,6 +227,7 @@ Game_Loop::
 	; do this before MoveSpaceship, since we want the bullet to display at
 	; its launch position for one frame
 	call UpdateBulletPositions
+	call UpdateBombPosition
 	
 	; adjust sprite due to d-pad presses
 	call	MoveSpaceship
@@ -252,12 +255,16 @@ InitSprites::
 	ld		hl, bullet_data
 	ld		b, 16		; 16 bullets in table
 .init_bullets_loop
-	ld		a, $ff		; signal for an unused bullet slot
+	ld 		a, $ff
 	ld		[hli], a
 	inc		hl			; 2 bytes per bullet
 
 	dec		b
 	jr		nz, .init_bullets_loop
+	
+	ld		hl, bomb_data
+	ld 		a, $ff
+	ld		[hl], a 
 	
 	ret
 
@@ -269,9 +276,9 @@ InitSprites::
 LoadTiles::
 	ld		hl, TILES_MEM_LOC_1	; load the tiles to tiles bank 1
 
-	ld		de, 13 * 16
+	ld		de, 14 * 16
 	ld		d, $10  ; 16 bytes per tile
-	ld		e, $0e  ; number of tiles to load
+	ld		e, $0f  ; number of tiles to load
 
 .load_tiles_loop
 	; only write during
@@ -290,8 +297,6 @@ LoadTiles::
 	jp		nz, .load_tiles_loop
 
 	ret
-
-
 
 ;----------------------------------------------------
 ; load the tile map to the background
@@ -486,6 +491,7 @@ VBlankFunc::
 	ld		[vblank_flag], a
 	
 	call UpdateBulletTimers
+	call UpdateBombTimer
 	
 	pop af
 	ei		; enable interrupts
@@ -688,10 +694,17 @@ MoveSpaceship::
 .done_checking_dpad
 	ld		a, [joypad_down]
 	bit		A_BUTTON, a
-	jp		z, .did_not_fire
+	jp		z, .check_for_bomb
 	
 	call	LaunchBullet
 	
+.check_for_bomb
+	ld		a, [joypad_down]
+	bit		B_BUTTON, a
+	jp		z, .did_not_fire
+	
+	call	LaunchBomb
+
 .did_not_fire
 	pop		af
 	ret
@@ -762,7 +775,7 @@ LaunchBullet::
 	inc		hl
 	ld		[hl], b
 	inc		hl
-	ld		[hl], 12	; bullets use tile 5
+	ld		[hl], 12	; bullets use tile 12
 	inc		hl
 	ld		[hl], 0
 
@@ -771,6 +784,37 @@ LaunchBullet::
 	pop		af
 	ret
 	
+;------------------------------------------------------------
+; launch a bomb
+;------------------------------------------------------------
+LaunchBomb::
+	ld		hl, bomb_data
+	ld		a, [hl]
+	cp		$ff			; is this bomb unused
+	jr 		nz, .exit_bomb_launch
+	
+	ld		a, 1
+	ld		[hli], a	; store the x speed
+	ld		[hl], 60	; bomb lasts 1 second (60 vblanks)
+	
+	; calc bomb x launch pos
+	ld		a, [spaceshipR_xpos]
+	add     a, 8
+	ld		[bomb_xpos], a
+	
+	; calc bomb y launch pos
+	ld		a, [spaceshipR_ypos]
+	add		a, 2
+	ld		[bomb_ypos], a
+	
+	; load the sprite info
+	ld		a, 13
+	ld		[bomb_sprite], a	; bombs use tile 13
+	ld		a, 0
+	ld		[bomb_flags], a
+	
+.exit_bomb_launch
+	ret
 ;-----------------------------------------------------------------
 ; update the bullet timing ever vblank
 ;-----------------------------------------------------------------
@@ -824,6 +868,30 @@ UpdateBulletTimers::
 	pop		af
 	ret
 
+;-----------------------------------------------------------------
+; update the bomb timing ever vblank
+;-----------------------------------------------------------------
+UpdateBombTimer::
+	ld		hl, bomb_data
+	ld		a, [hli]
+	cp		$ff
+	jr		z, .update_bomb_end
+	
+	; bomb is active
+	dec		[hl]	; decrement the timer
+	jr		nz, .update_bomb_end
+
+	dec 	hl
+	ld		a, $ff
+	ld		[hl], a
+	
+	ld		a, $00
+	ld		[bomb_ypos], a
+	ld		[bomb_xpos], a		; turn off the sprite in the attrib table
+	
+.update_bomb_end
+	ret
+	
 ;------------------------------------------------------
 ; update bullet positions
 ;------------------------------------------------------
@@ -874,6 +942,22 @@ UpdateBulletPositions::
 	pop		af
 	ret
 
+;------------------------------------------------------
+; update bomb position
+;------------------------------------------------------
+UpdateBombPosition::
+	ld		hl, bomb_data
+	ld		a, [hl]
+	cp		$ff
+	jp		z, .update_bomb_pos_end
+	
+	ld		a, [bomb_xpos]
+	add		a, 2
+	ld		[bomb_xpos], a
+	
+.update_bomb_pos_end
+	ret
+
 ;-------------------------------------------------------------------------
 ; Internal RAM... store dynamic data here
 ;-------------------------------------------------------------------------
@@ -897,6 +981,15 @@ ds		1
 spaceshipR_flags:
 ds		1
 
+bomb_ypos:
+ds		1
+bomb_xpos:
+ds		1
+bomb_sprite:
+ds		1
+bomb_flags:
+ds		1
+
 ; bullet sprites start here (16 of them)
 bullet_sprites:
 ds		1
@@ -915,6 +1008,9 @@ ds		1		; what buttons went down since last joypad read
 
 bullet_data:
 ds		32
+
+bomb_data:
+ds		2
 
 ; temp variables
 ScrollTimer:
