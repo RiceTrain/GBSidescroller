@@ -602,7 +602,7 @@ HandleScroll::
 ;-------------------------------------------------------------
 MoveSpaceship::
 	push	af
-
+	
 	; check buttons for d-pad presses
 .check_for_up
 	ld		a, [joypad_held]
@@ -624,6 +624,29 @@ MoveSpaceship::
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 
+	call FindShipTileIndexes
+	
+	dec 	hl
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		0
+	jr		nz, .MoveShipBackDown
+
+	ld		a, 0
+	ld		b, a
+	ld		a, 32
+	ld		c, a
+	add		hl, bc
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		0
+	jr		z, .check_for_left
+	
+.MoveShipBackDown
+	ld		a, [spaceshipL_ypos]
+	inc		a
+	ld		[spaceshipL_ypos], a
+	ld		[spaceshipR_ypos], a
+	
 	; don't check down, since up + down should never occur
 	jp		.check_for_left
 
@@ -646,7 +669,29 @@ MoveSpaceship::
 	inc		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
+	
+	call FindShipTileIndexes
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		0
+	jr		nz, .MoveShipBackUp
 
+	ld		a, 0
+	ld		b, a
+	ld		a, 32
+	ld		c, a
+	add		hl, bc
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		0
+	jr		z, .check_for_left
+	
+.MoveShipBackUp
+	ld		a, [spaceshipL_ypos]
+	dec		a
+	ld		[spaceshipL_ypos], a
+	ld		[spaceshipR_ypos], a
+	
 .check_for_left
 	ld		a, [joypad_held]
 	bit		DPAD_LEFT, a
@@ -668,6 +713,24 @@ MoveSpaceship::
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 
+	call FindShipTileIndexes
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		0
+	jr		nz, .MoveShipBackRight
+
+	dec		hl
+	ld		a, [hl]
+	cp		0
+	jr		z, .done_checking_dpad
+	
+.MoveShipBackRight
+	ld		a, [spaceshipL_xpos]
+	inc		a
+	ld		[spaceshipL_xpos], a
+	add		a, 8
+	ld		[spaceshipR_xpos], a
+	
 	jp		.done_checking_dpad	; if left was pressed, don't check right
 
 .check_for_right
@@ -691,6 +754,30 @@ MoveSpaceship::
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 
+	call FindShipTileIndexes
+	
+	ld		a, 0
+	ld		b, a
+	ld		a, 32
+	ld		c, a
+	add		hl, bc
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		0
+	jr		nz, .MoveShipBackLeft
+
+	dec		hl
+	ld		a, [hl]
+	cp		0
+	jr		z, .done_checking_dpad
+	
+.MoveShipBackLeft
+	ld		a, [spaceshipL_xpos]
+	dec		a
+	ld		[spaceshipL_xpos], a
+	add		a, 8
+	ld		[spaceshipR_xpos], a
+	
 .done_checking_dpad
 	ld		a, [joypad_down]
 	bit		A_BUTTON, a
@@ -707,6 +794,48 @@ MoveSpaceship::
 
 .did_not_fire
 	pop		af
+	ret
+
+;-----------------------------------------------------------------
+; detect collisions between the ship and the environment
+; B = xBottomLeftShipTileIndex, C = yBottomLeftShipTileIndex
+;-----------------------------------------------------------------
+FindShipTileIndexes::
+	ld 		a, [spaceshipL_xpos]
+	sub		7
+	ld		b, 0
+	
+.XSubLoop
+	jr		z, .StartYLoop
+	sub		8
+	inc 	b
+	jp		.XSubLoop
+
+.StartYLoop
+	ld 		a, [spaceshipL_ypos]
+	sub		7
+	ld		c, 0
+	
+.YSubLoop
+	jr		z, .EndTileIndexLoops
+	sub		8
+	inc 	c
+	jp		.YSubLoop
+
+.EndTileIndexLoops
+
+	ld		hl, MAP_MEM_LOC_0
+	ld 		a, c
+	ld 		d, b
+	
+.GetTileIndexLoop
+	add		a, 32
+	dec		d
+	jr		nz, .GetTileIndexLoop
+	
+	ld		e, a
+	add 	hl, de ;HL now contains the address of the tile at the bottom left ship co-ordinate
+	
 	ret
 	
 ;------------------------------------------------------------
@@ -815,6 +944,7 @@ LaunchBomb::
 	
 .exit_bomb_launch
 	ret
+	
 ;-----------------------------------------------------------------
 ; update the bullet timing ever vblank
 ;-----------------------------------------------------------------
