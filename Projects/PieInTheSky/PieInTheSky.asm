@@ -169,6 +169,7 @@ start::
 	ld 		[PixelsScrolled], a
 	ld 		[TotalTilesScrolled], a
 	ld 		[CurrentBGMapScrollTileX], a
+	ld		[CurrentWindowTileX], a
 	ld		[CurrentMapBlock], a
 	ld		[bomb_ypos], a
 	ld		[bomb_xpos], a
@@ -524,11 +525,22 @@ HandleScroll::
 	ld 		[CurrentBGMapScrollTileX], a
 	
 	cp		%00001010	;reset count if a = 10 = -22 + 32
-	jr		nz, .get_map_start_point
+	jr		nz, .track_window_scroll
 	
 	ld 		a, 0
 	sub 	%00010110 ;22
 	ld 		[CurrentBGMapScrollTileX], a
+
+.track_window_scroll
+	ld 		a, [CurrentWindowTileX]
+	inc 	a
+	ld 		[CurrentWindowTileX], a
+	
+	cp		%00100000	;reset count if a = 32
+	jr		nz, .get_map_start_point
+	
+	ld 		a, 0
+	ld 		[CurrentWindowTileX], a
 	
 .get_map_start_point
 	ld		hl, TestMap	; load the map to map bank 0
@@ -626,9 +638,8 @@ MoveSpaceship::
 
 	call FindShipTileIndexes
 	
-	dec 	hl
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		0
+	cp		11
 	jr		nz, .MoveShipBackDown
 
 	ld		a, 0
@@ -638,7 +649,7 @@ MoveSpaceship::
 	add		hl, bc
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		0
+	cp		11
 	jr		z, .check_for_left
 	
 .MoveShipBackDown
@@ -673,7 +684,7 @@ MoveSpaceship::
 	call FindShipTileIndexes
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		0
+	cp		11
 	jr		nz, .MoveShipBackUp
 
 	ld		a, 0
@@ -683,7 +694,7 @@ MoveSpaceship::
 	add		hl, bc
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		0
+	cp		11
 	jr		z, .check_for_left
 	
 .MoveShipBackUp
@@ -716,12 +727,7 @@ MoveSpaceship::
 	call FindShipTileIndexes
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		0
-	jr		nz, .MoveShipBackRight
-
-	dec		hl
-	ld		a, [hl]
-	cp		0
+	cp		11
 	jr		z, .done_checking_dpad
 	
 .MoveShipBackRight
@@ -763,12 +769,7 @@ MoveSpaceship::
 	add		hl, bc
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		0
-	jr		nz, .MoveShipBackLeft
-
-	dec		hl
-	ld		a, [hl]
-	cp		0
+	cp		11
 	jr		z, .done_checking_dpad
 	
 .MoveShipBackLeft
@@ -806,7 +807,7 @@ FindShipTileIndexes::
 	ld		b, 0
 	
 .XSubLoop
-	jr		z, .StartYLoop
+	jr		c, .StartYLoop
 	sub		8
 	inc 	b
 	jp		.XSubLoop
@@ -814,26 +815,43 @@ FindShipTileIndexes::
 .StartYLoop
 	ld 		a, [spaceshipL_ypos]
 	sub		7
-	ld		c, 0
+	ld		c, -2
 	
 .YSubLoop
-	jr		z, .EndTileIndexLoops
+	jr		c, .EndTileIndexLoops
 	sub		8
 	inc 	c
 	jp		.YSubLoop
-
+	
 .EndTileIndexLoops
-
-	ld		hl, MAP_MEM_LOC_0
+	ld		a, 0
+	ld		h, a
+	ld 		a, [CurrentWindowTileX]
+	add		b
+	
+	cp		32
+	jr		c, .StoreStartAndMapWidth
+	
+	sub 	32
+	
+.StoreStartAndMapWidth
+	ld		l, a
+	
+	ld		a, 0
+	ld		d, a
+	ld		a, 32
+	ld		e, a
+	
 	ld 		a, c
-	ld 		d, b
 	
 .GetTileIndexLoop
-	add		a, 32
-	dec		d
+	add		hl, de
+	dec		a
 	jr		nz, .GetTileIndexLoop
 	
-	ld		e, a
+	ld		d, h
+	ld		e, l
+	ld		hl, MAP_MEM_LOC_0
 	add 	hl, de ;HL now contains the address of the tile at the bottom left ship co-ordinate
 	
 	ret
@@ -1151,6 +1169,8 @@ ds		1;
 TotalTilesScrolled:
 ds		1;
 CurrentBGMapScrollTileX:
+ds		1;
+CurrentWindowTileX:
 ds		1;
 CurrentMapColumnPos:
 ds		1;
