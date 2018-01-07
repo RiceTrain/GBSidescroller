@@ -642,11 +642,13 @@ MoveSpaceship::
 	cp		11
 	jr		nz, .MoveShipBackDown
 
-	ld		a, 0
-	ld		b, a
-	ld		a, 32
-	ld		c, a
-	add		hl, bc
+	inc		hl
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .MoveShipBackDown
+
+	inc		hl
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		11
@@ -683,15 +685,23 @@ MoveSpaceship::
 	
 	call FindShipTileIndexes
 	
-	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
-	jr		nz, .MoveShipBackUp
-
 	ld		a, 0
 	ld		b, a
 	ld		a, 32
 	ld		c, a
 	add		hl, bc
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .MoveShipBackUp
+	
+	inc 	hl
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .MoveShipBackUp
+	
+	inc 	hl
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		11
@@ -728,6 +738,16 @@ MoveSpaceship::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		11
+	jr		nz, .MoveShipBackRight
+	
+	ld		a, 0
+	ld		b, a
+	ld		a, 32
+	ld		c, a
+	add		hl, bc
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
 	jr		z, .done_checking_dpad
 	
 .MoveShipBackRight
@@ -761,6 +781,13 @@ MoveSpaceship::
 	ld		[spaceshipR_xpos], a
 
 	call FindShipTileIndexes
+	
+	inc 	hl
+	inc 	hl
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .MoveShipBackLeft
 	
 	ld		a, 0
 	ld		b, a
@@ -803,8 +830,8 @@ MoveSpaceship::
 ;-----------------------------------------------------------------
 FindShipTileIndexes::
 	ld 		a, [spaceshipL_xpos]
-	sub		7
-	ld		b, 0
+	sub		8
+	ld		b, -1
 	
 .XSubLoop
 	jr		c, .StartYLoop
@@ -814,7 +841,7 @@ FindShipTileIndexes::
 
 .StartYLoop
 	ld 		a, [spaceshipL_ypos]
-	sub		7
+	sub		8
 	ld		c, -2
 	
 .YSubLoop
