@@ -467,7 +467,7 @@ VBlankFunc::
 	and		%00000111				;increment tiles scrolled every 8 pixels
 	jr		nz, .vblank_do_scroll
 	
-	call HandleScroll
+	call HandleColumnLoad
 
 .vblank_do_scroll
 	; do a background screen scroll
@@ -475,6 +475,33 @@ VBlankFunc::
 	inc		a
 	ldh		[SCROLL_BKG_X], a
 
+.resolve_scroll_collisions
+	call FindShipTileIndexes
+	
+	inc 	hl
+	inc 	hl
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .MoveShipBackLeft
+	
+	ld		a, 0
+	ld		b, a
+	ld		a, 32
+	ld		c, a
+	add		hl, bc
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		z, .vblank_sprite_DMA
+	
+.MoveShipBackLeft
+	ld		a, [spaceshipL_xpos]
+	dec		a
+	ld		[spaceshipL_xpos], a
+	add		a, 8
+	ld		[spaceshipR_xpos], a
+	
 ; load the sprite attrib table to OAM memory
 .vblank_sprite_DMA
 	ld		a, $c0				; dma from $c000 (where I have my local copy of the attrib table)
@@ -501,7 +528,7 @@ VBlankFunc::
 ;---------------------------------------------------
 ; Handle screen scroll and load here
 ;---------------------------------------------------
-HandleScroll::
+HandleColumnLoad::
 	ld 		a, 0
 	ld 		[PixelsScrolled], a
 	
