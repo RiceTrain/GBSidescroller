@@ -206,6 +206,9 @@ start::
 	ld		a, 0
 	ld		[spaceshipR_flags], a
 	
+	ldh		a, [SCROLL_BKG_X]		; scroll the background horiz one bit
+	add		5
+	ldh		[SCROLL_BKG_X], a
 	; set display to on, background on, window off, sprites off, sprite size 8x8
 	;	tiles at $8000, background map at $9800, window map at $9C00
 	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_MAP_LOC
@@ -856,8 +859,11 @@ MoveSpaceship::
 ; B = xBottomLeftShipTileIndex, C = yBottomLeftShipTileIndex
 ;-----------------------------------------------------------------
 FindShipTileIndexes::
+	ld		a, [PixelsScrolled]
+	ld		b, a
 	ld 		a, [spaceshipL_xpos]
-	sub		8
+	sub		4
+	add		a, b
 	ld		b, -1
 	
 .XSubLoop
