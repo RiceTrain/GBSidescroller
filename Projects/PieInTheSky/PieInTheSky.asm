@@ -257,7 +257,7 @@ InitSprites::
 
 ; init my bullet sprites
 	ld		hl, bullet_data
-	ld		b, 16		; 16 bullets in table
+	ld		b, 4		; 4 bullets in table
 .init_bullets_loop
 	ld 		a, $ff
 	ld		[hli], a
@@ -265,6 +265,18 @@ InitSprites::
 
 	dec		b
 	jr		nz, .init_bullets_loop
+	
+	; init my enemy sprites
+	ld		hl, enemy_data
+	ld		b, 6		; 6 enemies in table
+.init_enemies_loop
+	ld 		a, $ff
+	ld		[hli], a
+	inc		hl
+	inc		hl			; 3 bytes per enemy
+
+	dec		b
+	jr		nz, .init_enemies_loop
 	
 	ld		hl, bomb_data
 	ld 		a, $ff
@@ -926,7 +938,7 @@ LaunchBullet::
 
 	; find an empty bullet
 	ld		hl, bullet_data		; get the addr of the 1st bullet
-	ld		d, 16				; 16 bullet slots to check
+	ld		d, 4				; 4 bullet slots to check
 .find_empty_bullet_loop
 	ld		a, [hl]
 	cp		$ff			; is this bullet unused
@@ -965,7 +977,7 @@ LaunchBullet::
 	ld		[hli], a	; store the orientation
 	ld		[hl], 60	; bullet lasts 1 second (60 vblanks)
 
-	ld		a, 16
+	ld		a, 4
 	sub		d		; a = index into bullet array
 
 	ld		hl, bullet_sprites	; get top of bullet sprites
@@ -1032,7 +1044,7 @@ UpdateBulletTimers::
 	push	hl
 
 	ld		hl, bullet_data
-	ld		b, 16		; 16 bullets to update
+	ld		b, 4		; 4 bullets to update
 .update_bullets_loop
 	ld		a, [hli]
 	cp		$ff
@@ -1051,7 +1063,7 @@ UpdateBulletTimers::
 	ld		[hl], a	; this sprite is no longer active
 
 	; calc this bullet's sprite location
-	ld		a, 16	; calc index (16 - b)
+	ld		a, 4	; calc index (4 - b)
 	sub		b
 	ld		e, a	; store index in de
 	sla		e
@@ -1108,7 +1120,7 @@ UpdateBulletPositions::
 	push	bc
 
 	ld		hl, bullet_data
-	ld		b, 16		; 16 bullets to update
+	ld		b, 4		; 4 bullets to update
 .update_bullets_pos_loop
 	ld		a, [hl]
 	cp		$ff
@@ -1117,7 +1129,7 @@ UpdateBulletPositions::
 	; this is an active bullet
 	; get its sprite addr
 	push	hl
-	ld		a, 16	; calc index (16 - b)
+	ld		a, 4	; calc index (16 - b)
 	sub		b
 	ld		e, a	; store index in de
 	sla		e
@@ -1198,8 +1210,12 @@ ds		1
 bomb_flags:
 ds		1
 
-; bullet sprites start here (16 of them)
+; bullet sprites start here (4 of them)
 bullet_sprites:
+ds		1
+
+; enemy sprites start here (6 of them)
+enemy_sprites:
 ds		1
 
 SECTION	"RAM_Other_Variables",BSS[$c0A0]
@@ -1215,7 +1231,10 @@ joypad_down:
 ds		1		; what buttons went down since last joypad read
 
 bullet_data:
-ds		32
+ds		8
+
+enemy_data:
+ds		18
 
 bomb_data:
 ds		2
