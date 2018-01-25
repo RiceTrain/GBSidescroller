@@ -624,6 +624,15 @@ HandleColumnLoad::
 	ld		a, [hl]
 	ld		[de], a
 	
+	;Check if enemy sprite
+	cp		15
+	jr		c, .get_next_column_tile
+	
+	ld		a, 0
+	ld		[de], a
+	call CreateEnemy
+	
+.get_next_column_tile
 	inc 	hl
 	
 	ld 		a, c
@@ -649,6 +658,91 @@ HandleColumnLoad::
 	
 	ret
 
+;-------------------------------------------------------------
+; Creates an enemy sprite
+;-------------------------------------------------------------	
+CreateEnemy::
+	push	af
+	push	de
+	push	hl
+
+	;store tile id
+	ld		a, [hl]
+	ld		b, a
+	
+	; find an empty enemy
+	ld		hl, enemy_data		; get the addr of the 1st enemy
+	ld		d, 6				; 4 bullet slots to check
+.find_empty_enemy_loop
+	ld		a, [hl]
+	cp		$ff			; is this bullet unused
+	jr		z, .found_empty_enemy
+
+	inc		hl	; skip 3 bytes, to top of next bullet
+	inc		hl
+	inc		hl
+
+	dec		d
+	jr		nz, .find_empty_enemy_loop
+
+	; no slots left... exit
+	pop 	hl
+	pop		de
+	pop		af
+	ret
+
+.found_empty_enemy
+	; calc enemy x pos
+	ld		a, %11000000 ;192
+	ld		d, a
+	
+	; calc enemy y pos
+	ld		e, c
+	ld		a, 0
+	
+.calculate_y_loop
+	add		a, 8
+	dec		e
+	jr		nz, .calculate_y_loop
+	
+	ld		e, a
+	
+	; d = x pos
+	; e = y pos
+	; b = tile number
+	; hl = bullet data to launch
+	; index into bullet array = 16 - d
+
+	ld		[hli], a	; store the orientation
+	ld		[hl], 60	; bullet lasts 1 second (60 vblanks)
+
+	ld		a, 4
+	sub		d		; a = index into bullet array
+
+	ld		hl, bullet_sprites	; get top of bullet sprites
+
+	sla		a
+	sla		a		; multiply index by 4 (4 bytes per sprite)
+	ld		e, a	; store it in de
+	ld		d, 0
+
+	add		hl, de	; I should be pointing at the correct sprite addr
+
+	; load the sprite info
+	ld		[hl], c
+	inc		hl
+	ld		[hl], b
+	inc		hl
+	ld		[hl], 12	; bullets use tile 12
+	inc		hl
+	ld		[hl], 0
+
+	pop 	hl
+	pop		de
+	pop		bc
+	pop		af
+	ret
+	
 ;-------------------------------------------------------------
 ; adjust my spaceship sprite based on d-pad presses.  This
 ; both moves the sprite and chooses the sprite attributes to
