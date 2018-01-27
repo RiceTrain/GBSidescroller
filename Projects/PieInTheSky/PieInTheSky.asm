@@ -630,6 +630,8 @@ HandleColumnLoad::
 	
 	ld		a, 0
 	ld		[de], a
+	ld		a, c
+	ld		[CurrentColumnHeight], a
 	call CreateEnemy
 	
 .get_next_column_tile
@@ -662,27 +664,27 @@ HandleColumnLoad::
 ; Creates an enemy sprite
 ;-------------------------------------------------------------	
 CreateEnemy::
+	;store tile id
+	ld		a, [hl]
+	ld		[NewEnemyTile], a
+	
 	push	af
 	push	de
 	push	hl
-
-	;store tile id
-	ld		a, [hl]
-	ld		b, a
 	
 	; find an empty enemy
 	ld		hl, enemy_data		; get the addr of the 1st enemy
-	ld		d, 6				; 4 bullet slots to check
+	ld		b, 6				; 4 enemy slots to check
 .find_empty_enemy_loop
 	ld		a, [hl]
-	cp		$ff			; is this bullet unused
+	cp		$ff			; is this enemy unused
 	jr		z, .found_empty_enemy
 
-	inc		hl	; skip 3 bytes, to top of next bullet
+	inc		hl	; skip 3 bytes, to top of next enemy
 	inc		hl
 	inc		hl
 
-	dec		d
+	dec		b
 	jr		nz, .find_empty_enemy_loop
 
 	; no slots left... exit
@@ -697,7 +699,8 @@ CreateEnemy::
 	ld		d, a
 	
 	; calc enemy y pos
-	ld		e, c
+	ld		a, [CurrentColumnHeight]
+	ld		e, a
 	ld		a, 0
 	
 .calculate_y_loop
@@ -709,37 +712,42 @@ CreateEnemy::
 	
 	; d = x pos
 	; e = y pos
-	; b = tile number
+	; [NewEnemyTile] = tile number
 	; hl = bullet data to launch
-	; index into bullet array = 16 - d
+	; index into bullet array = 6 - b
 
-	ld		[hli], a	; store the orientation
-	ld		[hl], 60	; bullet lasts 1 second (60 vblanks)
+	ld		a, [NewEnemyTile]
+	ld		[hli], a	; store the tile no
+	ld		a, 3
+	ld		[hl], a	; all enemies have 3 health
 
-	ld		a, 4
-	sub		d		; a = index into bullet array
+	ld		a, 6
+	sub		b		; a = index into bullet array
 
+	push	bc
+	
 	ld		hl, bullet_sprites	; get top of bullet sprites
 
 	sla		a
 	sla		a		; multiply index by 4 (4 bytes per sprite)
-	ld		e, a	; store it in de
-	ld		d, 0
+	ld		c, a	; store it in de
+	ld		b, 0
 
-	add		hl, de	; I should be pointing at the correct sprite addr
+	add		hl, bc	; I should be pointing at the correct sprite addr
 
 	; load the sprite info
-	ld		[hl], c
+	ld		[hl], e
 	inc		hl
-	ld		[hl], b
+	ld		[hl], d
 	inc		hl
-	ld		[hl], 12	; bullets use tile 12
+	ld		a, [NewEnemyTile]
+	ld		[hl], a	; bullets use tile 12
 	inc		hl
 	ld		[hl], 0
 
+	pop 	bc
 	pop 	hl
 	pop		de
-	pop		bc
 	pop		af
 	ret
 	
@@ -1306,11 +1314,11 @@ ds		1
 
 ; bullet sprites start here (4 of them)
 bullet_sprites:
-ds		1
+ds		16
 
 ; enemy sprites start here (6 of them)
 enemy_sprites:
-ds		1
+ds		24
 
 SECTION	"RAM_Other_Variables",BSS[$c0A0]
 
@@ -1328,7 +1336,7 @@ bullet_data:
 ds		8
 
 enemy_data:
-ds		18
+ds		12
 
 bomb_data:
 ds		2
@@ -1350,4 +1358,7 @@ ds		1;
 CurrentMapBlock:
 ds		1;
 
-
+CurrentColumnHeight:
+ds		1;
+NewEnemyTile:
+ds		1;
