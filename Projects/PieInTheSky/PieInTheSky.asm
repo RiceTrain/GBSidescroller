@@ -292,9 +292,9 @@ InitSprites::
 LoadTiles::
 	ld		hl, TILES_MEM_LOC_1	; load the tiles to tiles bank 1
 
-	ld		de, 14 * 16
+	ld		de, 15 * 16
 	ld		d, $10  ; 16 bytes per tile
-	ld		e, $0f  ; number of tiles to load
+	ld		e, $10  ; number of tiles to load
 
 .load_tiles_loop
 	; only write during
@@ -628,7 +628,7 @@ HandleColumnLoad::
 	cp		15
 	jr		c, .get_next_column_tile
 	
-	ld		a, 0
+	ld		a, 15
 	ld		[de], a
 	ld		a, c
 	ld		[CurrentColumnHeight], a
@@ -726,10 +726,10 @@ CreateEnemy::
 
 	push	bc
 	
-	ld		hl, bullet_sprites	; get top of bullet sprites
+	ld		hl, enemy_sprites	; get top of enemy sprites
 
 	sla		a
-	sla		a		; multiply index by 4 (4 bytes per sprite)
+	sla		a		; multiply index by 6 (6 bytes per sprite)
 	ld		c, a	; store it in de
 	ld		b, 0
 
@@ -1336,7 +1336,7 @@ bullet_data:
 ds		8
 
 enemy_data:
-ds		12
+ds		18
 
 bomb_data:
 ds		2

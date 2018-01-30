@@ -837,26 +837,27 @@ BSS:
            $C005 = spaceshipR_xpos
            $C006 = spaceshipR_tile
            $C007 = spaceshipR_flags
+           $C01C = enemy_sprites
            $C00C = bullet_sprites
            $C00A = bomb_sprite
            $C00B = bomb_flags
-  SECTION: $C0A0-$C0C1 ($0022 bytes)
+  SECTION: $C0A0-$C0C7 ($0028 bytes)
            $C0A0 = vblank_flag
-           $C0BA = PixelsScrolled
-           $C0BB = TotalTilesScrolled
-           $C0BC = CurrentBGMapScrollTileX
-           $C0BD = CurrentWindowTileX
-           $C0BF = CurrentMapBlock
+           $C0C0 = PixelsScrolled
+           $C0C1 = TotalTilesScrolled
+           $C0C2 = CurrentBGMapScrollTileX
+           $C0C3 = CurrentWindowTileX
+           $C0C5 = CurrentMapBlock
            $C0A3 = bullet_data
            $C0AB = enemy_data
-           $C0B7 = bomb_data
-           $C0BE = CurrentMapColumnPos
+           $C0BD = bomb_data
+           $C0C4 = CurrentMapColumnPos
            $C0A1 = joypad_held
            $C0A2 = joypad_down
-           $C0B9 = ScrollTimer
-           $C0C0 = CurrentColumnHeight
-           $C0C1 = NewEnemyTile
-    SLACK: $1FAA bytes
+           $C0BF = ScrollTimer
+           $C0C6 = CurrentColumnHeight
+           $C0C7 = NewEnemyTile
+    SLACK: $1FA4 bytes
 
 VRAM:
   EMPTY
