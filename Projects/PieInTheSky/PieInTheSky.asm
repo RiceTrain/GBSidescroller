@@ -233,6 +233,8 @@ Game_Loop::
 	call UpdateBulletPositions
 	call UpdateBombPosition
 	
+	call UpdateEnemyPositions
+	
 	; adjust sprite due to d-pad presses
 	call	MoveSpaceship
 	
@@ -628,7 +630,7 @@ HandleColumnLoad::
 	cp		15
 	jr		c, .get_next_column_tile
 	
-	ld		a, 15
+	ld		a, 0
 	ld		[de], a
 	ld		a, c
 	ld		[CurrentColumnHeight], a
@@ -700,6 +702,9 @@ CreateEnemy::
 	
 	; calc enemy y pos
 	ld		a, [CurrentColumnHeight]
+	ld		e, a
+	ld		a, 34
+	sub		e
 	ld		e, a
 	ld		a, 0
 	
@@ -1280,6 +1285,50 @@ UpdateBombPosition::
 .update_bomb_pos_end
 	ret
 
+;------------------------------------------------------
+; update enemy positions
+;------------------------------------------------------
+UpdateEnemyPositions::
+	ld		hl, enemy_data
+	ld		b, 6		; 6 enemies to update
+.update_enemies_pos_loop
+	ld		a, [hl]
+	cp		$ff
+	jp		z, .update_enemies_pos_loop_end
+
+	; this is an active enemy
+	; get its sprite addr
+	push	hl
+	ld		a, 6	; calc index (16 - b)
+	sub		b
+	ld		e, a	; store index in de
+	sla		e
+	sla		e		; 4 bytes per sprite attrib
+	ld		d, 0
+	ld		hl, enemy_sprites
+	add		hl, de
+	ld		d, h
+	ld		e, l	; store the address in de
+	pop		hl
+
+.enemy_scroll_left
+	; update this sprite's position
+	push	hl
+	ld		h, d
+	ld		l, e	; grab the sprite address
+	inc		hl
+	ld		a, [hl]
+	dec		a
+	ld		[hl], a
+	pop		hl
+
+.update_enemies_pos_loop_end
+	inc		hl
+	inc		hl
+	dec		b
+	jp		nz, .update_enemies_pos_loop
+	ret
+	
 ;-------------------------------------------------------------------------
 ; Internal RAM... store dynamic data here
 ;-------------------------------------------------------------------------

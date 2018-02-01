@@ -6,56 +6,59 @@ Bank #0 (HOME):
   SECTION: $0058-$0058 ($0001 bytes)
   SECTION: $0060-$0060 ($0001 bytes)
   SECTION: $0100-$014F ($0050 bytes)
-  SECTION: $0664-$0743 ($00E0 bytes)
-           $0664 = TileLabel
-           $0704 = TileLabelTLE10
-           $0714 = TileLabelTLE11
-           $0724 = TileLabelTLE12
-           $0734 = TileLabelTLE13
-           $0664 = TileLabelTLE0
-           $0674 = TileLabelTLE1
-           $0684 = TileLabelTLE2
-           $0694 = TileLabelTLE3
-           $06A4 = TileLabelTLE4
-           $06B4 = TileLabelTLE5
-           $06C4 = TileLabelTLE6
-           $06D4 = TileLabelTLE7
-           $06E4 = TileLabelTLE8
-           $06F4 = TileLabelTLE9
-  SECTION: $0744-$2CC3 ($2580 bytes)
-           $0744 = TestMap
-  SECTION: $0150-$0663 ($0514 bytes)
-           $02C2 = VBlankFunc
-           $0204 = LoadTiles
-           $0220 = LoadMapToBkg
-           $027D = InitPalettes
-           $01D9 = InitSprites
+  SECTION: $0697-$0776 ($00E0 bytes)
+           $0697 = TileLabel
+           $0737 = TileLabelTLE10
+           $0747 = TileLabelTLE11
+           $0757 = TileLabelTLE12
+           $0767 = TileLabelTLE13
+           $0697 = TileLabelTLE0
+           $06A7 = TileLabelTLE1
+           $06B7 = TileLabelTLE2
+           $06C7 = TileLabelTLE3
+           $06D7 = TileLabelTLE4
+           $06E7 = TileLabelTLE5
+           $06F7 = TileLabelTLE6
+           $0707 = TileLabelTLE7
+           $0717 = TileLabelTLE8
+           $0727 = TileLabelTLE9
+  SECTION: $0777-$2CF6 ($2580 bytes)
+           $0777 = TestMap
+  SECTION: $0150-$0696 ($0547 bytes)
+           $02C5 = VBlankFunc
+           $0207 = LoadTiles
+           $0223 = LoadMapToBkg
+           $0280 = InitPalettes
+           $01DC = InitSprites
            $01BD = Game_Loop
-           $0286 = ReadJoypad
-           $0621 = UpdateBulletPositions
-           $0652 = UpdateBombPosition
-           $040A = MoveSpaceship
-           $020E = LoadTiles.load_tiles_loop
-           $0327 = HandleColumnLoad
-           $052A = FindShipTileIndexes
-           $05D7 = UpdateBulletTimers
-           $0609 = UpdateBombTimer
-           $03BA = CreateEnemy
-           $044A = MoveSpaceship.check_for_down
-           $048D = MoveSpaceship.check_for_left
-           $04D0 = MoveSpaceship.check_for_right
-           $0512 = MoveSpaceship.done_checking_dpad
-           $051D = MoveSpaceship.check_for_bomb
-           $056D = LaunchBullet
-           $0528 = MoveSpaceship.did_not_fire
-           $05AF = LaunchBomb
-           $0536 = FindShipTileIndexes.XSubLoop
-           $0545 = FindShipTileIndexes.YSubLoop
-           $0649 = UpdateBulletPositions.update_bullets_pos_loop_end
-           $0628 = UpdateBulletPositions.update_bullets_pos_loop
-           $0663 = UpdateBombPosition.update_bomb_pos_end
+           $0289 = ReadJoypad
+           $0628 = UpdateBulletPositions
+           $0659 = UpdateBombPosition
+           $066B = UpdateEnemyPositions
+           $0411 = MoveSpaceship
+           $0211 = LoadTiles.load_tiles_loop
+           $032A = HandleColumnLoad
+           $0531 = FindShipTileIndexes
+           $05DE = UpdateBulletTimers
+           $0610 = UpdateBombTimer
+           $03BD = CreateEnemy
+           $0451 = MoveSpaceship.check_for_down
+           $0494 = MoveSpaceship.check_for_left
+           $04D7 = MoveSpaceship.check_for_right
+           $0519 = MoveSpaceship.done_checking_dpad
+           $0524 = MoveSpaceship.check_for_bomb
+           $0574 = LaunchBullet
+           $052F = MoveSpaceship.did_not_fire
+           $05B6 = LaunchBomb
+           $053D = FindShipTileIndexes.XSubLoop
+           $054C = FindShipTileIndexes.YSubLoop
+           $0650 = UpdateBulletPositions.update_bullets_pos_loop_end
+           $062F = UpdateBulletPositions.update_bullets_pos_loop
+           $066A = UpdateBombPosition.update_bomb_pos_end
+           $0690 = UpdateEnemyPositions.update_enemies_pos_loop_end
+           $0670 = UpdateEnemyPositions.update_enemies_pos_loop
            $0150 = start
-    SLACK: $1435 bytes
+    SLACK: $1402 bytes
 
 Bank #256:
   EMPTY
