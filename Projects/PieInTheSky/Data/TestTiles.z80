@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 13
+;   Tiles                : 0 to 17
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -58,13 +58,25 @@ TileLabelTLE10::
 DB $E0,$E0,$F8,$38,$FC,$AC,$FE,$96
 DB $FE,$02,$FF,$FF,$02,$FE,$FC,$FC
 TileLabelTLE11::
-DB $00,$03,$00,$07,$00,$0E,$00,$1C
-DB $00,$38,$00,$70,$00,$E0,$00,$C0
+DB $00,$00,$00,$00,$00,$00,$00,$00
+DB $00,$00,$00,$00,$00,$00,$00,$00
 TileLabelTLE12::
 DB $00,$00,$18,$18,$66,$7E,$81,$FF
 DB $81,$FF,$66,$7E,$18,$18,$00,$00
 TileLabelTLE13::
 DB $3C,$3C,$42,$7E,$81,$FF,$81,$FF
 DB $81,$FF,$81,$FF,$42,$7E,$3C,$3C
+TileLabelTLE14::
+DB $FF,$FF,$81,$81,$A5,$A5,$A5,$A5
+DB $81,$81,$99,$99,$81,$81,$FF,$FF
+TileLabelTLE15::
+DB $FF,$FF,$81,$FF,$A5,$FF,$81,$FF
+DB $99,$FF,$A5,$FF,$81,$FF,$FF,$FF
+TileLabelTLE16::
+DB $FF,$FF,$81,$81,$A5,$A5,$81,$81
+DB $81,$81,$BD,$BD,$81,$81,$FF,$FF
+TileLabelTLE17::
+DB $FF,$FF,$81,$81,$A5,$A5,$81,$81
+DB $A5,$A5,$BD,$BD,$81,$81,$FF,$FF
 
 ; End of TESTTILES.Z80
