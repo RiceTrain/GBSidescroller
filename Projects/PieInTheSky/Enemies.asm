@@ -152,15 +152,15 @@ CreateEnemy::
 	ret
 
 ;------------------------------------------------------
-; update enemy positions
+; update enemy behaviours
 ;------------------------------------------------------
-UpdateEnemyPositions::
+UpdateEnemyBehaviours::
 	ld		hl, enemy_data
 	ld		b, 6		; 6 enemies to update
-.update_enemies_pos_loop
+.update_enemies_loop
 	ld		a, [hl]
 	cp		$ff
-	jp		z, .update_enemies_pos_loop_end
+	jp		z, .update_enemies_loop_end
 
 	; this is an active enemy
 	; get its sprite addr
@@ -177,20 +177,13 @@ UpdateEnemyPositions::
 	ld		e, l	; store the address in de
 	pop		hl
 
-.enemy_scroll_left
-	; update this sprite's position
-	push	hl
-	ld		h, d
-	ld		l, e	; grab the sprite address
-	inc		hl
-	ld		a, [hl]
-	;dec		a
-	ld		[hl], a
-	pop		hl
+	call 	UpdateEnemyBehaviour
 
-.update_enemies_pos_loop_end
+.update_enemies_loop_end
 	inc		hl
 	inc		hl
 	dec		b
-	jp		nz, .update_enemies_pos_loop
+	jp		nz, .update_enemies_loop
 	ret
+
+INCLUDE "Projects/PieInTheSky/EnemyBehaviours.asm"

@@ -49,7 +49,7 @@ Game_Loop::
 	; its launch position for one frame
 	call 	UpdateBulletPositions
 	call 	UpdateBombPosition
-	call 	UpdateEnemyPositions
+	call 	UpdateEnemyBehaviours
 	
 	; adjust sprite due to d-pad presses
 	call	MoveSpaceship
