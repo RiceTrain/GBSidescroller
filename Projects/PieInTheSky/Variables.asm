@@ -1,7 +1,6 @@
 InitWorkingVariables::
 	ld		a, 0
 	ld		[vblank_flag], a
-	ld		[enemy_updated_flag], a
 	ld 		[PixelsScrolled], a
 	ld 		[TotalTilesScrolled], a
 	ld 		[CurrentBGMapScrollTileX], a
@@ -75,8 +74,6 @@ SECTION	"RAM_Working_Variables",BSS[$c0A0]
 ; frame timing
 vblank_flag:
 ds		1		; set if a vblank occured since last pass through game loop
-enemy_updated_flag:
-ds		1
 
 ; joypad values
 joypad_held:

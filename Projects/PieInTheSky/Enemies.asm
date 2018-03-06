@@ -53,6 +53,7 @@ UpdateEnemyScrollPositions::
 .update_enemies_pos_loop_end
 	inc		hl
 	inc		hl
+	inc		hl
 	dec		b
 	jp		nz, .update_enemies_pos_loop
 	ret
@@ -182,6 +183,7 @@ UpdateEnemyBehaviours::
 .update_enemies_loop_end
 	inc		hl
 	inc		hl
+	inc		hl ;4 bytes per enemy data
 	dec		b
 	jp		nz, .update_enemies_loop
 	ret
