@@ -90,6 +90,11 @@ ds		18
 bomb_data:
 ds		2
 
+current_bullet_xpos:
+ds		1
+current_bullet_ypos:
+ds		1
+
 ; temp variables
 ScrollTimer:
 ds		1		; temp variable for slowing down scroll speed

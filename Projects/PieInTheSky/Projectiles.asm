@@ -235,15 +235,66 @@ UpdateBulletPositions::
 
 .bullet_fly_right
 	; update this sprite's position
-	push	hl
-	ld		h, d
-	ld		l, e	; grab the sprite address
-	inc		hl
-	ld		a, [hl]
+	ld		a, [de]
+	ld		[current_bullet_ypos], a
+	inc		de
+	ld		a, [de]
 	add		a, 2
-	ld		[hl], a
-	pop		hl
+	ld		[current_bullet_xpos], a
+	ld		[de], a
 
+	push	hl
+	push	bc
+	push	de
+	
+	call FindBulletTileIndexes
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .destroy_bullet_on_collision
+
+	inc 	hl
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .destroy_bullet_on_collision
+	
+	ld		a, 0
+	ld		b, a
+	ld		a, 32
+	ld		c, a
+	add		hl, bc
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .destroy_bullet_on_collision
+	
+	dec		hl
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		11
+	jr		nz, .destroy_bullet_on_collision
+	
+	pop 	de
+	pop		bc
+	pop		hl
+	
+	jp		.update_bullets_pos_loop_end
+	
+.destroy_bullet_on_collision
+	pop 	de
+	pop		bc
+	pop		hl
+	
+	ld		a, $ff
+	ld		[hl], a
+	
+	dec		de
+	ld		a, 0
+	ld		[de], a
+	inc		de
+	ld		[de], a
+	
 .update_bullets_pos_loop_end
 	inc		hl
 	inc		hl
@@ -254,6 +305,68 @@ UpdateBulletPositions::
 	pop		af
 	ret
 
+;-----------------------------------------------------------------
+; Find tile index of 
+; B = xBottomLeftShipTileIndex, C = yBottomLeftShipTileIndex
+;-----------------------------------------------------------------
+FindBulletTileIndexes::
+	ld		a, [PixelsScrolled]
+	ld		b, a
+	ld 		a, [current_bullet_xpos]
+	sub		4
+	add		a, b
+	ld		b, -1
+	
+.XSubLoop
+	jr		c, .StartYLoop
+	sub		8
+	inc 	b
+	jp		.XSubLoop
+
+.StartYLoop
+	ld 		a, [current_bullet_ypos]
+	sub		8
+	ld		c, -2
+	
+.YSubLoop
+	jr		c, .EndTileIndexLoops
+	sub		8
+	inc 	c
+	jp		.YSubLoop
+	
+.EndTileIndexLoops
+	ld		a, 0
+	ld		h, a
+	ld 		a, [CurrentWindowTileX]
+	add		b
+	
+	cp		32
+	jr		c, .StoreStartAndMapWidth
+	
+	sub 	32
+	
+.StoreStartAndMapWidth
+	ld		l, a
+	
+	ld		a, 0
+	ld		d, a
+	ld		a, 32
+	ld		e, a
+	
+	ld 		a, c
+	
+.GetTileIndexLoop
+	add		hl, de
+	dec		a
+	jr		nz, .GetTileIndexLoop
+	
+	ld		d, h
+	ld		e, l
+	ld		hl, MAP_MEM_LOC_0
+	add 	hl, de ;HL now contains the address of the tile at the bottom left bullet co-ordinate
+	
+	ret
+	
 ;------------------------------------------------------
 ; update bomb position
 ;------------------------------------------------------
