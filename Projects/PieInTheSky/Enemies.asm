@@ -118,9 +118,8 @@ CreateEnemy::
 	; index into bullet array = 6 - b
 
 	ld		a, [NewEnemyTile]
-	ld		[hli], a	; store the tile no
-	ld		a, 3
-	ld		[hl], a	; all enemies have 3 health
+	ld		[hl], a	; store the tile no
+	call	SetupNewEnemy
 
 	ld		a, 6
 	sub		b		; a = index into bullet array
@@ -151,6 +150,8 @@ CreateEnemy::
 	pop		de
 	pop		af
 	ret
+
+INCLUDE "Projects/PieInTheSky/EnemySetup.asm"
 
 ;------------------------------------------------------
 ; update enemy behaviours

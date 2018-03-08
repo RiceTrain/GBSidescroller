@@ -242,7 +242,8 @@ UpdateBulletPositions::
 	add		a, 2
 	ld		[current_bullet_xpos], a
 	ld		[de], a
-
+	dec		de
+	
 	push	hl
 	push	bc
 	push	de
@@ -279,7 +280,7 @@ UpdateBulletPositions::
 	pop		bc
 	pop		hl
 	
-	jp		.update_bullets_pos_loop_end
+	jp		.check_for_enemy_collision
 	
 .destroy_bullet_on_collision
 	pop 	de
@@ -289,11 +290,46 @@ UpdateBulletPositions::
 	ld		a, $ff
 	ld		[hl], a
 	
-	dec		de
 	ld		a, 0
 	ld		[de], a
 	inc		de
 	ld		[de], a
+	
+	jp		.update_bullets_pos_loop_end
+	
+.check_for_enemy_collision
+	push	hl
+	push 	de
+	push	bc
+	
+	ld		hl, enemy_data
+	ld		b, 6		; 6 enemies to update
+.check_enemies_pos_loop
+	ld		a, [hl]
+	cp		$ff
+	jp		z, .check_enemies_pos_loop
+
+	; this is an active enemy
+	; get its sprite addr
+	push	hl
+	ld		a, 6	; calc index (16 - b)
+	sub		b
+	ld		e, a	; store index in de
+	sla		e
+	sla		e		; 4 bytes per sprite attrib
+	ld		d, 0
+	ld		hl, enemy_sprites
+	add		hl, de
+	ld		d, h
+	ld		e, l	; store the address in de
+	pop		hl
+	
+	;Check bullet positions in relation to enemy positions and width
+	
+	
+	pop		bc
+	pop 	de
+	pop		hl
 	
 .update_bullets_pos_loop_end
 	inc		hl
