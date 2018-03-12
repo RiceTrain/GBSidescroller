@@ -298,8 +298,8 @@ UpdateBulletPositions::
 	jp		.update_bullets_pos_loop_end
 	
 .check_for_enemy_collision
-	push	hl
 	push 	de
+	push	hl
 	push	bc
 	
 	ld		hl, enemy_data
@@ -325,11 +325,91 @@ UpdateBulletPositions::
 	pop		hl
 	
 	;Check bullet positions in relation to enemy positions and width
+	ld		a, [de]
+	ld		c, a
+	ld		a, [current_bullet_ypos]
+	add		4 ;get center of bullet sprites
+
+	cp		c
+	jr		z, .check_enemy_pos_loop_end
+	jr		c, .check_enemy_pos_loop_end
 	
+	ld		a, c
+	add		8
+	ld		c, a
+	ld		a, [current_bullet_ypos]
+	add		4 ;get center of bullet sprites
 	
-	pop		bc
+	cp 		c
+	jr		z, .check_enemy_pos_loop_end
+	jr		nz, .check_enemy_pos_loop_end
+	
+	inc		de
+	ld		a, [de]
+	ld		c, a
+	ld		a, [current_bullet_xpos]
+	add		4 ;get center of bullet sprites
+	dec 	de
+	
+	cp		c
+	jr		z, .check_enemy_pos_loop_end
+	jr		c, .check_enemy_pos_loop_end
+	
+	ld		a, c
+	add		8
+	ld		c, a
+	ld		a, [current_bullet_xpos]
+	add		4 ;get center of bullet sprites
+	
+	cp 		c
+	jr		z, .check_enemy_pos_loop_end
+	jr		nz, .check_enemy_pos_loop_end
+	
+.bullet_collided_with_enemy
+	inc 	hl
+	ld		a, [hl]
+	dec		hl
+	sub		1
+	cp		0
+	jr		nz, .destroy_bullet
+	
+.destroy_enemy
+	ld		a, $ff
+	ld		[hl], a
+	
+	ld		a, 0
+	ld		[de], a
+	inc		de
+	ld		[de], a
+
+.destroy_bullet
+	pop		de
+	pop 	hl
+	
+	ld		a, $ff
+	ld		[hl], a
+	
+	ld		a, 0
+	ld		[de], a
+	inc		de
+	ld		[de], a
+	dec		de
+	
+	push	hl
+	push 	de
+	
+.check_enemy_pos_loop_end
+	inc		hl
+	inc		hl
+	inc		hl
+	inc		hl
+	dec		b
+	jp		nz, .check_enemies_pos_loop
+	
+.done_checking_enemies
 	pop 	de
 	pop		hl
+	pop		bc
 	
 .update_bullets_pos_loop_end
 	inc		hl
