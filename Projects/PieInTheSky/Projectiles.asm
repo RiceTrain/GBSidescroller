@@ -307,7 +307,7 @@ UpdateBulletPositions::
 .check_enemies_pos_loop
 	ld		a, [hl]
 	cp		$ff
-	jp		z, .check_enemies_pos_loop
+	jp		z, .check_enemy_pos_loop_end
 
 	; this is an active enemy
 	; get its sprite addr
@@ -342,7 +342,7 @@ UpdateBulletPositions::
 	
 	cp 		c
 	jr		z, .check_enemy_pos_loop_end
-	jr		nz, .check_enemy_pos_loop_end
+	jr		nc, .check_enemy_pos_loop_end
 	
 	inc		de
 	ld		a, [de]
@@ -363,13 +363,14 @@ UpdateBulletPositions::
 	
 	cp 		c
 	jr		z, .check_enemy_pos_loop_end
-	jr		nz, .check_enemy_pos_loop_end
+	jr		nc, .check_enemy_pos_loop_end
 	
 .bullet_collided_with_enemy
 	inc 	hl
 	ld		a, [hl]
-	dec		hl
 	sub		1
+	ld		[hl], a
+	dec		hl
 	cp		0
 	jr		nz, .destroy_bullet
 	
@@ -407,9 +408,9 @@ UpdateBulletPositions::
 	jp		nz, .check_enemies_pos_loop
 	
 .done_checking_enemies
-	pop 	de
-	pop		hl
 	pop		bc
+	pop		hl
+	pop 	de
 	
 .update_bullets_pos_loop_end
 	inc		hl

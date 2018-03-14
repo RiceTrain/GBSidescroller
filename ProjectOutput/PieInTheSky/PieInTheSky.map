@@ -6,13 +6,13 @@ Bank #0 (HOME):
   SECTION: $0058-$0058 ($0001 bytes)
   SECTION: $0060-$0060 ($0001 bytes)
   SECTION: $0100-$014F ($0050 bytes)
-  SECTION: $0150-$065E ($050F bytes)
+  SECTION: $0150-$065F ($0510 bytes)
            $01CC = InitPlayerSprite
            $0171 = Game_Loop
            $0190 = ReadJoypad
            $0441 = UpdateBulletPositions
-           $056F = UpdateBombPosition
-           $0622 = UpdateEnemyBehaviours
+           $0570 = UpdateBombPosition
+           $0623 = UpdateEnemyBehaviours
            $0216 = MoveSpaceship
            $0336 = FindShipTileIndexes
            $0256 = MoveSpaceship.check_for_down
@@ -25,65 +25,66 @@ Bank #0 (HOME):
            $03CF = LaunchBomb
            $0342 = FindShipTileIndexes.XSubLoop
            $0351 = FindShipTileIndexes.YSubLoop
-           $0523 = UpdateBulletPositions.update_bullets_pos_loop_end
-           $052C = FindBulletTileIndexes
+           $0524 = UpdateBulletPositions.update_bullets_pos_loop_end
+           $052D = FindBulletTileIndexes
            $04A4 = UpdateBulletPositions.check_for_enemy_collision
+           $0519 = UpdateBulletPositions.check_enemy_pos_loop_end
            $04AC = UpdateBulletPositions.check_enemies_pos_loop
            $0448 = UpdateBulletPositions.update_bullets_pos_loop
-           $0538 = FindBulletTileIndexes.XSubLoop
-           $0547 = FindBulletTileIndexes.YSubLoop
-           $0580 = UpdateBombPosition.update_bomb_pos_end
-           $05B4 = UpdateEnemyScrollPositions.update_enemies_pos_loop_end
-           $0594 = UpdateEnemyScrollPositions.update_enemies_pos_loop
-           $0610 = SetupNewEnemy
-           $0642 = UpdateEnemyBehaviours.update_enemies_loop_end
-           $064A = UpdateEnemyBehaviour
-           $0627 = UpdateEnemyBehaviours.update_enemies_loop
-           $058F = UpdateEnemyScrollPositions
+           $0539 = FindBulletTileIndexes.XSubLoop
+           $0548 = FindBulletTileIndexes.YSubLoop
+           $0581 = UpdateBombPosition.update_bomb_pos_end
+           $05B5 = UpdateEnemyScrollPositions.update_enemies_pos_loop_end
+           $0595 = UpdateEnemyScrollPositions.update_enemies_pos_loop
+           $0611 = SetupNewEnemy
+           $0643 = UpdateEnemyBehaviours.update_enemies_loop_end
+           $064B = UpdateEnemyBehaviour
+           $0628 = UpdateEnemyBehaviours.update_enemies_loop
+           $0590 = UpdateEnemyScrollPositions
            $01F3 = ResolvePlayerScrollCollisions
-           $05BC = CreateEnemy
+           $05BD = CreateEnemy
            $03F7 = UpdateBulletTimers
            $0429 = UpdateBombTimer
            $0379 = InitBulletSprites
-           $0581 = InitEnemySprites
+           $0582 = InitEnemySprites
            $0386 = InitBombSprite
-           $0656 = Enemy0Update
-           $065B = Enemy1Update
+           $0657 = Enemy0Update
+           $065C = Enemy1Update
            $0150 = start
-           $061C = Enemy0Setup
-  SECTION: $065F-$077E ($0120 bytes)
-           $065F = TileLabel
-           $06FF = TileLabelTLE10
-           $070F = TileLabelTLE11
-           $071F = TileLabelTLE12
-           $072F = TileLabelTLE13
-           $073F = TileLabelTLE14
-           $074F = TileLabelTLE15
-           $075F = TileLabelTLE16
-           $076F = TileLabelTLE17
-           $065F = TileLabelTLE0
-           $066F = TileLabelTLE1
-           $067F = TileLabelTLE2
-           $068F = TileLabelTLE3
-           $069F = TileLabelTLE4
-           $06AF = TileLabelTLE5
-           $06BF = TileLabelTLE6
-           $06CF = TileLabelTLE7
-           $06DF = TileLabelTLE8
-           $06EF = TileLabelTLE9
-  SECTION: $077F-$2EA6 ($2728 bytes)
-           $2E58 = VBlankFunc
-           $2E77 = InitWorkingVariables
-           $2CFF = InitLevel
-           $2E92 = InitSprites
-           $2D15 = LoadTiles
-           $077F = TestMap
-           $2D31 = LoadMapToBkg
-           $2D8E = InitPalettes
-           $2D1F = LoadTiles.load_tiles_loop
-           $2DC5 = HandleColumnLoad
-           $2D97 = ScrollLevel
-    SLACK: $1252 bytes
+           $061D = Enemy0Setup
+  SECTION: $0660-$077F ($0120 bytes)
+           $0660 = TileLabel
+           $0700 = TileLabelTLE10
+           $0710 = TileLabelTLE11
+           $0720 = TileLabelTLE12
+           $0730 = TileLabelTLE13
+           $0740 = TileLabelTLE14
+           $0750 = TileLabelTLE15
+           $0760 = TileLabelTLE16
+           $0770 = TileLabelTLE17
+           $0660 = TileLabelTLE0
+           $0670 = TileLabelTLE1
+           $0680 = TileLabelTLE2
+           $0690 = TileLabelTLE3
+           $06A0 = TileLabelTLE4
+           $06B0 = TileLabelTLE5
+           $06C0 = TileLabelTLE6
+           $06D0 = TileLabelTLE7
+           $06E0 = TileLabelTLE8
+           $06F0 = TileLabelTLE9
+  SECTION: $0780-$2EA7 ($2728 bytes)
+           $2E59 = VBlankFunc
+           $2E78 = InitWorkingVariables
+           $2D00 = InitLevel
+           $2E93 = InitSprites
+           $2D16 = LoadTiles
+           $0780 = TestMap
+           $2D32 = LoadMapToBkg
+           $2D8F = InitPalettes
+           $2D20 = LoadTiles.load_tiles_loop
+           $2DC6 = HandleColumnLoad
+           $2D98 = ScrollLevel
+    SLACK: $1251 bytes
 
 Bank #256:
   EMPTY
