@@ -372,7 +372,7 @@ UpdateBulletPositions::
 	ld		[hl], a
 	dec		hl
 	cp		0
-	jr		nz, .destroy_bullet
+;	jr		nz, .destroy_bullet
 	
 .destroy_enemy
 	ld		a, $ff
@@ -384,6 +384,7 @@ UpdateBulletPositions::
 	ld		[de], a
 
 .destroy_bullet
+	pop		bc
 	pop		de
 	pop 	hl
 	
@@ -398,6 +399,7 @@ UpdateBulletPositions::
 	
 	push	hl
 	push 	de
+	push	bc
 	
 .check_enemy_pos_loop_end
 	inc		hl

@@ -72,19 +72,19 @@ Bank #0 (HOME):
            $06D0 = TileLabelTLE7
            $06E0 = TileLabelTLE8
            $06F0 = TileLabelTLE9
-  SECTION: $0780-$2EA7 ($2728 bytes)
-           $2E59 = VBlankFunc
-           $2E78 = InitWorkingVariables
+  SECTION: $0780-$2EA1 ($2722 bytes)
+           $2E53 = VBlankFunc
+           $2E72 = InitWorkingVariables
            $2D00 = InitLevel
-           $2E93 = InitSprites
-           $2D16 = LoadTiles
+           $2E8D = InitSprites
+           $2D10 = LoadTiles
            $0780 = TestMap
-           $2D32 = LoadMapToBkg
-           $2D8F = InitPalettes
-           $2D20 = LoadTiles.load_tiles_loop
-           $2DC6 = HandleColumnLoad
-           $2D98 = ScrollLevel
-    SLACK: $1251 bytes
+           $2D2C = LoadMapToBkg
+           $2D89 = InitPalettes
+           $2D1A = LoadTiles.load_tiles_loop
+           $2DC0 = HandleColumnLoad
+           $2D92 = ScrollLevel
+    SLACK: $1257 bytes
 
 Bank #256:
   EMPTY
