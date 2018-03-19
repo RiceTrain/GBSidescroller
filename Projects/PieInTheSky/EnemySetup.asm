@@ -25,6 +25,6 @@ Enemy0Setup::
 	ld		a, 1
 	ld		[hli], a
 	ld		[hli], a
-	ld		[hli], a
+	ld		[hl], a
 	
 	ret

@@ -274,7 +274,7 @@ FindShipTileIndexes::
 	ld		a, [PixelsScrolled]
 	ld		b, a
 	ld 		a, [spaceshipL_xpos]
-	sub		4
+	sub		9
 	add		a, b
 	ld		b, -1
 	

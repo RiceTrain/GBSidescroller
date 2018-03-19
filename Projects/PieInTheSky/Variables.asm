@@ -85,7 +85,7 @@ bullet_data:
 ds		8
 
 enemy_data:
-ds		18
+ds		24
 
 bomb_data:
 ds		2

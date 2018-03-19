@@ -6,6 +6,7 @@ InitEnemySprites::
 	ld 		a, $ff
 	ld		[hli], a
 	inc		hl
+	inc		hl
 	inc		hl			; 3 bytes per enemy
 
 	dec		b
@@ -54,6 +55,7 @@ UpdateEnemyScrollPositions::
 	inc		hl
 	inc		hl
 	inc		hl
+	inc 	hl
 	dec		b
 	jp		nz, .update_enemies_pos_loop
 	ret
@@ -79,6 +81,7 @@ CreateEnemy::
 	jr		z, .found_empty_enemy
 
 	inc		hl	; skip 3 bytes, to top of next enemy
+	inc		hl
 	inc		hl
 	inc		hl
 
@@ -182,6 +185,7 @@ UpdateEnemyBehaviours::
 	call 	UpdateEnemyBehaviour
 
 .update_enemies_loop_end
+	inc		hl
 	inc		hl
 	inc		hl
 	inc		hl ;4 bytes per enemy data

@@ -16,10 +16,6 @@ InitLevel::
 	; init the palettes
 	call	InitPalettes
 	
-;	ldh		a, [SCROLL_BKG_X]		; scroll the background horiz one bit
-;	add		5
-;	ldh		[SCROLL_BKG_X], a
-	
 	ret
 
 ;----------------------------------------------------
