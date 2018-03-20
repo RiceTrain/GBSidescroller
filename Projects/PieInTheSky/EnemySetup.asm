@@ -22,8 +22,9 @@ SetupNewEnemy::
 	ret
 	
 Enemy0Setup::
-	ld		a, 1
+	ld		a, 3
 	ld		[hli], a
+	ld		a, 2
 	ld		[hli], a
 	ld		[hl], a
 	

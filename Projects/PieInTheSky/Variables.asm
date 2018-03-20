@@ -95,6 +95,11 @@ ds		1
 current_bullet_ypos:
 ds		1
 
+current_enemy_width:
+ds		1
+current_enemy_height:
+ds		1
+
 ; temp variables
 ScrollTimer:
 ds		1		; temp variable for slowing down scroll speed

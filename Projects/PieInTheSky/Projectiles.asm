@@ -324,26 +324,79 @@ UpdateBulletPositions::
 	ld		e, l	; store the address in de
 	pop		hl
 	
+	inc 	hl
+	inc		hl
+	ld		a, [hl]
+	ld		[current_enemy_width], a
+	inc		hl
+	ld		a, [hl]
+	ld		[current_enemy_height], a
+	dec		hl
+	dec		hl
+	dec		hl
+	
 	;Check bullet positions in relation to enemy positions and width
+	;Check bottom point
 	ld		a, [de]
 	ld		c, a
 	ld		a, [current_bullet_ypos]
-	add		4 ;get center of bullet sprites
+
+	cp		c
+	jr		z, .check_top_point
+	jr		c, .check_top_point
+	
+	ld		a, [current_enemy_height]
+	ld		c, a
+	ld		a, 0
+	
+.height_loop_start
+	add		8
+	dec		c
+	jr		nz, .height_loop_start
+	
+	ld		c, a
+	ld		a, [de]
+	add		c
+	ld		c, a
+	ld		a, [current_bullet_ypos]
+	
+	cp 		c
+	jr		z, .check_top_point
+	jr		nc, .check_top_point
+	
+	jp		.check_x_points
+	
+.check_top_point
+	ld		a, [de]
+	ld		c, a
+	ld		a, [current_bullet_ypos]
+	add		8
 
 	cp		c
 	jr		z, .check_enemy_pos_loop_end
 	jr		c, .check_enemy_pos_loop_end
 	
-	ld		a, c
+	ld		a, [current_enemy_height]
+	ld		c, a
+	ld		a, 0
+	
+.height_loop_start_top
 	add		8
+	dec		c
+	jr		nz, .height_loop_start_top
+	
+	ld		c, a
+	ld		a, [de]
+	add		c
 	ld		c, a
 	ld		a, [current_bullet_ypos]
-	add		4 ;get center of bullet sprites
+	add		8 ;get top of bullet sprites
 	
 	cp 		c
 	jr		z, .check_enemy_pos_loop_end
 	jr		nc, .check_enemy_pos_loop_end
-	
+
+.check_x_points
 	inc		de
 	ld		a, [de]
 	ld		c, a
@@ -355,8 +408,20 @@ UpdateBulletPositions::
 	jr		z, .check_enemy_pos_loop_end
 	jr		c, .check_enemy_pos_loop_end
 	
-	ld		a, c
+	ld		a, [current_enemy_width]
+	ld		c, a
+	ld		a, 0
+	
+.width_loop_start
 	add		8
+	dec		c
+	jr		nz, .width_loop_start
+	
+	ld		c, a
+	inc		de
+	ld		a, [de]
+	dec 	de
+	add		c
 	ld		c, a
 	ld		a, [current_bullet_xpos]
 	add		4 ;get center of bullet sprites
@@ -364,7 +429,7 @@ UpdateBulletPositions::
 	cp 		c
 	jr		z, .check_enemy_pos_loop_end
 	jr		nc, .check_enemy_pos_loop_end
-	
+
 .bullet_collided_with_enemy
 	inc 	hl
 	ld		a, [hl]
@@ -372,7 +437,7 @@ UpdateBulletPositions::
 	ld		[hl], a
 	dec		hl
 	cp		0
-;	jr		nz, .destroy_bullet
+	jr		nz, .destroy_bullet
 	
 .destroy_enemy
 	ld		a, $ff
