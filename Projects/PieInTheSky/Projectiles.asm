@@ -248,33 +248,38 @@ UpdateBulletPositions::
 	push	bc
 	push	de
 	
+	ld		a, [current_bullet_ypos]
+	add		4
+	ld		a, [current_bullet_xpos]
+	add		4
+	
 	call FindBulletTileIndexes
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		11
 	jr		nz, .destroy_bullet_on_collision
 
-	inc 	hl
-	
-	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
-	jr		nz, .destroy_bullet_on_collision
-	
-	ld		a, 0
-	ld		b, a
-	ld		a, 32
-	ld		c, a
-	add		hl, bc
-	
-	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
-	jr		nz, .destroy_bullet_on_collision
-	
-	dec		hl
-	
-	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
-	jr		nz, .destroy_bullet_on_collision
+;	inc 	hl
+;	
+;	ld		a, [hl] ;Tile ship is on stored at hl
+;	cp		11
+;	jr		nz, .destroy_bullet_on_collision
+;	
+;	ld		a, 0
+;	ld		b, a
+;	ld		a, 32
+;	ld		c, a
+;	add		hl, bc
+;	
+;	ld		a, [hl] ;Tile ship is on stored at hl
+;	cp		11
+;	jr		nz, .destroy_bullet_on_collision
+;	
+;	dec		hl
+;	
+;	ld		a, [hl] ;Tile ship is on stored at hl
+;	cp		11
+;	jr		nz, .destroy_bullet_on_collision
 	
 	pop 	de
 	pop		bc
@@ -450,8 +455,8 @@ UpdateBulletPositions::
 
 .destroy_bullet
 	pop		bc
-	pop		de
 	pop 	hl
+	pop		de
 	
 	ld		a, $ff
 	ld		[hl], a
@@ -462,8 +467,8 @@ UpdateBulletPositions::
 	ld		[de], a
 	dec		de
 	
-	push	hl
 	push 	de
+	push	hl
 	push	bc
 	
 .check_enemy_pos_loop_end
@@ -497,7 +502,7 @@ FindBulletTileIndexes::
 	ld		a, [PixelsScrolled]
 	ld		b, a
 	ld 		a, [current_bullet_xpos]
-	sub		4
+	sub		8
 	add		a, b
 	ld		b, -1
 	
@@ -509,7 +514,7 @@ FindBulletTileIndexes::
 
 .StartYLoop
 	ld 		a, [current_bullet_ypos]
-	sub		8
+	sub		4
 	ld		c, -2
 	
 .YSubLoop

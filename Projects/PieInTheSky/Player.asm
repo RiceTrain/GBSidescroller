@@ -262,6 +262,8 @@ MoveSpaceship::
 	
 	call	LaunchBomb
 
+	
+	
 .did_not_fire
 	pop		af
 	ret	
@@ -325,5 +327,9 @@ FindShipTileIndexes::
 	ld		e, l
 	ld		hl, MAP_MEM_LOC_0
 	add 	hl, de ;HL now contains the address of the tile at the bottom left ship co-ordinate
+	
+	ret
+	
+ResolveShipEnemyCollisions::
 	
 	ret

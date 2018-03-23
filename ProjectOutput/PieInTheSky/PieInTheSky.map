@@ -6,13 +6,13 @@ Bank #0 (HOME):
   SECTION: $0058-$0058 ($0001 bytes)
   SECTION: $0060-$0060 ($0001 bytes)
   SECTION: $0100-$014F ($0050 bytes)
-  SECTION: $0150-$06B1 ($0562 bytes)
+  SECTION: $0150-$06A4 ($0555 bytes)
            $01CC = InitPlayerSprite
            $0171 = Game_Loop
            $0190 = ReadJoypad
-           $0441 = UpdateBulletPositions
-           $05BC = UpdateBombPosition
-           $0674 = UpdateEnemyBehaviours
+           $0442 = UpdateBulletPositions
+           $05AF = UpdateBombPosition
+           $0667 = UpdateEnemyBehaviours
            $0216 = MoveSpaceship
            $0336 = FindShipTileIndexes
            $0256 = MoveSpaceship.check_for_down
@@ -20,72 +20,73 @@ Bank #0 (HOME):
            $02DC = MoveSpaceship.check_for_right
            $031E = MoveSpaceship.done_checking_dpad
            $0329 = MoveSpaceship.check_for_bomb
-           $038D = LaunchBullet
+           $038E = LaunchBullet
            $0334 = MoveSpaceship.did_not_fire
-           $03CF = LaunchBomb
+           $03D0 = LaunchBomb
            $0342 = FindShipTileIndexes.XSubLoop
            $0351 = FindShipTileIndexes.YSubLoop
-           $0570 = UpdateBulletPositions.update_bullets_pos_loop_end
-           $0579 = FindBulletTileIndexes
-           $04A4 = UpdateBulletPositions.check_for_enemy_collision
-           $0565 = UpdateBulletPositions.check_enemy_pos_loop_end
-           $051B = UpdateBulletPositions.check_x_points
-           $04AC = UpdateBulletPositions.check_enemies_pos_loop
-           $0448 = UpdateBulletPositions.update_bullets_pos_loop
-           $0585 = FindBulletTileIndexes.XSubLoop
-           $0594 = FindBulletTileIndexes.YSubLoop
-           $05CD = UpdateBombPosition.update_bomb_pos_end
-           $0602 = UpdateEnemyScrollPositions.update_enemies_pos_loop_end
-           $05E2 = UpdateEnemyScrollPositions.update_enemies_pos_loop
-           $0660 = SetupNewEnemy
-           $0694 = UpdateEnemyBehaviours.update_enemies_loop_end
-           $069D = UpdateEnemyBehaviour
-           $0679 = UpdateEnemyBehaviours.update_enemies_loop
-           $05DD = UpdateEnemyScrollPositions
+           $0563 = UpdateBulletPositions.update_bullets_pos_loop_end
+           $056C = FindBulletTileIndexes
+           $0497 = UpdateBulletPositions.check_for_enemy_collision
+           $0558 = UpdateBulletPositions.check_enemy_pos_loop_end
+           $050E = UpdateBulletPositions.check_x_points
+           $049F = UpdateBulletPositions.check_enemies_pos_loop
+           $0449 = UpdateBulletPositions.update_bullets_pos_loop
+           $0578 = FindBulletTileIndexes.XSubLoop
+           $0587 = FindBulletTileIndexes.YSubLoop
+           $05C0 = UpdateBombPosition.update_bomb_pos_end
+           $05F5 = UpdateEnemyScrollPositions.update_enemies_pos_loop_end
+           $05D5 = UpdateEnemyScrollPositions.update_enemies_pos_loop
+           $0653 = SetupNewEnemy
+           $0687 = UpdateEnemyBehaviours.update_enemies_loop_end
+           $0690 = UpdateEnemyBehaviour
+           $066C = UpdateEnemyBehaviours.update_enemies_loop
+           $05D0 = UpdateEnemyScrollPositions
            $01F3 = ResolvePlayerScrollCollisions
-           $060B = CreateEnemy
-           $03F7 = UpdateBulletTimers
-           $0429 = UpdateBombTimer
-           $0379 = InitBulletSprites
-           $05CE = InitEnemySprites
-           $0386 = InitBombSprite
-           $06A9 = Enemy0Update
-           $06AE = Enemy1Update
+           $05FE = CreateEnemy
+           $03F8 = UpdateBulletTimers
+           $042A = UpdateBombTimer
+           $037A = InitBulletSprites
+           $05C1 = InitEnemySprites
+           $0387 = InitBombSprite
+           $069C = Enemy0Update
+           $06A1 = Enemy1Update
+           $0379 = ResolveShipEnemyCollisions
            $0150 = start
-           $066C = Enemy0Setup
-  SECTION: $06B2-$07D1 ($0120 bytes)
-           $06B2 = TileLabel
-           $0752 = TileLabelTLE10
-           $0762 = TileLabelTLE11
-           $0772 = TileLabelTLE12
-           $0782 = TileLabelTLE13
-           $0792 = TileLabelTLE14
-           $07A2 = TileLabelTLE15
-           $07B2 = TileLabelTLE16
-           $07C2 = TileLabelTLE17
-           $06B2 = TileLabelTLE0
-           $06C2 = TileLabelTLE1
-           $06D2 = TileLabelTLE2
-           $06E2 = TileLabelTLE3
-           $06F2 = TileLabelTLE4
-           $0702 = TileLabelTLE5
-           $0712 = TileLabelTLE6
-           $0722 = TileLabelTLE7
-           $0732 = TileLabelTLE8
-           $0742 = TileLabelTLE9
-  SECTION: $07D2-$2EF3 ($2722 bytes)
-           $2EA5 = VBlankFunc
-           $2EC4 = InitWorkingVariables
-           $2D52 = InitLevel
-           $2EDF = InitSprites
-           $2D62 = LoadTiles
-           $07D2 = TestMap
-           $2D7E = LoadMapToBkg
-           $2DDB = InitPalettes
-           $2D6C = LoadTiles.load_tiles_loop
-           $2E12 = HandleColumnLoad
-           $2DE4 = ScrollLevel
-    SLACK: $1205 bytes
+           $065F = Enemy0Setup
+  SECTION: $06A5-$07C4 ($0120 bytes)
+           $06A5 = TileLabel
+           $0745 = TileLabelTLE10
+           $0755 = TileLabelTLE11
+           $0765 = TileLabelTLE12
+           $0775 = TileLabelTLE13
+           $0785 = TileLabelTLE14
+           $0795 = TileLabelTLE15
+           $07A5 = TileLabelTLE16
+           $07B5 = TileLabelTLE17
+           $06A5 = TileLabelTLE0
+           $06B5 = TileLabelTLE1
+           $06C5 = TileLabelTLE2
+           $06D5 = TileLabelTLE3
+           $06E5 = TileLabelTLE4
+           $06F5 = TileLabelTLE5
+           $0705 = TileLabelTLE6
+           $0715 = TileLabelTLE7
+           $0725 = TileLabelTLE8
+           $0735 = TileLabelTLE9
+  SECTION: $07C5-$2EE6 ($2722 bytes)
+           $2E98 = VBlankFunc
+           $2EB7 = InitWorkingVariables
+           $2D45 = InitLevel
+           $2ED2 = InitSprites
+           $2D55 = LoadTiles
+           $07C5 = TestMap
+           $2D71 = LoadMapToBkg
+           $2DCE = InitPalettes
+           $2D5F = LoadTiles.load_tiles_loop
+           $2E05 = HandleColumnLoad
+           $2DD7 = ScrollLevel
+    SLACK: $1212 bytes
 
 Bank #256:
   EMPTY
