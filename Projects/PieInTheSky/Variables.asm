@@ -6,8 +6,7 @@ InitWorkingVariables::
 	ld 		[CurrentBGMapScrollTileX], a
 	ld		[CurrentWindowTileX], a
 	ld		[CurrentMapBlock], a
-	ld		[bomb_ypos], a
-	ld		[bomb_xpos], a
+	ld		[current_bullet_direction], a
 	
 	ret
 
@@ -25,7 +24,6 @@ InitSprites::
 
 	call 	InitBulletSprites
 	call 	InitEnemySprites
-	call 	InitBombSprite
 	
 	ret
 
@@ -52,13 +50,22 @@ ds		1
 spaceshipR_flags:
 ds		1
 
-bomb_ypos:
+spaceshipGun_ypos:
 ds		1
-bomb_xpos:
+spaceshipGun_xpos:
 ds		1
-bomb_sprite:
+spaceshipGun_tile:
 ds		1
-bomb_flags:
+spaceshipGun_flags:
+ds		1
+
+spaceshipGunVertical_ypos:
+ds		1
+spaceshipGunVertical_xpos:
+ds		1
+spaceshipGunVertical_tile:
+ds		1
+spaceshipGunVertical_flags:
 ds		1
 
 ; bullet sprites start here (4 of them)
@@ -87,9 +94,8 @@ ds		8
 enemy_data:
 ds		24
 
-bomb_data:
-ds		2
-
+current_bullet_direction:
+ds		1
 current_bullet_xpos:
 ds		1
 current_bullet_ypos:

@@ -48,7 +48,6 @@ Game_Loop::
 	; do this before MoveSpaceship, since we want the bullet to display at
 	; its launch position for one frame
 	call 	UpdateBulletPositions
-	call 	UpdateBombPosition
 	call 	UpdateEnemyBehaviours
 	
 	; adjust sprite due to d-pad presses
@@ -93,7 +92,6 @@ VBlankFunc::
 	ld		[vblank_flag], a
 	
 	call UpdateBulletTimers
-	call UpdateBombTimer
 	
 	pop af
 	ei		; enable interrupts

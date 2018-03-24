@@ -11,13 +11,107 @@ InitBulletSprites::
 	jr		nz, .init_bullets_loop
 	
 	ret
+
+;------------------------------------------------------------
+; change shooting direction
+;------------------------------------------------------------
+ChangeBulletDirection::
+	ld		a, [current_bullet_direction]
+	inc 	a
 	
-;Called after enemy sprites are initialised, hl is at correct address here
-InitBombSprite::
-	ld		hl, bomb_data
-	ld 		a, $ff
-	ld		[hl], a 
+	cp		4
+	jr		nz, .direction_changed
 	
+	ld		a, 0
+	
+.direction_changed
+	ld		[current_bullet_direction], a
+
+.check_right
+	cp		0
+	jr		nz, .check_down
+
+	ld		a, [spaceshipR_ypos]
+	ld		[spaceshipGun_ypos], a
+	
+	ld		a, [spaceshipR_xpos]
+	add		a, 7
+	ld		[spaceshipGun_xpos], a
+	
+	ld		a, [spaceshipGun_flags]
+	res 	5, a
+	ld		[spaceshipGun_flags], a
+	
+	ld		a, 0
+	ld		[spaceshipGunVertical_xpos], a
+	ld		[spaceshipGunVertical_ypos], a
+	
+	jp		.directions_checked
+	
+.check_down
+	cp		1
+	jr		nz, .check_left
+	
+	ld		a, [spaceshipR_ypos]
+	add		7
+	ld		[spaceshipGunVertical_ypos], a
+	
+	ld		a, [spaceshipR_xpos]
+	sub		4
+	ld		[spaceshipGunVertical_xpos], a
+	
+	ld		a, [spaceshipGunVertical_flags]
+	res 	6, a
+	ld		[spaceshipGunVertical_flags], a
+	
+	ld		a, 0
+	ld		[spaceshipGun_xpos], a
+	ld		[spaceshipGun_ypos], a
+	
+	jp		.directions_checked
+
+.check_left
+	cp		2
+	jr		nz, .check_up
+	
+	ld		a, [spaceshipR_ypos]
+	ld		[spaceshipGun_ypos], a
+	
+	ld		a, [spaceshipR_xpos]
+	sub		15
+	ld		[spaceshipGun_xpos], a
+	
+	ld		a, [spaceshipGun_flags]
+	set 	5, a
+	ld		[spaceshipGun_flags], a
+	
+	ld		a, 0
+	ld		[spaceshipGunVertical_xpos], a
+	ld		[spaceshipGunVertical_ypos], a
+	
+	jp		.directions_checked
+
+.check_up
+	cp		3
+	jr		nz, .directions_checked
+	
+	ld		a, [spaceshipR_ypos]
+	sub		7
+	ld		[spaceshipGunVertical_ypos], a
+	
+	ld		a, [spaceshipR_xpos]
+	sub		4
+	ld		[spaceshipGunVertical_xpos], a
+	
+	ld		a, [spaceshipGunVertical_flags]
+	set 	6, a
+	ld		[spaceshipGunVertical_flags], a
+	
+	ld		a, 0
+	ld		[spaceshipGun_xpos], a
+	ld		[spaceshipGun_ypos], a
+
+.directions_checked
 	ret
 	
 ;------------------------------------------------------------
@@ -49,23 +143,55 @@ LaunchBullet::
 	ret
 
 .found_empty_bullet
-	; calc bullet x launch pos
 	ld		a, [spaceshipR_xpos]
-	add     a, 8
+	sub		4
 	ld		b, a
+	ld		a, [current_bullet_direction]
+	
+	cp		0
+	jr		nz, .check_for_left
+	
+	ld		a, b
+	add     a, 12
+	ld		b, a
+	
+.check_for_left
+	cp		2
+	jr		nz, .setup_y_pos
+	
+	ld		a, b
+	sub     a, 12
+	ld		b, a
+	
+.setup_y_pos
 	; calc bullet y launch pos
 	ld		a, [spaceshipR_ypos]
-	add		a, 2
 	ld		c, a
-	; direction is right
-	ld		a, 2
+	ld		a, [current_bullet_direction]
 	
+	cp		1
+	jr		nz, .check_for_up
+	
+	ld		a, c
+	add     a, 8
+	ld		c, a
+	
+.check_for_up
+	cp		3
+	jr		nz, .continue_setup
+	
+	ld		a, c
+	sub     a, 8
+	ld		c, a
+
+.continue_setup
 	; a = orientation
 	; b = x pos
 	; c = y pos
 	; hl = bullet data to launch
 	; index into bullet array = 16 - d
 
+	ld		a, [current_bullet_direction]
 	ld		[hli], a	; store the orientation
 	ld		[hl], 60	; bullet lasts 1 second (60 vblanks)
 
@@ -93,38 +219,6 @@ LaunchBullet::
 	pop		de
 	pop		bc
 	pop		af
-	ret
-	
-;------------------------------------------------------------
-; launch a bomb
-;------------------------------------------------------------
-LaunchBomb::
-	ld		hl, bomb_data
-	ld		a, [hl]
-	cp		$ff			; is this bomb unused
-	jr 		nz, .exit_bomb_launch
-	
-	ld		a, 1
-	ld		[hli], a	; store the x speed
-	ld		[hl], 60	; bomb lasts 1 second (60 vblanks)
-	
-	; calc bomb x launch pos
-	ld		a, [spaceshipR_xpos]
-	add     a, 8
-	ld		[bomb_xpos], a
-	
-	; calc bomb y launch pos
-	ld		a, [spaceshipR_ypos]
-	add		a, 2
-	ld		[bomb_ypos], a
-	
-	; load the sprite info
-	ld		a, 13
-	ld		[bomb_sprite], a	; bombs use tile 13
-	ld		a, 0
-	ld		[bomb_flags], a
-	
-.exit_bomb_launch
 	ret
 	
 ;-----------------------------------------------------------------
@@ -179,30 +273,6 @@ UpdateBulletTimers::
 	pop		bc
 	pop		af
 	ret
-
-;-----------------------------------------------------------------
-; update the bomb timing ever vblank
-;-----------------------------------------------------------------
-UpdateBombTimer::
-	ld		hl, bomb_data
-	ld		a, [hli]
-	cp		$ff
-	jr		z, .update_bomb_end
-	
-	; bomb is active
-	dec		[hl]	; decrement the timer
-	jr		nz, .update_bomb_end
-
-	dec 	hl
-	ld		a, $ff
-	ld		[hl], a
-	
-	ld		a, $00
-	ld		[bomb_ypos], a
-	ld		[bomb_xpos], a		; turn off the sprite in the attrib table
-	
-.update_bomb_end
-	ret
 	
 ;------------------------------------------------------
 ; update bullet positions
@@ -233,15 +303,57 @@ UpdateBulletPositions::
 	ld		e, l	; store the address in de
 	pop		hl
 
-.bullet_fly_right
+.bullet_fly
 	; update this sprite's position
 	ld		a, [de]
+	ld		c, a
+	ld		a, [hl]
+.check_for_down
+	cp		1
+	jr		nz, .check_for_up
+	
+	ld		a, c
+	add		2
+	ld		c, a
+	
+.check_for_up
+	cp		3
+	jr		nz, .update_y_pos
+	
+	ld		a, c
+	sub		2
+	ld		c, a
+	
+.update_y_pos
+	ld		a, c
+	ld		[de], a
 	ld		[current_bullet_ypos], a
+	
 	inc		de
 	ld		a, [de]
-	add		a, 2
-	ld		[current_bullet_xpos], a
+	ld		c, a
+	ld		a, [hl]
+	
+.check_for_right
+	cp		0
+	jr		nz, .check_for_left
+	
+	ld		a, c
+	add		2
+	ld		c, a
+	
+.check_for_left
+	cp		2
+	jr		nz, .update_x_pos
+	
+	ld		a, c
+	sub		2
+	ld		c, a
+	
+.update_x_pos
+	ld		a, c
 	ld		[de], a
+	ld		[current_bullet_xpos], a
 	dec		de
 	
 	push	hl
@@ -257,29 +369,28 @@ UpdateBulletPositions::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		11
-	jr		nz, .destroy_bullet_on_collision
-
-;	inc 	hl
-;	
-;	ld		a, [hl] ;Tile ship is on stored at hl
-;	cp		11
-;	jr		nz, .destroy_bullet_on_collision
-;	
-;	ld		a, 0
-;	ld		b, a
-;	ld		a, 32
-;	ld		c, a
-;	add		hl, bc
-;	
-;	ld		a, [hl] ;Tile ship is on stored at hl
-;	cp		11
-;	jr		nz, .destroy_bullet_on_collision
-;	
-;	dec		hl
-;	
-;	ld		a, [hl] ;Tile ship is on stored at hl
-;	cp		11
-;	jr		nz, .destroy_bullet_on_collision
+	jr		nz, .destroy_bullet_on_collision_or_bounds
+	
+.check_screen_bounds
+	ld		a, [current_bullet_ypos]
+	cp		160
+	jr		z, .destroy_bullet_on_collision_or_bounds
+	jr		nc, .destroy_bullet_on_collision_or_bounds
+	
+	add		a, 8
+	cp		8
+	jr		z, .destroy_bullet_on_collision_or_bounds
+	jr		c, .destroy_bullet_on_collision_or_bounds
+	
+	ld		a, [current_bullet_xpos]
+	cp		168
+	jr		z, .destroy_bullet_on_collision_or_bounds
+	jr		nc, .destroy_bullet_on_collision_or_bounds
+	
+	add		a, 8
+	cp		8
+	jr		z, .destroy_bullet_on_collision_or_bounds
+	jr		c, .destroy_bullet_on_collision_or_bounds
 	
 	pop 	de
 	pop		bc
@@ -287,7 +398,7 @@ UpdateBulletPositions::
 	
 	jp		.check_for_enemy_collision
 	
-.destroy_bullet_on_collision
+.destroy_bullet_on_collision_or_bounds
 	pop 	de
 	pop		bc
 	pop		hl
@@ -554,20 +665,4 @@ FindBulletTileIndexes::
 	ld		hl, MAP_MEM_LOC_0
 	add 	hl, de ;HL now contains the address of the tile at the bottom left bullet co-ordinate
 	
-	ret
-	
-;------------------------------------------------------
-; update bomb position
-;------------------------------------------------------
-UpdateBombPosition::
-	ld		hl, bomb_data
-	ld		a, [hl]
-	cp		$ff
-	jp		z, .update_bomb_pos_end
-	
-	ld		a, [bomb_xpos]
-	add		a, 2
-	ld		[bomb_xpos], a
-	
-.update_bomb_pos_end
 	ret
