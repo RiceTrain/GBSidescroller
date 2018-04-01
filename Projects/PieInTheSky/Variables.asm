@@ -88,6 +88,20 @@ ds		1		; what buttons are currently held
 joypad_down:
 ds		1		; what buttons went down since last joypad read
 
+; player data
+alive:	
+ds		1
+death_timer:	
+ds		1
+checkpoint_map_block:
+ds		1
+checkpoint_tiles_scrolled:
+ds		1
+checkpoint_ship_y:
+ds		1
+checkpoint_ship_x:
+ds		1
+
 bullet_data:
 ds		8
 

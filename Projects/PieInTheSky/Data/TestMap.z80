@@ -17,7 +17,7 @@
 TestMapWidth  EQU 300
 TestMapHeight EQU 32
 TestMapBank   EQU 0
-TestMapBlockTotal	EQU 38
+TestMapBlockTotal	EQU	38
 
  SECTION "Map", HOME
 
@@ -275,7 +275,7 @@ DB $0B,$0B,$0B,$0B,$0B,$0B,$06,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$02,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$06,$0B
-DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
+DB $0B,$0B,$0B,$0B,$0B,$0B,$12,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$02,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $06,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
@@ -365,7 +365,7 @@ DB $0B,$0B,$06,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$02
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$06,$0B,$0B,$0B,$0B,$0B
-DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
+DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$10,$0B
 DB $0B,$02,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$06,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
@@ -390,7 +390,7 @@ DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$06,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$02,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
-DB $06,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
+DB $06,$0B,$0B,$0B,$10,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$02,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$06,$0B,$0B,$0B,$0B,$0B,$0B,$0B
@@ -410,7 +410,7 @@ DB $06,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$02,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$06,$0B,$0B,$0B,$0B,$0B,$0B,$0B
-DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$02
+DB $0B,$0B,$0B,$0B,$0B,$0B,$10,$0B,$0B,$02
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$06,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B

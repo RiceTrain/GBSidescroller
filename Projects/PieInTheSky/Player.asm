@@ -1,15 +1,25 @@
+InitPlayerData::
+	ld		a, 1
+	ld		[alive], a
+	ld		a, 120
+	ld		[death_timer], a
+	
+	ret
+	
 InitPlayerSprite::
 	; init  my spaceship sprite
-	ld		a, $40
-	ld		[spaceshipL_xpos], a
+	ld		a, [checkpoint_ship_y]
 	ld		[spaceshipL_ypos], a
+	ld		a, [checkpoint_ship_x]
+	ld		[spaceshipL_xpos], a
 	ld		a, 9
 	ld		[spaceshipL_tile], a
 	ld		a, 0
 	ld		[spaceshipL_flags], a
 	
-	ld		a, $40
+	ld		a, [checkpoint_ship_y]
 	ld		[spaceshipR_ypos], a
+	ld		a, [checkpoint_ship_x]
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 	ld		a, 10
@@ -17,8 +27,9 @@ InitPlayerSprite::
 	ld		a, 0
 	ld		[spaceshipR_flags], a
 	
-	ld		a, 64
+	ld		a, [checkpoint_ship_y]
 	ld		[spaceshipGun_ypos], a
+	ld		a, [checkpoint_ship_x]
 	add		a, 15
 	ld		[spaceshipGun_xpos], a
 	ld		a, 13
@@ -80,6 +91,12 @@ ResolvePlayerScrollCollisions::
 	dec		a
 	ld		[de], a
 	
+	ld		a, [spaceshipL_xpos]
+	cp 		9
+	jp 		nc, .return_to_main
+	
+	call	DestroyShip
+	
 .return_to_main
 	ret
 	
@@ -100,6 +117,10 @@ MoveSpaceship::
 	
 .done_checking_dpad
 	call 	ResolveShipEnemyCollisions
+	
+	ld		a, [alive]
+	cp 		0
+	jr		z, .did_not_fire
 	
 .check_for_b_press
 	ld		a, [joypad_down]
@@ -291,7 +312,7 @@ CheckDirectionInputs::
 	ld		a, [spaceshipL_xpos]
 	
 	cp 		152
-	jp 		z, .check_for_left
+	jp 		z, .done_checking_dpad
 	
 	inc		a
 	ld		[spaceshipL_xpos], a
@@ -511,12 +532,9 @@ ResolveShipEnemyCollisions::
 	jr		z, .check_enemy_pos_loop_end
 	jr		nc, .check_enemy_pos_loop_end
 	
-	;damage or destroy ship
-	ld		a, [spaceshipL_xpos]
-	dec		a
-	ld		[spaceshipL_xpos], a
-	add		a, 8
-	ld		[spaceshipR_xpos], a
+	call	DestroyShip
+	
+	jp		.end_enemy_checking
 	
 .check_enemy_pos_loop_end
 	inc		hl
@@ -525,5 +543,22 @@ ResolveShipEnemyCollisions::
 	inc		hl
 	dec		b
 	jp		nz, .check_enemies_pos_loop
+
+.end_enemy_checking
+	ret
+	
+DestroyShip::
+	;destroy ship
+	ld		a, 0
+	ld		[spaceshipL_ypos], a
+	ld		[spaceshipL_xpos], a
+	ld		[spaceshipR_ypos], a
+	ld		[spaceshipR_xpos], a
+	ld		[spaceshipGun_ypos], a
+	ld		[spaceshipGun_xpos], a
+	ld		[spaceshipGunVertical_ypos], a
+	ld		[spaceshipGunVertical_xpos], a
+	
+	ld		[alive], a
 	
 	ret

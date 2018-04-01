@@ -21,19 +21,16 @@ start::
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
 	ldh		[SCROLL_BKG_Y], a
 
-	call 	InitWorkingVariables
-	call 	InitLevel
-	call	InitSprites
-	call 	InitPlayerSprite
+	call	InitLevelStart
 	
-	; set display to on, background on, window off, sprites off, sprite size 8x8
+	; set display to on, background on, window off, sprites on, sprite size 8x8
 	;	tiles at $8000, background map at $9800, window map at $9C00
 	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_MAP_LOC
 	ldh		[LCDC_CONTROL],a
 
 	; allow interrupts to start occuring
 	ei
-	
+
 ; main game loop
 Game_Loop::
 	; don't do a frame update unless we have had a vblank
@@ -41,6 +38,27 @@ Game_Loop::
 	cp		0
 	jp		z, Game_Loop
 
+	ld		a, [alive]
+	cp 		1
+	jr		z, .do_main_update
+
+	call 	Player_Dead_Update
+	jp		.reset_vblank_flag
+	
+.do_main_update
+	call 	Main_Game
+	
+.reset_vblank_flag
+	; reset vblank flag
+	ld		a, 0
+	ld		[vblank_flag], a
+	
+	jp		Game_Loop
+
+Main_Game::
+	call 	ScrollLevel
+	call 	UpdateBulletTimers
+	
 	; get this frame's joypad info
 	call	ReadJoypad
 
@@ -53,12 +71,59 @@ Game_Loop::
 	; adjust sprite due to d-pad presses
 	call	MoveSpaceship
 	
-	; reset vblank flag
-	ld		a, 0
-	ld		[vblank_flag], a
-	
-	jp		Game_Loop
+	ret
 
+InitLevelStart::
+	call 	InitWorkingVariables
+	call 	InitLevel
+	
+	ld		a, 0
+	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
+	ldh		[SCROLL_BKG_Y], a
+	ld		[checkpoint_map_block], a
+	ld		[checkpoint_tiles_scrolled], a
+	ld		hl, TestMap
+	call	LoadMapToBkg
+	
+	call	InitSprites
+	call	InitPlayerData
+	
+	ld		a, 76
+	ld		[checkpoint_ship_y], a
+	ld		a, 80
+	ld		[checkpoint_ship_x], a
+	call 	InitPlayerSprite
+	
+	ret
+	
+Player_Dead_Update::
+	ld		a, [death_timer]
+	dec		a
+	ld		[death_timer], a
+	cp		0
+	jp		nz, .dead_update_end
+	
+.reset_player
+;TODO: Check for game over
+	call	ResetPlayerOnDeath
+	
+.dead_update_end
+	ret
+	
+ResetPlayerOnDeath::
+	call 	InitWorkingVariables
+	
+	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
+	ldh		[SCROLL_BKG_Y], a
+	ld		hl, TestMap
+	call	LoadMapToBkg
+	
+	call	InitSprites
+	call	InitPlayerData
+	call 	InitPlayerSprite
+	
+	ret
+	
 INCLUDE "Projects/PieInTheSky/Hardware.asm"
 INCLUDE "Projects/PieInTheSky/Player.asm"
 INCLUDE "Projects/PieInTheSky/Projectiles.asm"
@@ -70,10 +135,8 @@ INCLUDE "Projects/PieInTheSky/Level.asm"
 ; while the display is not drawing
 ;---------------------------------------------------
 VBlankFunc::
-	di		; disable interrupts
-	push	af
-	
-	call ScrollLevel
+;	di		; disable interrupts
+;	push	af
 	
 ; load the sprite attrib table to OAM memory
 .vblank_sprite_DMA
@@ -85,16 +148,12 @@ VBlankFunc::
 	dec		a
 	jr		nz, .vblank_dma_wait
 
-	ld		hl, SPRITE_ATTRIB_MEM_LOC
-
 	; set the vblank occured flag
 	ld		a, 1
 	ld		[vblank_flag], a
 	
-	call UpdateBulletTimers
-	
-	pop af
-	ei		; enable interrupts
+;	pop af
+;	ei		; enable interrupts
 	reti	; and done
 
 INCLUDE "Projects/PieInTheSky/Variables.asm"

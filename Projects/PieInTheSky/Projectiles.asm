@@ -193,7 +193,7 @@ LaunchBullet::
 
 	ld		a, [current_bullet_direction]
 	ld		[hli], a	; store the orientation
-	ld		[hl], 60	; bullet lasts 1 second (60 vblanks)
+	ld		[hl], 90	; bullet lasts 1 second (60 vblanks)
 
 	ld		a, 4
 	sub		d		; a = index into bullet array
@@ -456,10 +456,11 @@ UpdateBulletPositions::
 	ld		a, [de]
 	ld		c, a
 	ld		a, [current_bullet_ypos]
+	add		8
 
 	cp		c
-	jr		z, .check_top_point
-	jr		c, .check_top_point
+	jr		z, .check_enemy_pos_loop_end
+	jr		c, .check_enemy_pos_loop_end
 	
 	ld		a, [current_enemy_height]
 	ld		c, a
@@ -477,38 +478,6 @@ UpdateBulletPositions::
 	ld		a, [current_bullet_ypos]
 	
 	cp 		c
-	jr		z, .check_top_point
-	jr		nc, .check_top_point
-	
-	jp		.check_x_points
-	
-.check_top_point
-	ld		a, [de]
-	ld		c, a
-	ld		a, [current_bullet_ypos]
-	add		8
-
-	cp		c
-	jr		z, .check_enemy_pos_loop_end
-	jr		c, .check_enemy_pos_loop_end
-	
-	ld		a, [current_enemy_height]
-	ld		c, a
-	ld		a, 0
-	
-.height_loop_start_top
-	add		8
-	dec		c
-	jr		nz, .height_loop_start_top
-	
-	ld		c, a
-	ld		a, [de]
-	add		c
-	ld		c, a
-	ld		a, [current_bullet_ypos]
-	add		8 ;get top of bullet sprites
-	
-	cp 		c
 	jr		z, .check_enemy_pos_loop_end
 	jr		nc, .check_enemy_pos_loop_end
 
@@ -517,7 +486,7 @@ UpdateBulletPositions::
 	ld		a, [de]
 	ld		c, a
 	ld		a, [current_bullet_xpos]
-	add		4 ;get center of bullet sprites
+	add		8
 	dec 	de
 	
 	cp		c
@@ -540,7 +509,6 @@ UpdateBulletPositions::
 	add		c
 	ld		c, a
 	ld		a, [current_bullet_xpos]
-	add		4 ;get center of bullet sprites
 	
 	cp 		c
 	jr		z, .check_enemy_pos_loop_end

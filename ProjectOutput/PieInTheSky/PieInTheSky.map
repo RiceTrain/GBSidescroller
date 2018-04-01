@@ -6,90 +6,100 @@ Bank #0 (HOME):
   SECTION: $0058-$0058 ($0001 bytes)
   SECTION: $0060-$0060 ($0001 bytes)
   SECTION: $0100-$014F ($0050 bytes)
-  SECTION: $0150-$0843 ($06F4 bytes)
-           $01C9 = InitPlayerSprite
-           $0171 = Game_Loop
-           $018D = ReadJoypad
-           $05AC = UpdateBulletPositions
-           $0806 = UpdateEnemyBehaviours
-           $0250 = MoveSpaceship
-           $038C = FindShipTileIndexes
-           $024C = ResolvePlayerScrollCollisions.scroll_gun_left
-           $0276 = CheckDirectionInputs
-           $03E4 = ResolveShipEnemyCollisions
-           $0269 = MoveSpaceship.check_for_a_press
-           $0470 = ChangeBulletDirection
-           $0274 = MoveSpaceship.did_not_fire
-           $0513 = LaunchBullet
-           $03CF = StoreCurrentGunSpriteAddr
-           $02BA = CheckDirectionInputs.check_for_down
-           $02FF = CheckDirectionInputs.check_for_left
-           $0346 = CheckDirectionInputs.check_for_right
-           $038B = CheckDirectionInputs.done_checking_dpad
-           $0398 = FindShipTileIndexes.XSubLoop
-           $03A7 = FindShipTileIndexes.YSubLoop
-           $03E3 = StoreCurrentGunSpriteAddr.found_address
-           $045A = ResolveShipEnemyCollisions.check_enemy_pos_loop_end
-           $03E9 = ResolveShipEnemyCollisions.check_enemies_pos_loop
-           $0512 = ChangeBulletDirection.directions_checked
-           $0714 = UpdateBulletPositions.update_bullets_pos_loop_end
-           $071D = FindBulletTileIndexes
-           $0648 = UpdateBulletPositions.check_for_enemy_collision
-           $0709 = UpdateBulletPositions.check_enemy_pos_loop_end
-           $06BF = UpdateBulletPositions.check_x_points
-           $0650 = UpdateBulletPositions.check_enemies_pos_loop
-           $05B3 = UpdateBulletPositions.update_bullets_pos_loop
-           $0729 = FindBulletTileIndexes.XSubLoop
-           $0738 = FindBulletTileIndexes.YSubLoop
-           $0794 = UpdateEnemyScrollPositions.update_enemies_pos_loop_end
-           $0774 = UpdateEnemyScrollPositions.update_enemies_pos_loop
-           $07F2 = SetupNewEnemy
-           $0826 = UpdateEnemyBehaviours.update_enemies_loop_end
-           $082F = UpdateEnemyBehaviour
-           $080B = UpdateEnemyBehaviours.update_enemies_loop
-           $076F = UpdateEnemyScrollPositions
-           $0216 = ResolvePlayerScrollCollisions
-           $079D = CreateEnemy
-           $057A = UpdateBulletTimers
-           $0463 = InitBulletSprites
-           $0760 = InitEnemySprites
-           $083B = Enemy0Update
-           $0840 = Enemy1Update
+  SECTION: $0150-$08BD ($076E bytes)
+           $019B = InitLevelStart
+           $0168 = Game_Loop
+           $01C7 = Player_Dead_Update
+           $0180 = Game_Loop.reset_vblank_flag
+           $0188 = Main_Game
+           $061C = UpdateBulletTimers
+           $01EE = ReadJoypad
+           $064E = UpdateBulletPositions
+           $0880 = UpdateEnemyBehaviours
+           $02D3 = MoveSpaceship
+           $022A = InitPlayerData
+           $0235 = InitPlayerSprite
+           $01D6 = Player_Dead_Update.dead_update_end
+           $01D7 = ResetPlayerOnDeath
+           $0416 = FindShipTileIndexes
+           $02C4 = ResolvePlayerScrollCollisions.scroll_gun_left
+           $02D2 = ResolvePlayerScrollCollisions.return_to_main
+           $04E7 = DestroyShip
+           $0300 = CheckDirectionInputs
+           $046E = ResolveShipEnemyCollisions
+           $02F3 = MoveSpaceship.check_for_a_press
+           $0512 = ChangeBulletDirection
+           $02FE = MoveSpaceship.did_not_fire
+           $05B5 = LaunchBullet
+           $0459 = StoreCurrentGunSpriteAddr
+           $0344 = CheckDirectionInputs.check_for_down
+           $0389 = CheckDirectionInputs.check_for_left
+           $03D0 = CheckDirectionInputs.check_for_right
+           $0415 = CheckDirectionInputs.done_checking_dpad
+           $0422 = FindShipTileIndexes.XSubLoop
+           $0431 = FindShipTileIndexes.YSubLoop
+           $046D = StoreCurrentGunSpriteAddr.found_address
+           $04DE = ResolveShipEnemyCollisions.check_enemy_pos_loop_end
+           $04E6 = ResolveShipEnemyCollisions.end_enemy_checking
+           $0473 = ResolveShipEnemyCollisions.check_enemies_pos_loop
+           $05B4 = ChangeBulletDirection.directions_checked
+           $078E = UpdateBulletPositions.update_bullets_pos_loop_end
+           $0797 = FindBulletTileIndexes
+           $06EA = UpdateBulletPositions.check_for_enemy_collision
+           $0783 = UpdateBulletPositions.check_enemy_pos_loop_end
+           $06F2 = UpdateBulletPositions.check_enemies_pos_loop
+           $0655 = UpdateBulletPositions.update_bullets_pos_loop
+           $07A3 = FindBulletTileIndexes.XSubLoop
+           $07B2 = FindBulletTileIndexes.YSubLoop
+           $080E = UpdateEnemyScrollPositions.update_enemies_pos_loop_end
+           $07EE = UpdateEnemyScrollPositions.update_enemies_pos_loop
+           $086C = SetupNewEnemy
+           $08A0 = UpdateEnemyBehaviours.update_enemies_loop_end
+           $08A9 = UpdateEnemyBehaviour
+           $0885 = UpdateEnemyBehaviours.update_enemies_loop
+           $07E9 = UpdateEnemyScrollPositions
+           $028E = ResolvePlayerScrollCollisions
+           $0817 = CreateEnemy
+           $0505 = InitBulletSprites
+           $07DA = InitEnemySprites
+           $08B5 = Enemy0Update
+           $08BA = Enemy1Update
            $0150 = start
-           $07FE = Enemy0Setup
-  SECTION: $0844-$0963 ($0120 bytes)
-           $0844 = TileLabel
-           $08E4 = TileLabelTLE10
-           $08F4 = TileLabelTLE11
-           $0904 = TileLabelTLE12
-           $0914 = TileLabelTLE13
-           $0924 = TileLabelTLE14
-           $0934 = TileLabelTLE15
-           $0944 = TileLabelTLE16
-           $0954 = TileLabelTLE17
-           $0844 = TileLabelTLE0
-           $0854 = TileLabelTLE1
-           $0864 = TileLabelTLE2
-           $0874 = TileLabelTLE3
-           $0884 = TileLabelTLE4
-           $0894 = TileLabelTLE5
-           $08A4 = TileLabelTLE6
-           $08B4 = TileLabelTLE7
-           $08C4 = TileLabelTLE8
-           $08D4 = TileLabelTLE9
-  SECTION: $0964-$307C ($2719 bytes)
-           $3037 = VBlankFunc
-           $3053 = InitWorkingVariables
-           $2EE4 = InitLevel
-           $306B = InitSprites
-           $2EF4 = LoadTiles
-           $0964 = TestMap
-           $2F10 = LoadMapToBkg
-           $2F6D = InitPalettes
-           $2EFE = LoadTiles.load_tiles_loop
-           $2FA4 = HandleColumnLoad
-           $2F76 = ScrollLevel
-    SLACK: $107C bytes
+           $0878 = Enemy0Setup
+  SECTION: $08BE-$09DD ($0120 bytes)
+           $08BE = TileLabel
+           $095E = TileLabelTLE10
+           $096E = TileLabelTLE11
+           $097E = TileLabelTLE12
+           $098E = TileLabelTLE13
+           $099E = TileLabelTLE14
+           $09AE = TileLabelTLE15
+           $09BE = TileLabelTLE16
+           $09CE = TileLabelTLE17
+           $08BE = TileLabelTLE0
+           $08CE = TileLabelTLE1
+           $08DE = TileLabelTLE2
+           $08EE = TileLabelTLE3
+           $08FE = TileLabelTLE4
+           $090E = TileLabelTLE5
+           $091E = TileLabelTLE6
+           $092E = TileLabelTLE7
+           $093E = TileLabelTLE8
+           $094E = TileLabelTLE9
+  SECTION: $09DE-$312D ($2750 bytes)
+           $30F5 = VBlankFunc
+           $3021 = ScrollLevel
+           $3104 = InitWorkingVariables
+           $2F5E = InitLevel
+           $09DE = TestMap
+           $2F84 = LoadMapToBkg
+           $311C = InitSprites
+           $2F68 = LoadTiles
+           $3018 = InitPalettes
+           $2F72 = LoadTiles.load_tiles_loop
+           $304F = HandleColumnLoad
+           $30DE = HandleColumnLoad.get_next_column_tile
+    SLACK: $0FCB bytes
 
 Bank #256:
   EMPTY
@@ -861,8 +871,8 @@ Bank #511:
 
 BSS:
   SECTION: $C000-$C037 ($0038 bytes)
-           $C001 = spaceshipL_xpos
            $C000 = spaceshipL_ypos
+           $C001 = spaceshipL_xpos
            $C002 = spaceshipL_tile
            $C003 = spaceshipL_flags
            $C004 = spaceshipR_ypos
@@ -879,27 +889,33 @@ BSS:
            $C00F = spaceshipGunVertical_flags
            $C020 = enemy_sprites
            $C010 = bullet_sprites
-  SECTION: $C0A0-$C0D0 ($0031 bytes)
+  SECTION: $C0A0-$C0D6 ($0037 bytes)
            $C0A0 = vblank_flag
+           $C0A3 = alive
+           $C0A5 = checkpoint_map_block
+           $C0A6 = checkpoint_tiles_scrolled
+           $C0A7 = checkpoint_ship_y
+           $C0A8 = checkpoint_ship_x
+           $C0A4 = death_timer
            $C0A1 = joypad_held
            $C0A2 = joypad_down
-           $C0C3 = current_bullet_direction
-           $C0C8 = ScrollTimer
-           $C0C9 = PixelsScrolled
-           $C0CC = CurrentWindowTileX
-           $C0AB = enemy_data
-           $C0A3 = bullet_data
-           $C0C5 = current_bullet_ypos
-           $C0C4 = current_bullet_xpos
-           $C0C6 = current_enemy_width
-           $C0C7 = current_enemy_height
-           $C0D0 = NewEnemyTile
-           $C0CF = CurrentColumnHeight
-           $C0CD = CurrentMapColumnPos
-           $C0CB = CurrentBGMapScrollTileX
-           $C0CE = CurrentMapBlock
-           $C0CA = TotalTilesScrolled
-    SLACK: $1F97 bytes
+           $C0C9 = current_bullet_direction
+           $C0CE = ScrollTimer
+           $C0CF = PixelsScrolled
+           $C0D2 = CurrentWindowTileX
+           $C0B1 = enemy_data
+           $C0A9 = bullet_data
+           $C0CB = current_bullet_ypos
+           $C0CA = current_bullet_xpos
+           $C0CC = current_enemy_width
+           $C0CD = current_enemy_height
+           $C0D6 = NewEnemyTile
+           $C0D5 = CurrentColumnHeight
+           $C0D4 = CurrentMapBlock
+           $C0D3 = CurrentMapColumnPos
+           $C0D1 = CurrentBGMapScrollTileX
+           $C0D0 = TotalTilesScrolled
+    SLACK: $1F91 bytes
 
 VRAM:
   EMPTY

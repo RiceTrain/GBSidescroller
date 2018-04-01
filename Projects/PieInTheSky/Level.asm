@@ -9,10 +9,6 @@ InitLevel::
 	ld		bc, TileLabel
 	call	LoadTiles
 	
-	ld		de, TestMap
-	; load the background map
-	call	LoadMapToBkg
-
 	; init the palettes
 	call	InitPalettes
 	
@@ -26,9 +22,9 @@ InitLevel::
 LoadTiles::
 	ld		hl, TILES_MEM_LOC_1	; load the tiles to tiles bank 1
 
-	ld		de, 17 * 16
+	ld		de, 18 * 16
 	ld		d, $10  ; 16 bytes per tile
-	ld		e, $10  ; number of tiles to load
+	ld		e, $12  ; number of tiles to load
 
 .load_tiles_loop
 	; only write during
@@ -51,9 +47,37 @@ LoadTiles::
 ;----------------------------------------------------
 ; load the tile map to the background
 ;
-; IN:	bc = address of map to load
+; IN:	hl = address of map to load
 ;----------------------------------------------------
 LoadMapToBkg::
+	ld		b, 0
+	ld		c, %00100000
+	ld		a, [checkpoint_tiles_scrolled]
+	
+.get_map_start_loop
+	cp		0
+	jr 		z, .get_map_block_loop_start
+	add		hl, bc
+	dec		a
+	jr		.get_map_start_loop
+	
+.get_map_block_loop_start
+	ld		bc, %100000000
+	ld		a, [checkpoint_map_block]
+	
+.get_map_block_loop
+	cp		0
+	jr 		z, .setup_load_map_loop
+	add		hl, bc
+	dec		a
+	jr		.get_map_block_loop
+	
+.setup_load_map_loop
+	ld		a, 0
+	ld		[CurrentMapBlock], a
+	
+	ld		d, h
+	ld		e, l
 	ld		hl, MAP_MEM_LOC_0	; load the map to map bank 0
 
 	ld 		c, %11111111
@@ -74,6 +98,10 @@ LoadMapToBkg::
 	add 	hl, bc
 	ld		c, a
 	
+	ld		a, [CurrentMapColumnPos]
+	ld		a, [CurrentMapColumnPos]
+	ld		a, [CurrentMapColumnPos]
+	ld		a, [CurrentMapColumnPos]
 	ld		a, [CurrentMapColumnPos]
 	inc		a
 	ld		[CurrentMapColumnPos], a
@@ -112,9 +140,11 @@ LoadMapToBkg::
 	ld		[CurrentMapBlock], a
 	cp		%00000100
 	jr  	nz,.load_map_loop
-	
-	ld		a, [CurrentMapBlock]
-	dec		a
+
+	ld		a, [checkpoint_tiles_scrolled]
+	ld		[TotalTilesScrolled], a
+	ld		a, [checkpoint_map_block]
+	add		3
 	ld		[CurrentMapBlock], a
 	
 	ld		a, 2
@@ -259,6 +289,17 @@ HandleColumnLoad::
 	ld		a, [hl]
 	ld		[de], a
 	
+	cp		18
+	jr		nz, .check_for_enemy_tile
+	
+	ld		a, [CurrentMapBlock]
+	ld		[checkpoint_map_block], a
+	ld		a, [TotalTilesScrolled]
+	ld		[checkpoint_tiles_scrolled], a
+	
+	jp		.get_next_column_tile
+
+.check_for_enemy_tile
 	;Check if enemy sprite
 	cp		14
 	jr		c, .get_next_column_tile
