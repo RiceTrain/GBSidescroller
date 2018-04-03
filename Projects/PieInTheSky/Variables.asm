@@ -128,11 +128,13 @@ PixelsScrolled:
 ds		1;
 TotalTilesScrolled:
 ds		1;
+PrevMapColumnPos:
+ds		1;
+CurrentMapColumnPos:
+ds		1;
 CurrentBGMapScrollTileX:
 ds		1;
 CurrentWindowTileX:
-ds		1;
-CurrentMapColumnPos:
 ds		1;
 CurrentMapBlock:
 ds		1;

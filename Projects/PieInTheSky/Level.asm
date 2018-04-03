@@ -85,6 +85,7 @@ LoadMapToBkg::
 	ld 		a, 0
 	ld		b, a
 	ld		[CurrentMapColumnPos], a
+	ld		[PrevMapColumnPos], a
 	ld 		[CurrentBGMapScrollTileX], a
 	
 .load_map_loop
@@ -98,18 +99,26 @@ LoadMapToBkg::
 	add 	hl, bc
 	ld		c, a
 	
+	ld		a, [PrevMapColumnPos]
+	ld		b, a
 	ld		a, [CurrentMapColumnPos]
-	ld		a, [CurrentMapColumnPos]
-	ld		a, [CurrentMapColumnPos]
-	ld		a, [CurrentMapColumnPos]
-	ld		a, [CurrentMapColumnPos]
+	cp		b
+	jr		z, .add_to_column_pos
+	
+	ld		a, [PrevMapColumnPos]
+	
+.add_to_column_pos
+	ld		b, 0
+	
 	inc		a
 	ld		[CurrentMapColumnPos], a
+	ld		[PrevMapColumnPos], a
 	cp		%00100000
 	jr  	nz,.go_to_map_loop
 	
 	ld 		a, 0
 	ld		[CurrentMapColumnPos], a
+	ld		[PrevMapColumnPos], a
 	
 	ld		a, [CurrentBGMapScrollTileX]
 	inc		a

@@ -86,20 +86,20 @@ Bank #0 (HOME):
            $092E = TileLabelTLE7
            $093E = TileLabelTLE8
            $094E = TileLabelTLE9
-  SECTION: $09DE-$312D ($2750 bytes)
-           $30F5 = VBlankFunc
-           $3021 = ScrollLevel
-           $3104 = InitWorkingVariables
+  SECTION: $09DE-$3136 ($2759 bytes)
+           $30FE = VBlankFunc
+           $302A = ScrollLevel
+           $310D = InitWorkingVariables
            $2F5E = InitLevel
            $09DE = TestMap
            $2F84 = LoadMapToBkg
-           $311C = InitSprites
+           $3125 = InitSprites
            $2F68 = LoadTiles
-           $3018 = InitPalettes
+           $3021 = InitPalettes
            $2F72 = LoadTiles.load_tiles_loop
-           $304F = HandleColumnLoad
-           $30DE = HandleColumnLoad.get_next_column_tile
-    SLACK: $0FCB bytes
+           $3058 = HandleColumnLoad
+           $30E7 = HandleColumnLoad.get_next_column_tile
+    SLACK: $0FC2 bytes
 
 Bank #256:
   EMPTY
@@ -889,7 +889,7 @@ BSS:
            $C00F = spaceshipGunVertical_flags
            $C020 = enemy_sprites
            $C010 = bullet_sprites
-  SECTION: $C0A0-$C0D6 ($0037 bytes)
+  SECTION: $C0A0-$C0D7 ($0038 bytes)
            $C0A0 = vblank_flag
            $C0A3 = alive
            $C0A5 = checkpoint_map_block
@@ -902,20 +902,21 @@ BSS:
            $C0C9 = current_bullet_direction
            $C0CE = ScrollTimer
            $C0CF = PixelsScrolled
-           $C0D2 = CurrentWindowTileX
+           $C0D4 = CurrentWindowTileX
            $C0B1 = enemy_data
            $C0A9 = bullet_data
            $C0CB = current_bullet_ypos
            $C0CA = current_bullet_xpos
            $C0CC = current_enemy_width
            $C0CD = current_enemy_height
-           $C0D6 = NewEnemyTile
-           $C0D5 = CurrentColumnHeight
-           $C0D4 = CurrentMapBlock
-           $C0D3 = CurrentMapColumnPos
-           $C0D1 = CurrentBGMapScrollTileX
+           $C0D7 = NewEnemyTile
+           $C0D6 = CurrentColumnHeight
+           $C0D5 = CurrentMapBlock
+           $C0D2 = CurrentMapColumnPos
+           $C0D1 = PrevMapColumnPos
+           $C0D3 = CurrentBGMapScrollTileX
            $C0D0 = TotalTilesScrolled
-    SLACK: $1F91 bytes
+    SLACK: $1F90 bytes
 
 VRAM:
   EMPTY
