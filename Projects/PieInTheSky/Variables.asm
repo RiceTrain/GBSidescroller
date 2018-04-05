@@ -8,6 +8,9 @@ InitWorkingVariables::
 	ld		[CurrentMapBlock], a
 	ld		[current_bullet_direction], a
 	
+	ld		a, $ff
+	ld		[checkpoint_time], a
+	
 	ret
 
 ;------------------------------------------
@@ -93,6 +96,8 @@ alive:
 ds		1
 death_timer:	
 ds		1
+checkpoint_time:
+ds		1
 checkpoint_map_block:
 ds		1
 checkpoint_tiles_scrolled:
@@ -127,10 +132,6 @@ ds		1		; temp variable for slowing down scroll speed
 PixelsScrolled:
 ds		1;
 TotalTilesScrolled:
-ds		1;
-PrevMapColumnPos:
-ds		1;
-CurrentMapColumnPos:
 ds		1;
 CurrentBGMapScrollTileX:
 ds		1;

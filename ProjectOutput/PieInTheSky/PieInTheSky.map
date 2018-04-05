@@ -86,20 +86,20 @@ Bank #0 (HOME):
            $092E = TileLabelTLE7
            $093E = TileLabelTLE8
            $094E = TileLabelTLE9
-  SECTION: $09DE-$3136 ($2759 bytes)
-           $30FE = VBlankFunc
-           $302A = ScrollLevel
-           $310D = InitWorkingVariables
+  SECTION: $09DE-$3132 ($2755 bytes)
+           $30F5 = VBlankFunc
+           $3008 = ScrollLevel
+           $3104 = InitWorkingVariables
            $2F5E = InitLevel
            $09DE = TestMap
            $2F84 = LoadMapToBkg
-           $3125 = InitSprites
+           $3121 = InitSprites
            $2F68 = LoadTiles
-           $3021 = InitPalettes
+           $2FFF = InitPalettes
            $2F72 = LoadTiles.load_tiles_loop
-           $3058 = HandleColumnLoad
-           $30E7 = HandleColumnLoad.get_next_column_tile
-    SLACK: $0FC2 bytes
+           $3056 = HandleColumnLoad
+           $30DE = HandleColumnLoad.get_next_column_tile
+    SLACK: $0FC6 bytes
 
 Bank #256:
   EMPTY
@@ -889,34 +889,33 @@ BSS:
            $C00F = spaceshipGunVertical_flags
            $C020 = enemy_sprites
            $C010 = bullet_sprites
-  SECTION: $C0A0-$C0D7 ($0038 bytes)
+  SECTION: $C0A0-$C0D6 ($0037 bytes)
            $C0A0 = vblank_flag
            $C0A3 = alive
-           $C0A5 = checkpoint_map_block
-           $C0A6 = checkpoint_tiles_scrolled
-           $C0A7 = checkpoint_ship_y
-           $C0A8 = checkpoint_ship_x
+           $C0A6 = checkpoint_map_block
+           $C0A7 = checkpoint_tiles_scrolled
+           $C0A8 = checkpoint_ship_y
+           $C0A9 = checkpoint_ship_x
            $C0A4 = death_timer
            $C0A1 = joypad_held
            $C0A2 = joypad_down
-           $C0C9 = current_bullet_direction
-           $C0CE = ScrollTimer
-           $C0CF = PixelsScrolled
-           $C0D4 = CurrentWindowTileX
-           $C0B1 = enemy_data
-           $C0A9 = bullet_data
-           $C0CB = current_bullet_ypos
-           $C0CA = current_bullet_xpos
-           $C0CC = current_enemy_width
-           $C0CD = current_enemy_height
-           $C0D7 = NewEnemyTile
-           $C0D6 = CurrentColumnHeight
-           $C0D5 = CurrentMapBlock
-           $C0D2 = CurrentMapColumnPos
-           $C0D1 = PrevMapColumnPos
-           $C0D3 = CurrentBGMapScrollTileX
-           $C0D0 = TotalTilesScrolled
-    SLACK: $1F90 bytes
+           $C0CA = current_bullet_direction
+           $C0CF = ScrollTimer
+           $C0D0 = PixelsScrolled
+           $C0D3 = CurrentWindowTileX
+           $C0B2 = enemy_data
+           $C0AA = bullet_data
+           $C0CC = current_bullet_ypos
+           $C0CB = current_bullet_xpos
+           $C0CD = current_enemy_width
+           $C0CE = current_enemy_height
+           $C0D6 = NewEnemyTile
+           $C0D5 = CurrentColumnHeight
+           $C0D4 = CurrentMapBlock
+           $C0D2 = CurrentBGMapScrollTileX
+           $C0D1 = TotalTilesScrolled
+           $C0A5 = checkpoint_time
+    SLACK: $1F91 bytes
 
 VRAM:
   EMPTY

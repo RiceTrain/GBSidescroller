@@ -84,8 +84,6 @@ LoadMapToBkg::
 	
 	ld 		a, 0
 	ld		b, a
-	ld		[CurrentMapColumnPos], a
-	ld		[PrevMapColumnPos], a
 	ld 		[CurrentBGMapScrollTileX], a
 	
 .load_map_loop
@@ -99,26 +97,10 @@ LoadMapToBkg::
 	add 	hl, bc
 	ld		c, a
 	
-	ld		a, [PrevMapColumnPos]
-	ld		b, a
-	ld		a, [CurrentMapColumnPos]
-	cp		b
-	jr		z, .add_to_column_pos
-	
-	ld		a, [PrevMapColumnPos]
-	
-.add_to_column_pos
-	ld		b, 0
-	
-	inc		a
-	ld		[CurrentMapColumnPos], a
-	ld		[PrevMapColumnPos], a
-	cp		%00100000
-	jr  	nz,.go_to_map_loop
-	
-	ld 		a, 0
-	ld		[CurrentMapColumnPos], a
-	ld		[PrevMapColumnPos], a
+	ld		a, h
+	dec		a
+	cp		$9b
+	jr		c, .go_to_map_loop
 	
 	ld		a, [CurrentBGMapScrollTileX]
 	inc		a
@@ -182,16 +164,16 @@ ScrollLevel::
 	ld		a, [ScrollTimer]			; get the scroll timer
 	inc		a					; increment it
 	ld		[ScrollTimer], a
-
+	
 	; is it time to scroll yet?
 	and		%00000111
-	jr		nz, .return_to_main
+	jr		nz, .process_checkpoint
 	
 	ld		a, [CurrentMapBlock]
 	ld		c, a
 	ld		a,	TestMapBlockTotal
 	cp		c
-	jr		z, .return_to_main
+	jr		z, .process_checkpoint
 	
 	ld 		a, [PixelsScrolled]
 	inc 	a
@@ -211,6 +193,24 @@ ScrollLevel::
 	call UpdateEnemyScrollPositions
 	call ResolvePlayerScrollCollisions
 
+.process_checkpoint
+	ld		a, [checkpoint_time]
+	cp		$ff
+	jr		z, .return_to_main
+	
+	dec		a
+	ld		[checkpoint_time], a
+	cp		0
+	jr		nz, .return_to_main
+	
+	ld		a, [CurrentMapBlock]
+	ld		[checkpoint_map_block], a
+	ld		a, [TotalTilesScrolled]
+	ld		[checkpoint_tiles_scrolled], a
+	
+	ld		a, $ff
+	ld		[checkpoint_time], a
+	
 .return_to_main
 	ret
 	
@@ -301,10 +301,8 @@ HandleColumnLoad::
 	cp		18
 	jr		nz, .check_for_enemy_tile
 	
-	ld		a, [CurrentMapBlock]
-	ld		[checkpoint_map_block], a
-	ld		a, [TotalTilesScrolled]
-	ld		[checkpoint_tiles_scrolled], a
+	ld		a, 240
+	ld		[checkpoint_time], a
 	
 	jp		.get_next_column_tile
 
