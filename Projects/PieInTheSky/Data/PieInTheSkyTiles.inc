@@ -1,4 +1,4 @@
-; TESTTILES.INC
+; PIEINTHESKYTILES.INC
 ;
 ; Include File.
 ;
@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 17
+;   Tiles                : 0 to 22
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -44,5 +44,10 @@ TileLabelBank EQU 0
  GLOBAL TileLabelTLE15
  GLOBAL TileLabelTLE16
  GLOBAL TileLabelTLE17
+ GLOBAL TileLabelTLE18
+ GLOBAL TileLabelTLE19
+ GLOBAL TileLabelTLE20
+ GLOBAL TileLabelTLE21
+ GLOBAL TileLabelTLE22
 
-; End of TESTTILES.INC
+; End of PIEINTHESKYTILES.INC

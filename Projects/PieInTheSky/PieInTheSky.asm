@@ -20,7 +20,10 @@ start::
 	ldh		[LCDC_CONTROL], a	; init LCD to everything off
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
 	ldh		[SCROLL_BKG_Y], a
-
+	
+	ld		a, 38
+	ld		[TestMapBlockTotal], a
+	
 	call	InitLevelStart
 	
 	; set display to on, background on, window off, sprites on, sprite size 8x8
@@ -71,6 +74,8 @@ Main_Game::
 	; adjust sprite due to d-pad presses
 	call	MoveSpaceship
 	
+	call	AnimateShip
+	
 	ret
 
 InitLevelStart::
@@ -86,12 +91,13 @@ InitLevelStart::
 	call	LoadMapToBkg
 	
 	call	InitSprites
+	
+	call 	InitBulletData
+	call 	InitEnemyData
 	call	InitPlayerData
 	
 	ld		a, 76
 	ld		[checkpoint_ship_y], a
-	ld		a, 80
-	ld		[checkpoint_ship_x], a
 	call 	InitPlayerSprite
 	
 	ret
@@ -101,11 +107,28 @@ Player_Dead_Update::
 	dec		a
 	ld		[death_timer], a
 	cp		0
-	jp		nz, .dead_update_end
+	jp		nz, .animate_explosion
 	
 .reset_player
 ;TODO: Check for game over
 	call	ResetPlayerOnDeath
+	jp		.dead_update_end
+	
+.animate_explosion
+	cp		110
+	jr		z, PlayerDeathFrame2
+	
+	cp		100
+	jr		z, PlayerDeathFrame3
+	
+	cp		80
+	jr		z, PlayerDeathFrame4
+	
+	cp		70
+	jr		z, PlayerDeathFrame5
+	
+	cp		60
+	jr		z, PlayerDeathFrame6
 	
 .dead_update_end
 	ret
@@ -119,8 +142,95 @@ ResetPlayerOnDeath::
 	call	LoadMapToBkg
 	
 	call	InitSprites
+	
+	call 	InitBulletData
+	call 	InitEnemyData
 	call	InitPlayerData
+	
 	call 	InitPlayerSprite
+	
+	ret
+
+PlayerDeathFrame2::
+	ld		a, 21
+	ld		[spaceshipL_tile], a
+	ret
+	
+PlayerDeathFrame4::
+	ld		a, 21
+	ld		[spaceshipL_tile], a
+	ld		a, [spaceshipL_xpos]
+	add		a, 4
+	ld		[spaceshipL_xpos], a
+	ld		a, [spaceshipL_ypos]
+	add		a, 4
+	ld		[spaceshipL_ypos], a
+	
+	ld		a, 0
+	ld		[spaceshipR_ypos], a
+	ld		[spaceshipR_xpos], a
+	ld		[spaceshipLAnim1_ypos], a
+	ld		[spaceshipLAnim1_xpos], a
+	ld		[spaceshipLAnim2_ypos], a
+	ld		[spaceshipLAnim2_xpos], a
+	
+	ret
+	
+PlayerDeathFrame5::
+	ld		a, 20
+	ld		[spaceshipL_tile], a
+	ret
+	
+PlayerDeathFrame6::
+	ld		a, 0
+	ld		[spaceshipL_xpos], a
+	ld		[spaceshipL_ypos], a
+	ret
+
+PlayerDeathFrame3::
+	ld		a, 22
+	ld		[spaceshipL_tile], a
+	ld		a, [spaceshipL_xpos]
+	sub		4
+	ld		[spaceshipL_xpos], a
+	ld		a, [spaceshipL_ypos]
+	sub		4
+	ld		[spaceshipL_ypos], a
+	
+	ld		a, 22
+	ld		[spaceshipR_tile], a
+	ld		a, [spaceshipL_xpos]
+	add		a, 8
+	ld		[spaceshipR_xpos], a
+	ld		a, [spaceshipL_ypos]
+	ld		[spaceshipR_ypos], a
+	ld		a, [spaceshipR_flags]
+	set 	5, a
+	ld		[spaceshipR_flags], a
+	
+	ld		a, 22
+	ld		[spaceshipLAnim1_tile], a
+	ld		a, [spaceshipL_xpos]
+	add		a, 8
+	ld		[spaceshipLAnim1_xpos], a
+	ld		a, [spaceshipL_ypos]
+	add		a, 8
+	ld		[spaceshipLAnim1_ypos], a
+	ld		a, [spaceshipLAnim1_flags]
+	set 	5, a
+	set 	6, a
+	ld		[spaceshipLAnim1_flags], a
+	
+	ld		a, 22
+	ld		[spaceshipLAnim2_tile], a
+	ld		a, [spaceshipL_xpos]
+	ld		[spaceshipLAnim2_xpos], a
+	ld		a, [spaceshipL_ypos]
+	add		a, 8
+	ld		[spaceshipLAnim2_ypos], a
+	ld		a, [spaceshipLAnim2_flags]
+	set 	6, a
+	ld		[spaceshipLAnim2_flags], a
 	
 	ret
 	
@@ -135,8 +245,8 @@ INCLUDE "Projects/PieInTheSky/Level.asm"
 ; while the display is not drawing
 ;---------------------------------------------------
 VBlankFunc::
-;	di		; disable interrupts
-;	push	af
+	di		; disable interrupts
+	push	af
 	
 ; load the sprite attrib table to OAM memory
 .vblank_sprite_DMA
@@ -152,8 +262,8 @@ VBlankFunc::
 	ld		a, 1
 	ld		[vblank_flag], a
 	
-;	pop af
-;	ei		; enable interrupts
+	pop af
+	ei		; enable interrupts
 	reti	; and done
 
 INCLUDE "Projects/PieInTheSky/Variables.asm"

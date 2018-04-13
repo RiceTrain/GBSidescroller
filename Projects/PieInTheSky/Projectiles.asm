@@ -1,6 +1,6 @@
-InitBulletSprites::
+InitBulletData::
 	; init my bullet sprites
-	ld		hl, bullet_data
+	ld		hl, bullet_data                
 	ld		b, 4		; 4 bullets in table
 .init_bullets_loop
 	ld 		a, $ff
@@ -78,7 +78,7 @@ ChangeBulletDirection::
 	ld		[spaceshipGun_ypos], a
 	
 	ld		a, [spaceshipR_xpos]
-	sub		15
+	sub		22
 	ld		[spaceshipGun_xpos], a
 	
 	ld		a, [spaceshipGun_flags]
@@ -160,7 +160,7 @@ LaunchBullet::
 	jr		nz, .setup_y_pos
 	
 	ld		a, b
-	sub     a, 12
+	sub     a, 20
 	ld		b, a
 	
 .setup_y_pos
@@ -212,7 +212,7 @@ LaunchBullet::
 	inc		hl
 	ld		[hl], b
 	inc		hl
-	ld		[hl], 12	; bullets use tile 12
+	ld		[hl], 11	; bullets use tile 12
 	inc		hl
 	ld		[hl], 0
 
@@ -368,7 +368,7 @@ UpdateBulletPositions::
 	call FindBulletTileIndexes
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		nz, .destroy_bullet_on_collision_or_bounds
 	
 .check_screen_bounds
@@ -419,26 +419,20 @@ UpdateBulletPositions::
 	push	bc
 	
 	ld		hl, enemy_data
-	ld		b, 6		; 6 enemies to update
+	ld		b, 16		; 6 enemies to update
 .check_enemies_pos_loop
 	ld		a, [hl]
 	cp		$ff
 	jp		z, .check_enemy_pos_loop_end
+	inc		hl
+	ld		a, [hl]
+	dec		hl
+	cp		0
+	jp		z, .check_enemy_pos_loop_end
 
-	; this is an active enemy
-	; get its sprite addr
-	push	hl
-	ld		a, 6	; calc index (16 - b)
-	sub		b
-	ld		e, a	; store index in de
-	sla		e
-	sla		e		; 4 bytes per sprite attrib
-	ld		d, 0
-	ld		hl, enemy_sprites
-	add		hl, de
-	ld		d, h
-	ld		e, l	; store the address in de
-	pop		hl
+	push	bc
+	call	GetSpriteAddress
+	pop		bc
 	
 	inc 	hl
 	inc		hl
@@ -524,15 +518,16 @@ UpdateBulletPositions::
 	jr		nz, .destroy_bullet
 	
 .destroy_enemy
-	ld		a, $ff
-	ld		[hl], a
-	
-	ld		a, 0
-	ld		[de], a
-	inc		de
-	ld		[de], a
+	call	StartEnemyExplosion
 
 .destroy_bullet
+	ld		a, b
+	ld		[current_enemy_index], a
+	ld		a, h
+	ld		[current_enemy_address_upper], a
+	ld		a, l
+	ld		[current_enemy_address_lower], a
+	
 	pop		bc
 	pop 	hl
 	pop		de
@@ -550,7 +545,15 @@ UpdateBulletPositions::
 	push	hl
 	push	bc
 	
+	ld		a, [current_enemy_index]
+	ld		b, a
+	ld		a, [current_enemy_address_upper]
+	ld		h, a
+	ld		a, [current_enemy_address_lower]
+	ld		l, a
+	
 .check_enemy_pos_loop_end
+	inc		hl
 	inc		hl
 	inc		hl
 	inc		hl

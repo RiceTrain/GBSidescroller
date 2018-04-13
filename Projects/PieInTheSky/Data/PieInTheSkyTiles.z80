@@ -1,4 +1,4 @@
-; TESTTILES.Z80
+; PIEINTHESKYTILES.Z80
 ;
 ; Tile Source File.
 ;
@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 17
+;   Tiles                : 0 to 22
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -25,58 +25,73 @@
 ; Start of tile array.
 TileLabel::
 TileLabelTLE0::
+DB $00,$00,$00,$00,$00,$00,$00,$00
+DB $00,$00,$00,$00,$00,$00,$00,$00
+TileLabelTLE1::
 DB $00,$FF,$02,$FF,$20,$FF,$08,$FF
 DB $00,$FF,$08,$FF,$42,$FF,$00,$FF
-TileLabelTLE1::
+TileLabelTLE2::
 DB $01,$01,$02,$03,$04,$07,$08,$0F
 DB $15,$1F,$20,$3F,$48,$7F,$81,$FF
-TileLabelTLE2::
+TileLabelTLE3::
 DB $FF,$FF,$00,$FF,$48,$FF,$02,$FF
 DB $00,$FF,$48,$FF,$01,$FF,$20,$FF
-TileLabelTLE3::
+TileLabelTLE4::
 DB $80,$80,$40,$C0,$20,$E0,$10,$F0
 DB $48,$F8,$04,$FC,$4A,$FE,$11,$FF
-TileLabelTLE4::
+TileLabelTLE5::
 DB $89,$FF,$01,$FF,$25,$FF,$01,$FF
 DB $01,$FF,$A9,$FF,$01,$FF,$23,$FF
-TileLabelTLE5::
+TileLabelTLE6::
 DB $89,$FF,$02,$FE,$54,$FC,$08,$F8
 DB $90,$F0,$20,$E0,$40,$C0,$80,$80
-TileLabelTLE6::
+TileLabelTLE7::
 DB $02,$FF,$40,$FF,$00,$FF,$12,$FF
 DB $00,$FF,$42,$FF,$00,$FF,$FF,$FF
-TileLabelTLE7::
+TileLabelTLE8::
 DB $91,$FF,$40,$7F,$24,$3F,$11,$1F
 DB $08,$0F,$04,$07,$02,$03,$01,$01
-TileLabelTLE8::
+TileLabelTLE9::
 DB $80,$FF,$90,$FF,$82,$FF,$90,$FF
 DB $80,$FF,$C2,$FF,$84,$FF,$A0,$FF
-TileLabelTLE9::
-DB $07,$37,$17,$6C,$37,$CE,$17,$6E
-DB $4F,$72,$FF,$FF,$40,$7F,$3F,$3F
 TileLabelTLE10::
-DB $E0,$E0,$F8,$38,$FC,$AC,$FE,$96
-DB $FE,$02,$FF,$FF,$02,$FE,$FC,$FC
+DB $3E,$3E,$41,$7F,$9E,$FE,$A0,$E0
+DB $A0,$E0,$9E,$FE,$41,$7F,$3E,$3E
 TileLabelTLE11::
-DB $00,$00,$00,$00,$00,$00,$00,$00
-DB $00,$00,$00,$00,$00,$00,$00,$00
-TileLabelTLE12::
 DB $00,$00,$18,$18,$24,$3C,$42,$7E
 DB $42,$7E,$24,$3C,$18,$18,$00,$00
-TileLabelTLE13::
+TileLabelTLE12::
 DB $00,$00,$30,$30,$20,$3F,$38,$38
 DB $38,$38,$20,$3F,$30,$30,$00,$00
-TileLabelTLE14::
+TileLabelTLE13::
 DB $00,$00,$00,$00,$7E,$7E,$5A,$7E
 DB $18,$3C,$00,$24,$00,$24,$00,$24
+TileLabelTLE14::
+DB $07,$07,$FF,$FE,$FF,$02,$03,$FE
+DB $F7,$FE,$F7,$FF,$40,$7F,$3F,$3F
 TileLabelTLE15::
-DB $FF,$FF,$81,$FF,$A5,$FF,$81,$FF
-DB $99,$FF,$A5,$FF,$81,$FF,$FF,$FF
+DB $E0,$E0,$F8,$38,$FC,$AC,$FE,$96
+DB $FE,$02,$FF,$FF,$02,$FE,$FC,$FC
 TileLabelTLE16::
-DB $FF,$FF,$81,$81,$A5,$A5,$81,$81
-DB $81,$81,$BD,$BD,$81,$81,$FF,$FF
+DB $08,$08,$37,$3F,$5B,$66,$5A,$67
+DB $37,$3F,$08,$08,$00,$00,$00,$00
 TileLabelTLE17::
-DB $FF,$FF,$81,$81,$A5,$A5,$81,$81
-DB $A5,$A5,$BD,$BD,$81,$81,$FF,$FF
+DB $18,$18,$67,$7F,$BB,$C6,$BA,$C7
+DB $67,$7F,$18,$18,$00,$00,$00,$00
+TileLabelTLE18::
+DB $FF,$FF,$FF,$81,$FF,$A5,$FF,$81
+DB $FF,$A5,$FF,$BD,$FF,$81,$FF,$FF
+TileLabelTLE19::
+DB $FF,$FF,$FF,$81,$FF,$A5,$FF,$81
+DB $FF,$81,$FF,$BD,$FF,$81,$FF,$FF
+TileLabelTLE20::
+DB $00,$00,$3C,$00,$66,$18,$5A,$3C
+DB $5A,$3C,$66,$18,$3C,$00,$00,$00
+TileLabelTLE21::
+DB $7E,$00,$C3,$3C,$99,$7E,$BD,$7E
+DB $BD,$7E,$99,$7E,$C3,$3C,$7E,$00
+TileLabelTLE22::
+DB $00,$00,$0F,$00,$3F,$00,$30,$0F
+DB $60,$1F,$63,$1F,$67,$1F,$67,$1F
 
-; End of TESTTILES.Z80
+; End of PIEINTHESKYTILES.Z80

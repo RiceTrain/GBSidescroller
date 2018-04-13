@@ -1,6 +1,3 @@
-; tiles are here
-INCLUDE "Projects/PieInTheSky/Data/TestTiles.z80"
-
 ; map is here
 INCLUDE "Projects/PieInTheSky/Data/TestMap.z80"
 
@@ -22,9 +19,9 @@ InitLevel::
 LoadTiles::
 	ld		hl, TILES_MEM_LOC_1	; load the tiles to tiles bank 1
 
-	ld		de, 18 * 16
+	ld		de, 22 * 16
 	ld		d, $10  ; 16 bytes per tile
-	ld		e, $12  ; number of tiles to load
+	ld		e, $16  ; number of tiles to load
 
 .load_tiles_loop
 	; only write during
@@ -106,14 +103,13 @@ LoadMapToBkg::
 	inc		a
 	ld		[CurrentBGMapScrollTileX], a
 	
-	ld		b, c
-	ld		hl, MAP_MEM_LOC_0
-	ld		a, [CurrentBGMapScrollTileX]
-	ld 		c, a
-	ld 		a, b
-	ld		b, 0
-	add		hl, bc
-	ld		c, a
+	ld		a, h
+	sub		4
+	ld		h, a
+	
+	ld		a, l
+	inc		a
+	ld		l, a
 	
 .go_to_map_loop
 	dec 	bc
@@ -167,13 +163,13 @@ ScrollLevel::
 	
 	; is it time to scroll yet?
 	and		%00000111
-	jr		nz, .process_checkpoint
+	jr		nz, .return_to_main
 	
 	ld		a, [CurrentMapBlock]
 	ld		c, a
-	ld		a,	TestMapBlockTotal
+	ld		a,	[TestMapBlockTotal]
 	cp		c
-	jr		z, .process_checkpoint
+	jr		z, .return_to_main
 	
 	ld 		a, [PixelsScrolled]
 	inc 	a
@@ -194,22 +190,24 @@ ScrollLevel::
 	call ResolvePlayerScrollCollisions
 
 .process_checkpoint
-	ld		a, [checkpoint_time]
+	ld		a, [checkpoint_pixels]
 	cp		$ff
 	jr		z, .return_to_main
 	
 	dec		a
-	ld		[checkpoint_time], a
+	ld		[checkpoint_pixels], a
 	cp		0
 	jr		nz, .return_to_main
 	
-	ld		a, [CurrentMapBlock]
+	ld		a, [checkpoint_appearance_map_block]
 	ld		[checkpoint_map_block], a
-	ld		a, [TotalTilesScrolled]
+	ld		a, [checkpoint_appearance_tiles_scrolled]
 	ld		[checkpoint_tiles_scrolled], a
+	ld		a, [checkpoint_appearance_ship_y]
+	ld		[checkpoint_ship_y], a
 	
 	ld		a, $ff
-	ld		[checkpoint_time], a
+	ld		[checkpoint_pixels], a
 	
 .return_to_main
 	ret
@@ -298,20 +296,39 @@ HandleColumnLoad::
 	ld		a, [hl]
 	ld		[de], a
 	
-	cp		18
+	cp		10
 	jr		nz, .check_for_enemy_tile
 	
-	ld		a, 240
-	ld		[checkpoint_time], a
+.checkpoint_found
+	ld		a, 116
+	ld		[checkpoint_pixels], a
+	ld		a, [CurrentMapBlock]
+	dec		a
+	ld		[checkpoint_appearance_map_block], a
+	ld		a, [TotalTilesScrolled]
+	ld		[checkpoint_appearance_tiles_scrolled], a
+	
+	ld		a, c
+	ld		b, a
+	ld		a, 34
+	sub		b
+	ld		b, a
+	ld		a, 0
+	
+.calculate_ship_y_loop
+	add		a, 8
+	dec		b
+	jr		nz, .calculate_ship_y_loop
+	
+	ld		[checkpoint_appearance_ship_y], a
 	
 	jp		.get_next_column_tile
 
 .check_for_enemy_tile
-	;Check if enemy sprite
-	cp		14
-	jr		c, .get_next_column_tile
+	call	CheckIfEnemyTile
+	jr		nz, .get_next_column_tile
 	
-	ld		a, 11
+	ld		a, 0
 	ld		[de], a
 	ld		a, c
 	ld		[CurrentColumnHeight], a
@@ -342,3 +359,6 @@ HandleColumnLoad::
 	jr		nz, .load_next_column_loop
 	
 	ret
+	
+; tiles are here
+INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyTiles.z80"

@@ -3,6 +3,13 @@ InitPlayerData::
 	ld		[alive], a
 	ld		a, 120
 	ld		[death_timer], a
+	ld		a, 5
+	ld		[player_animation_timer], a
+	ld		hl, spaceshipLAnim1_ypos
+	ld		a, h
+	ld		[current_anim_frame_upper], a
+	ld		a, l
+	ld		[current_anim_frame_lower], a
 	
 	ret
 	
@@ -10,29 +17,36 @@ InitPlayerSprite::
 	; init  my spaceship sprite
 	ld		a, [checkpoint_ship_y]
 	ld		[spaceshipL_ypos], a
-	ld		a, [checkpoint_ship_x]
+	ld		a, 80
 	ld		[spaceshipL_xpos], a
-	ld		a, 9
+	ld		a, 14
 	ld		[spaceshipL_tile], a
 	ld		a, 0
 	ld		[spaceshipL_flags], a
 	
 	ld		a, [checkpoint_ship_y]
 	ld		[spaceshipR_ypos], a
-	ld		a, [checkpoint_ship_x]
-	add		a, 8
+	ld		a, 88
 	ld		[spaceshipR_xpos], a
-	ld		a, 10
+	ld		a, 15
 	ld		[spaceshipR_tile], a
 	ld		a, 0
 	ld		[spaceshipR_flags], a
 	
 	ld		a, [checkpoint_ship_y]
+	ld		[spaceshipLAnim1_ypos], a
+	ld		a, 72
+	ld		[spaceshipLAnim1_xpos], a
+	ld		a, 16
+	ld		[spaceshipLAnim1_tile], a
+	ld		a, 0
+	ld		[spaceshipLAnim1_flags], a
+	
+	ld		a, [checkpoint_ship_y]
 	ld		[spaceshipGun_ypos], a
-	ld		a, [checkpoint_ship_x]
-	add		a, 15
+	ld		a, 95
 	ld		[spaceshipGun_xpos], a
-	ld		a, 13
+	ld		a, 12
 	ld		[spaceshipGun_tile], a
 	ld		a, 0
 	ld		[spaceshipGun_flags], a
@@ -40,10 +54,18 @@ InitPlayerSprite::
 	ld		a, 0
 	ld		[spaceshipGunVertical_ypos], a
 	ld		[spaceshipGunVertical_xpos], a
-	ld		a, 14
+	ld		a, 13
 	ld		[spaceshipGunVertical_tile], a
 	ld		a, 0
 	ld		[spaceshipGunVertical_flags], a
+	
+	ld		a, 0
+	ld		[spaceshipLAnim2_ypos], a
+	ld		[spaceshipLAnim2_xpos], a
+	ld		a, 17
+	ld		[spaceshipLAnim2_tile], a
+	ld		a, 0
+	ld		[spaceshipLAnim2_flags], a
 	
 	ret
 
@@ -54,7 +76,7 @@ ResolvePlayerScrollCollisions::
 	inc 	hl
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		nz, .MoveShipBackLeft
 	
 	ld		a, 0
@@ -64,15 +86,20 @@ ResolvePlayerScrollCollisions::
 	add		hl, bc
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		z, .return_to_main
 	
 .MoveShipBackLeft
+	call 	StoreCurrentPlayerAnimAddress
+	inc		hl
+	
 	ld		a, [spaceshipL_xpos]
 	dec		a
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
+	sub		16
+	ld		[hl], a
 	
 	ld		a, [current_bullet_direction]
 	cp		1
@@ -98,6 +125,15 @@ ResolvePlayerScrollCollisions::
 	call	DestroyShip
 	
 .return_to_main
+	ret
+
+;Gets the current frame's sprite address and stores in HL
+StoreCurrentPlayerAnimAddress::
+	ld		a, [current_anim_frame_upper]
+	ld		h, a
+	ld		a, [current_anim_frame_lower]
+	ld		l, a
+	
 	ret
 	
 ;-------------------------------------------------------------
@@ -160,6 +196,12 @@ CheckDirectionInputs::
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
+	push	hl
+	call 	StoreCurrentPlayerAnimAddress
+	ld		a, [spaceshipL_ypos]
+	ld		[hl], a
+	pop		hl
+	
 	ld		a, [de]
 	dec		a
 	ld		[de], a
@@ -168,19 +210,19 @@ CheckDirectionInputs::
 	call 	StoreCurrentGunSpriteAddr
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		nz, .MoveShipBackDown
 
 	inc		hl
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		nz, .MoveShipBackDown
 
 	inc		hl
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		z, .check_for_left
 	
 .MoveShipBackDown
@@ -188,6 +230,12 @@ CheckDirectionInputs::
 	inc		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
+	
+	push	hl
+	call 	StoreCurrentPlayerAnimAddress
+	ld		a, [spaceshipL_ypos]
+	ld		[hl], a
+	pop		hl
 	
 	ld		a, [de]
 	inc		a
@@ -211,6 +259,12 @@ CheckDirectionInputs::
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
+	push	hl
+	call 	StoreCurrentPlayerAnimAddress
+	ld		a, [spaceshipL_ypos]
+	ld		[hl], a
+	pop		hl
+	
 	ld		a, [de]
 	inc		a
 	ld		[de], a
@@ -225,19 +279,19 @@ CheckDirectionInputs::
 	add		hl, bc
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		nz, .MoveShipBackUp
 	
 	inc 	hl
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		nz, .MoveShipBackUp
 	
 	inc 	hl
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		z, .check_for_left
 	
 .MoveShipBackUp
@@ -245,6 +299,12 @@ CheckDirectionInputs::
 	dec		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
+	
+	push	hl
+	call 	StoreCurrentPlayerAnimAddress
+	ld		a, [spaceshipL_ypos]
+	ld		[hl], a
+	pop		hl
 	
 	ld		a, [de]
 	dec		a
@@ -268,6 +328,14 @@ CheckDirectionInputs::
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 
+	push	hl
+	call 	StoreCurrentPlayerAnimAddress
+	inc		hl
+	ld		a, [spaceshipL_xpos]
+	sub		8
+	ld		[hl], a
+	pop		hl
+	
 	ld		a, [de]
 	dec		a
 	ld		[de], a
@@ -277,7 +345,7 @@ CheckDirectionInputs::
 	inc		de
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		nz, .MoveShipBackRight
 	
 	ld		a, 0
@@ -287,7 +355,7 @@ CheckDirectionInputs::
 	add		hl, bc
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		z, .done_checking_dpad
 	
 .MoveShipBackRight
@@ -296,6 +364,14 @@ CheckDirectionInputs::
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
+	
+	push	hl
+	call 	StoreCurrentPlayerAnimAddress
+	inc		hl
+	ld		a, [spaceshipL_xpos]
+	sub		8
+	ld		[hl], a
+	pop		hl
 	
 	ld		a, [de]
 	inc		a
@@ -319,6 +395,14 @@ CheckDirectionInputs::
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 
+	push	hl
+	call 	StoreCurrentPlayerAnimAddress
+	inc		hl
+	ld		a, [spaceshipL_xpos]
+	sub		8
+	ld		[hl], a
+	pop		hl
+	
 	ld		a, [de]
 	inc		a
 	ld		[de], a
@@ -331,7 +415,7 @@ CheckDirectionInputs::
 	inc 	hl
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		nz, .MoveShipBackLeft
 	
 	ld		a, 0
@@ -341,7 +425,7 @@ CheckDirectionInputs::
 	add		hl, bc
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		11
+	cp		0
 	jr		z, .done_checking_dpad
 	
 .MoveShipBackLeft
@@ -350,6 +434,14 @@ CheckDirectionInputs::
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
+	
+	push	hl
+	call 	StoreCurrentPlayerAnimAddress
+	inc		hl
+	ld		a, [spaceshipL_xpos]
+	sub		8
+	ld		[hl], a
+	pop		hl
 	
 	ld		a, [de]
 	dec		a
@@ -442,26 +534,15 @@ StoreCurrentGunSpriteAddr::
 	
 ResolveShipEnemyCollisions::
 	ld		hl, enemy_data
-	ld		b, 6		; 6 enemies to update
+	ld		b, 16		; 6 enemies to update
 .check_enemies_pos_loop
 	ld		a, [hl]
 	cp		$ff
 	jp		z, .check_enemy_pos_loop_end
 
-	; this is an active enemy
-	; get its sprite addr
-	push	hl
-	ld		a, 6	; calc index (16 - b)
-	sub		b
-	ld		e, a	; store index in de
-	sla		e
-	sla		e		; 4 bytes per sprite attrib
-	ld		d, 0
-	ld		hl, enemy_sprites
-	add		hl, de
-	ld		d, h
-	ld		e, l	; store the address in de
-	pop		hl
+	push	bc
+	call	GetSpriteAddress
+	pop		bc
 	
 .check_y
 	ld		a, [de]
@@ -541,6 +622,7 @@ ResolveShipEnemyCollisions::
 	inc		hl
 	inc		hl
 	inc		hl
+	inc		hl
 	dec		b
 	jp		nz, .check_enemies_pos_loop
 
@@ -550,15 +632,61 @@ ResolveShipEnemyCollisions::
 DestroyShip::
 	;destroy ship
 	ld		a, 0
-	ld		[spaceshipL_ypos], a
-	ld		[spaceshipL_xpos], a
 	ld		[spaceshipR_ypos], a
 	ld		[spaceshipR_xpos], a
 	ld		[spaceshipGun_ypos], a
 	ld		[spaceshipGun_xpos], a
 	ld		[spaceshipGunVertical_ypos], a
 	ld		[spaceshipGunVertical_xpos], a
+	ld		[spaceshipLAnim1_ypos], a
+	ld		[spaceshipLAnim1_xpos], a
+	ld		[spaceshipLAnim2_ypos], a
+	ld		[spaceshipLAnim2_xpos], a
 	
 	ld		[alive], a
 	
+	ld		a, 20
+	ld		[spaceshipL_tile], a ;use sprite for explosion
+	
+	ret
+	
+AnimateShip::
+	ld		a, [player_animation_timer]
+	dec		a
+	ld		[player_animation_timer], a
+	cp		0
+	jr		nz, .anim_end
+	
+	ld		bc, spaceshipLAnim1_ypos
+	ld		de, spaceshipLAnim2_ypos
+	ld		a, [current_anim_frame_lower]
+	cp		c
+	jr		nz, .save_anim_address
+	
+	ld		bc, spaceshipLAnim2_ypos
+	ld		de, spaceshipLAnim1_ypos
+	
+.save_anim_address
+	ld		a, b
+	ld		[current_anim_frame_upper], a
+	ld		a, c
+	ld		[current_anim_frame_lower], a
+	
+	ld		a, [de]
+	ld		[bc], a
+	inc		de
+	inc		bc
+	ld		a, [de]
+	ld		[bc], a
+	
+	ld		a, 0
+	ld		[de], a
+	dec		de
+	ld		[de], a
+	
+.reset_timer
+	ld		a, 5
+	ld		[player_animation_timer], a
+	
+.anim_end
 	ret
