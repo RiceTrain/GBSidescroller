@@ -200,3 +200,9 @@ ds		1;
 
 CurrentColumnHeight:
 ds		1;
+
+;level state
+level_end_reached:
+ds		1
+boss_defeated:
+ds		1

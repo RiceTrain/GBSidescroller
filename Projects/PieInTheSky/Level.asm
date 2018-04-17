@@ -9,6 +9,11 @@ InitLevel::
 	; init the palettes
 	call	InitPalettes
 	
+	ld		a, 0
+	ld		[level_end_reached], a
+	ld		a, 1
+	ld		[boss_defeated], a
+	
 	ret
 
 ;----------------------------------------------------
@@ -169,8 +174,17 @@ ScrollLevel::
 	ld		c, a
 	ld		a,	[TestMapBlockTotal]
 	cp		c
+	jr		nz, .continue_scrolling
+	
+	ld		a, [level_end_reached]
+	cp		1
 	jr		z, .return_to_main
 	
+	ld		a, 1
+	ld		[level_end_reached], a
+	jr		.return_to_main
+	
+.continue_scrolling
 	ld 		a, [PixelsScrolled]
 	inc 	a
 	ld 		[PixelsScrolled], a

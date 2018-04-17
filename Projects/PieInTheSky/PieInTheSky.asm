@@ -40,18 +40,9 @@ Game_Loop::
 	ld		a, [vblank_flag]
 	cp		0
 	jp		z, Game_Loop
-
-	ld		a, [alive]
-	cp 		1
-	jr		z, .do_main_update
-
-	call 	Player_Dead_Update
-	jp		.reset_vblank_flag
 	
-.do_main_update
 	call 	Main_Game
 	
-.reset_vblank_flag
 	; reset vblank flag
 	ld		a, 0
 	ld		[vblank_flag], a
@@ -59,6 +50,31 @@ Game_Loop::
 	jp		Game_Loop
 
 Main_Game::
+	ld		a, [alive]
+	cp 		1
+	jr		z, .check_for_end_level
+	
+	call 	Player_Dead_Update
+	jr		.end_main_update
+
+.check_for_end_level
+	ld		a, [level_end_reached]
+	cp		0
+	jr		z, .do_main_update
+	ld		a, [boss_defeated]
+	cp		0
+	jr		z, .do_main_update
+	
+	call	Level_Complete_Update
+	jr		.end_main_update
+	
+.do_main_update
+	call	Main_Game_Loop
+
+.end_main_update
+	ret
+
+Main_Game_Loop::
 	call 	ScrollLevel
 	call 	UpdateBulletTimers
 	
@@ -77,7 +93,7 @@ Main_Game::
 	call	AnimateShip
 	
 	ret
-
+	
 InitLevelStart::
 	call 	InitWorkingVariables
 	call 	InitLevel
@@ -100,6 +116,10 @@ InitLevelStart::
 	ld		[checkpoint_ship_y], a
 	call 	InitPlayerSprite
 	
+	ret
+	
+Level_Complete_Update::
+
 	ret
 	
 Player_Dead_Update::
@@ -140,6 +160,9 @@ ResetPlayerOnDeath::
 	ldh		[SCROLL_BKG_Y], a
 	ld		hl, TestMap
 	call	LoadMapToBkg
+	
+	ld		a, 0
+	ld		[level_end_reached], a
 	
 	call	InitSprites
 	
