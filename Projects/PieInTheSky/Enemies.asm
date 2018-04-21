@@ -46,6 +46,11 @@ InitEnemyData::
 	dec		b
 	jr		nz, .init_2x2_enemy_anim_data_loop
 	
+.init_boss_anim_data
+	ld		hl, boss_animation_data
+	ld 		a, $ff
+	ld		[hl], a
+	
 	ret
 	
 ;------------------------------------------------------
@@ -198,6 +203,8 @@ CheckIfEnemyTile::
 	jp		z, .done_checking
 	cp		19
 	jp		z, .done_checking
+	cp		23
+	jp		z, .done_checking
 	
 .done_checking
 	ret
@@ -225,6 +232,8 @@ StartEnemyExplosion::
 	jr		z, .sprite_2x1_count
 	cp		4
 	jr		z, .sprite_2x2_count
+	cp		6
+	jr		z, .sprite_boss_count
 	
 .sprite_1x1_count
 	ld		a, 20
@@ -249,14 +258,14 @@ StartEnemyExplosion::
 	add		a, 4
 	ld		[de], a
 	dec		de
-	jp		.finished_moving_sprite
+	jr		.finished_moving_sprite
 .move_sprite_down
 	ld		a, [de]
 	add		a, 4
 	ld		[de], a
 .finished_moving_sprite
 	ld		b, 1
-	jp		.display_explosion_tile
+	jr		.display_explosion_tile
 	
 .sprite_2x2_count
 	ld		a, 40
@@ -271,7 +280,22 @@ StartEnemyExplosion::
 	ld		[de], a
 	dec		de
 	ld		b, 3
-
+	jr		.display_explosion_tile
+	
+.sprite_boss_count
+	ld		a, 40
+	ld		[hl], a
+	
+	ld		a, [de]
+	add		a, 8
+	ld		[de], a
+	inc		de
+	ld		a, [de]
+	add		a, 8
+	ld		[de], a
+	dec		de
+	ld		b, 8
+	
 .display_explosion_tile
 	inc		de
 	inc		de
@@ -307,9 +331,20 @@ CleanupEnemy::
 	
 	inc		hl
 	inc		hl
+	ld		a, [hl]
 	inc		hl
 	inc		hl
+	
 	ld		b, $c0
+	cp		3
+	jr		nz, .get_anim_data_address
+	
+	inc		b
+	
+	ld		a, 1
+	ld		[boss_defeated], a
+	
+.get_anim_data_address
 	ld		a, [hl]
 	ld		c, a
 	
@@ -333,15 +368,20 @@ CleanupEnemy::
 	jr		z, .sprite_2x1_count
 	cp		4
 	jr		z, .sprite_2x2_count
+	cp		6
+	jr		z, .sprite_boss_count
 	
 .sprite_1x1_count
 	ld		b, 1
-	jp		.hide_sprites_loop
+	jr		.hide_sprites_loop
 .sprite_2x1_count
 	ld		b, 2
-	jp		.hide_sprites_loop
+	jr		.hide_sprites_loop
 .sprite_2x2_count
 	ld		b, 4
+	jr		.hide_sprites_loop
+.sprite_boss_count
+	ld		b, 9
 
 .hide_sprites_loop
 	ld		a, 0

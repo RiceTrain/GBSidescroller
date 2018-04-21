@@ -5,10 +5,17 @@
 GetSpriteAddress::
 	inc		hl
 	inc		hl
+	ld		a, [hl]
 	inc		hl
 	inc		hl
 	
 	ld		b, $c0
+	cp		3 ;is this a boss? (bosses have dimensions 3x3)
+	jr		nz, .get_anim_data_address
+	
+	inc		b
+	
+.get_anim_data_address
 	ld		a, [hl]
 	ld		c, a
 	
@@ -28,7 +35,7 @@ UpdateEnemyAnimation::
 	ld		a, [hl]
 	dec		hl
 	cp		0
-	jr		z,	.end_update
+	jp		z,	.end_update
 	
 	ld		a, [hl]
 	ld		[enemy_tile], a
@@ -42,7 +49,14 @@ UpdateEnemyAnimation::
 	ld		[enemy_tile_count], a
 	inc		hl
 	
+	ld		a, b
 	ld		b, $c0
+	cp		3 ;is this a boss? (bosses have dimensions 3x3)
+	jr		nz, .get_anim_data_address
+	
+	inc		b
+	
+.get_anim_data_address
 	ld		a, [hl]
 	ld		c, a
 	
@@ -73,6 +87,8 @@ UpdateEnemyAnimation::
 	jr		z, .set_2x1_count
 	cp		4
 	jr		z, .set_2x2_count
+	cp		6
+	jr		z, .set_boss_count
 	
 .set_1x1_count
 	ld		b, 1
@@ -85,6 +101,10 @@ UpdateEnemyAnimation::
 .set_2x2_count
 	ld		b, 4
 	ld		c, 4
+	jp		.replace_tiles_loop
+.set_boss_count
+	ld		b, 9
+	ld		c, 9
 	
 .replace_tiles_loop
 	ld		a, [de]

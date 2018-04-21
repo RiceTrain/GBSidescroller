@@ -11,7 +11,7 @@ InitLevel::
 	
 	ld		a, 0
 	ld		[level_end_reached], a
-	ld		a, 1
+	ld		a, 0
 	ld		[boss_defeated], a
 	
 	ret
@@ -24,9 +24,9 @@ InitLevel::
 LoadTiles::
 	ld		hl, TILES_MEM_LOC_1	; load the tiles to tiles bank 1
 
-	ld		de, 22 * 16
+	ld		de, 26 * 16
 	ld		d, $10  ; 16 bytes per tile
-	ld		e, $16  ; number of tiles to load
+	ld		e, $1a  ; number of tiles to load
 
 .load_tiles_loop
 	; only write during

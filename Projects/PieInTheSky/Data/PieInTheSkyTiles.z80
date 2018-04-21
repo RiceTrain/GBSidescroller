@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 22
+;   Tiles                : 0 to 26
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -93,5 +93,17 @@ DB $BD,$7E,$99,$7E,$C3,$3C,$7E,$00
 TileLabelTLE22::
 DB $00,$00,$0F,$00,$3F,$00,$30,$0F
 DB $60,$1F,$63,$1F,$67,$1F,$67,$1F
+TileLabelTLE23::
+DB $FF,$FF,$FF,$80,$FF,$80,$FF,$84
+DB $FF,$84,$FF,$84,$FF,$84,$FF,$80
+TileLabelTLE24::
+DB $FF,$FF,$FF,$00,$FF,$00,$FF,$00
+DB $FF,$00,$FF,$00,$FF,$00,$FF,$00
+TileLabelTLE25::
+DB $FF,$80,$FF,$80,$FF,$80,$FF,$80
+DB $FF,$80,$FF,$80,$FF,$80,$FF,$FF
+TileLabelTLE26::
+DB $FF,$00,$FF,$00,$FF,$00,$FF,$00
+DB $FF,$00,$FF,$00,$FF,$00,$FF,$00
 
 ; End of PIEINTHESKYTILES.Z80

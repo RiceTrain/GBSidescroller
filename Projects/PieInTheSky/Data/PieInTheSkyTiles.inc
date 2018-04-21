@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 22
+;   Tiles                : 0 to 26
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -49,5 +49,9 @@ TileLabelBank EQU 0
  GLOBAL TileLabelTLE20
  GLOBAL TileLabelTLE21
  GLOBAL TileLabelTLE22
+ GLOBAL TileLabelTLE23
+ GLOBAL TileLabelTLE24
+ GLOBAL TileLabelTLE25
+ GLOBAL TileLabelTLE26
 
 ; End of PIEINTHESKYTILES.INC

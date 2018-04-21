@@ -115,6 +115,9 @@ ds		30
 enemy_data:
 ds		80
 
+boss_animation_data:
+ds		20
+
 enemy_tile:
 ds		1;
 new_enemy_y_pos:
