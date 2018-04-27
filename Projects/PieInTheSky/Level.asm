@@ -53,7 +53,7 @@ LoadTiles::
 ;----------------------------------------------------
 LoadMapToBkg::
 	ld		b, 0
-	ld		c, %00100000
+	ld		c, 18
 	ld		a, [checkpoint_tiles_scrolled]
 	
 .get_map_start_loop
@@ -82,7 +82,7 @@ LoadMapToBkg::
 	ld		e, l
 	ld		hl, MAP_MEM_LOC_0	; load the map to map bank 0
 
-	ld 		c, %11111111
+	ld 		c, %10001000
 	
 	ld 		a, 0
 	ld		b, a
@@ -100,20 +100,23 @@ LoadMapToBkg::
 	ld		c, a
 	
 	ld		a, h
-	dec		a
-	cp		$9b
+	cp		$9a
 	jr		c, .go_to_map_loop
+	ld		a, l
+	cp		$3f
+	jr		nc, .go_to_map_loop
+	jr		z, .go_to_map_loop
 	
 	ld		a, [CurrentBGMapScrollTileX]
 	inc		a
 	ld		[CurrentBGMapScrollTileX], a
 	
 	ld		a, h
-	sub		4
+	sub		2
 	ld		h, a
 	
 	ld		a, l
-	inc		a
+	sub 	63
 	ld		l, a
 	
 .go_to_map_loop
@@ -123,7 +126,7 @@ LoadMapToBkg::
 	jr  	nz,.load_map_loop
 	
 .load_next_map_block
-	ld 		c, %11111111
+	ld 		c, %10001000
 	ld 		a, 0
 	ld		b, a
 	
@@ -274,7 +277,7 @@ HandleColumnLoad::
 	ld		hl, TestMap	; load the map to map bank 0
 	
 	ld		b, 0
-	ld		c, %00100000
+	ld		c, %00010010
 	ld		a, [TotalTilesScrolled]
 	
 .get_map_start_loop

@@ -116,49 +116,49 @@ Bank #0 (HOME):
            $0266 = PlayerDeathFrame6
            $0150 = start
            $1054 = GetEnemy0AnimTimer
-  SECTION: $1057-$37A4 ($274E bytes)
-           $3685 = ScrollLevel
-           $35D7 = InitLevel
+  SECTION: $1057-$2743 ($16ED bytes)
+           $2624 = ScrollLevel
+           $256F = InitLevel
            $1057 = TestMap
-           $3607 = LoadMapToBkg
-           $35EB = LoadTiles
-           $367C = InitPalettes
-           $35F5 = LoadTiles.load_tiles_loop
-           $36E8 = HandleColumnLoad
-           $378E = HandleColumnLoad.get_next_column_tile
-  SECTION: $37A5-$3990 ($01EC bytes)
-           $3955 = VBlankFunc
-           $3968 = InitWorkingVariables
-           $3985 = InitSprites
-           $37A5 = TileLabel
-           $3845 = TileLabelTLE10
-           $3855 = TileLabelTLE11
-           $38E5 = TileLabelTLE20
-           $3865 = TileLabelTLE12
-           $38F5 = TileLabelTLE21
-           $3875 = TileLabelTLE13
-           $3905 = TileLabelTLE22
-           $3885 = TileLabelTLE14
-           $3915 = TileLabelTLE23
-           $3895 = TileLabelTLE15
-           $3925 = TileLabelTLE24
-           $38A5 = TileLabelTLE16
-           $3935 = TileLabelTLE25
-           $38B5 = TileLabelTLE17
-           $3945 = TileLabelTLE26
-           $38C5 = TileLabelTLE18
-           $38D5 = TileLabelTLE19
-           $37A5 = TileLabelTLE0
-           $37B5 = TileLabelTLE1
-           $37C5 = TileLabelTLE2
-           $37D5 = TileLabelTLE3
-           $37E5 = TileLabelTLE4
-           $37F5 = TileLabelTLE5
-           $3805 = TileLabelTLE6
-           $3815 = TileLabelTLE7
-           $3825 = TileLabelTLE8
-           $3835 = TileLabelTLE9
-    SLACK: $0768 bytes
+           $259F = LoadMapToBkg
+           $2583 = LoadTiles
+           $261B = InitPalettes
+           $258D = LoadTiles.load_tiles_loop
+           $2687 = HandleColumnLoad
+           $272D = HandleColumnLoad.get_next_column_tile
+  SECTION: $2744-$292F ($01EC bytes)
+           $28F4 = VBlankFunc
+           $2907 = InitWorkingVariables
+           $2924 = InitSprites
+           $2744 = TileLabel
+           $27E4 = TileLabelTLE10
+           $27F4 = TileLabelTLE11
+           $2884 = TileLabelTLE20
+           $2804 = TileLabelTLE12
+           $2894 = TileLabelTLE21
+           $2814 = TileLabelTLE13
+           $28A4 = TileLabelTLE22
+           $2824 = TileLabelTLE14
+           $28B4 = TileLabelTLE23
+           $2834 = TileLabelTLE15
+           $28C4 = TileLabelTLE24
+           $2844 = TileLabelTLE16
+           $28D4 = TileLabelTLE25
+           $2854 = TileLabelTLE17
+           $28E4 = TileLabelTLE26
+           $2864 = TileLabelTLE18
+           $2874 = TileLabelTLE19
+           $2744 = TileLabelTLE0
+           $2754 = TileLabelTLE1
+           $2764 = TileLabelTLE2
+           $2774 = TileLabelTLE3
+           $2784 = TileLabelTLE4
+           $2794 = TileLabelTLE5
+           $27A4 = TileLabelTLE6
+           $27B4 = TileLabelTLE7
+           $27C4 = TileLabelTLE8
+           $27D4 = TileLabelTLE9
+    SLACK: $17C9 bytes
 
 Bank #256:
   EMPTY
