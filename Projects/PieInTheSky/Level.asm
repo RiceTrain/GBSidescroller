@@ -64,7 +64,7 @@ LoadMapToBkg::
 	jr		.get_map_start_loop
 	
 .get_map_block_loop_start
-	ld		bc, %100000000
+	ld		bc, 144
 	ld		a, [checkpoint_map_block]
 	
 .get_map_block_loop
@@ -82,17 +82,32 @@ LoadMapToBkg::
 	ld		e, l
 	ld		hl, MAP_MEM_LOC_0	; load the map to map bank 0
 
-	ld 		c, %10001000
+	ld 		c, 255
 	
 	ld 		a, 0
 	ld		b, a
 	ld 		[CurrentBGMapScrollTileX], a
 	
 .load_map_loop
-	ld  	a,[de]
-	ld  	[hl],a
+	ld		a, h
+	cp		$9a
+	jr		c, .load_tile
+	jr		nz, .load_zero
 	
+	ld		a, l
+	cp		$40
+	jr		c, .load_tile
+
+.load_zero
+	ld		a, 0
+	jr		.load_into_map_mem
+	
+.load_tile
+	ld  	a,[de]
 	inc 	de
+	
+.load_into_map_mem
+	ld  	[hl],a
 	
 	ld		a, c
 	ld 		bc, %00100000
@@ -100,23 +115,20 @@ LoadMapToBkg::
 	ld		c, a
 	
 	ld		a, h
-	cp		$9a
+	dec		a
+	cp		$9b
 	jr		c, .go_to_map_loop
-	ld		a, l
-	cp		$3f
-	jr		nc, .go_to_map_loop
-	jr		z, .go_to_map_loop
 	
 	ld		a, [CurrentBGMapScrollTileX]
 	inc		a
 	ld		[CurrentBGMapScrollTileX], a
 	
 	ld		a, h
-	sub		2
+	sub		4
 	ld		h, a
 	
 	ld		a, l
-	sub 	63
+	inc 	a
 	ld		l, a
 	
 .go_to_map_loop
@@ -126,7 +138,7 @@ LoadMapToBkg::
 	jr  	nz,.load_map_loop
 	
 .load_next_map_block
-	ld 		c, %10001000
+	ld 		c, 255
 	ld 		a, 0
 	ld		b, a
 	
@@ -277,7 +289,7 @@ HandleColumnLoad::
 	ld		hl, TestMap	; load the map to map bank 0
 	
 	ld		b, 0
-	ld		c, %00010010
+	ld		c, 18
 	ld		a, [TotalTilesScrolled]
 	
 .get_map_start_loop
@@ -288,7 +300,7 @@ HandleColumnLoad::
 	jr		.get_map_start_loop
 	
 .get_map_block_loop_start
-	ld		bc, %100000000
+	ld		bc, 144
 	ld		a, [CurrentMapBlock]
 	
 .get_map_block_loop
@@ -310,7 +322,24 @@ HandleColumnLoad::
 	ld 		c, %00100000
 	
 .load_next_column_loop
+	ld		a, d
+	cp		$9a
+	jr		c, .load_tile
+	jr		nz, .load_zero
+	
+	ld		a, e
+	cp		$40
+	jr		c, .load_tile
+
+.load_zero
+	ld		a, 0
+	jr		.load_into_map_mem
+	
+.load_tile
 	ld		a, [hl]
+	inc 	hl
+	
+.load_into_map_mem
 	ld		[de], a
 	
 	cp		10
@@ -352,8 +381,6 @@ HandleColumnLoad::
 	call CreateEnemy
 	
 .get_next_column_tile
-	inc 	hl
-	
 	ld 		a, c
 	
 	ld		b, h
