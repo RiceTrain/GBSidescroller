@@ -4,6 +4,9 @@
 ; byte 3: tile width
 ; byte 4: tile height
 ; byte 5: animation data address
+; byte 6: misc
+; byte 7: misc
+; byte 8: misc
 
 Enemy0Data::
 	ld		a, 3

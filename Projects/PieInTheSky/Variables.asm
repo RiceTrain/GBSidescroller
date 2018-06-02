@@ -113,10 +113,13 @@ enemy_animation_data_2x2:
 ds		30
 ; Enemy data starts here (16 * 5 of them)
 enemy_data:
-ds		80
+ds		128
 
 boss_animation_data:
 ds		20
+
+enemy_data_size:
+ds		1
 
 enemy_tile:
 ds		1;

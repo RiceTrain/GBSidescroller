@@ -378,7 +378,9 @@ HandleColumnLoad::
 	ld		[de], a
 	ld		a, c
 	ld		[CurrentColumnHeight], a
-	call CreateEnemy
+	dec 	hl
+	call 	CreateEnemy
+	inc		hl
 	
 .get_next_column_tile
 	ld 		a, c

@@ -1,0 +1,12 @@
+; Enemy anim data 2x1
+; Each line is an enemy animation
+; Data setup:
+; column 1: tile id
+; column 2: anim time
+; column 3-6: tile numbers
+; column 7-8: initial tile numbers
+
+EnemyAnimData2x1Count   EQU 1
+
+EnemyAnim2x1Data::
+DB $12,$1e,$12,$00,$13,$01,$12,$13

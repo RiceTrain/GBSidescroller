@@ -553,11 +553,13 @@ UpdateBulletPositions::
 	ld		l, a
 	
 .check_enemy_pos_loop_end
-	inc		hl
-	inc		hl
-	inc		hl
-	inc		hl
-	inc		hl
+	push	de
+	ld		d, 0
+	ld		a, [enemy_data_size]
+	ld		e, a
+	add		hl, de
+	pop		de
+	
 	dec		b
 	jp		nz, .check_enemies_pos_loop
 	

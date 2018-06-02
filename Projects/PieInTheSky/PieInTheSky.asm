@@ -23,6 +23,8 @@ start::
 	
 	ld		a, 38
 	ld		[TestMapBlockTotal], a
+	ld		a, 8
+	ld		[enemy_data_size], a
 	
 	call	InitLevelStart
 	

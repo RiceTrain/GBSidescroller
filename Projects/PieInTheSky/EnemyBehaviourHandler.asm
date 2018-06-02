@@ -24,7 +24,7 @@ UpdateEnemyBehaviour::
 	cp		19
 	jr		z, .enemy_1_update
 
-	;jp		.end_update
+	jp		.end_update
 	
 .enemy_0_update
 	call	Enemy0Update

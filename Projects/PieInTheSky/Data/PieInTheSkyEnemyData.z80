@@ -1,0 +1,16 @@
+; Enemy behaviour data
+; Each line is an enemy
+; Data setup:
+; column 1: tile no
+; column 2: health
+; column 3: tile width
+; column 4: tile height
+; column 5: misc
+; column 6: misc
+; column 7: misc
+
+EnemyBehaviourDataCount   EQU 2
+
+EnemyBehaviourData::
+DB $12,$03,$02,$01,$00,$00,$00 ; Enemy Id 18
+DB $13,$03,$01,$01,$00,$00,$00 ; Enemy Id 19

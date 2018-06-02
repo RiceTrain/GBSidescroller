@@ -7,7 +7,8 @@ InitEnemyData::
 .init_enemy_data_loop
 	ld 		a, $ff
 	ld		[hl], a
-	ld		e, 5		; 5 bytes per enemy
+	ld		a, [enemy_data_size]
+	ld		e, a
 	add		hl, de
 
 	dec		b
@@ -88,11 +89,10 @@ UpdateEnemyScrollPositions::
 	pop		de
 
 .update_enemies_pos_loop_end
-	inc		hl
-	inc		hl
-	inc		hl
-	inc 	hl
-	inc 	hl
+	ld		d, 0
+	ld		a, [enemy_data_size]
+	ld		e, a
+	add		hl, de
 	dec		b
 	jp		nz, .update_enemies_pos_loop
 	
@@ -119,11 +119,10 @@ CreateEnemy::
 	cp		$ff			; is this enemy unused
 	jr		z, .found_empty_enemy
 
-	inc		hl	; skip 5 bytes, to top of next enemy
-	inc		hl
-	inc		hl
-	inc		hl
-	inc		hl
+	ld		d, 0
+	ld		a, [enemy_data_size]
+	ld		e, a
+	add		hl, de
 
 	dec		b
 	jr		nz, .find_empty_enemy_loop
@@ -185,11 +184,10 @@ UpdateEnemyBehaviours::
 	pop		bc
 
 .update_enemies_loop_end
-	inc		hl
-	inc		hl
-	inc		hl
-	inc		hl
-	inc		hl ;5 bytes per enemy data
+	ld		a, [enemy_data_size]
+	ld		e, a
+	ld		d, 0
+	add		hl, de
 	dec		b
 	jp		nz, .update_enemies_loop
 	

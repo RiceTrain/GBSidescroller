@@ -4,6 +4,9 @@
 ; byte 3: tile width
 ; byte 4: tile height
 ; byte 5: animation data address
+; byte 6: misc
+; byte 7: misc
+; byte 8: misc
 
 ;------------------------------------------------------
 ; setup enemies
@@ -11,52 +14,161 @@
 ;------------------------------------------------------
 SetupNewEnemy::
 	ld		a, [hli]
+	ld		c, a
 	
-	cp		18
-	jr		z, .enemy_0_data
-	cp		19
-	jr		z, .enemy_1_data
-	cp		23
-	jr		z, .boss_0_data
+	ld		de, EnemyBehaviourData
+	ld		a, EnemyBehaviourDataCount
+	ld		b, a
+.find_enemy_in_data_loop
+	ld		a, [de]
+	cp		c
+	jr		z, .enemy_data_found
+	push	hl
+	ld		h, 0
+	ld		l, 7
+	add		de, hl
+	pop		hl
 	
-.enemy_0_data
-	call	Enemy0Data
-	jp		.anim_data_setup
-.enemy_1_data
-	call	Enemy1Data
-	jp		.anim_data_setup
-.boss_0_data
-	call	Boss0Data
-	jp		.anim_data_setup
+	dec 	b
+	jr		z, .cancel_setup_data
+	
+.enemy_data_found
+	ld		a, [enemy_data_size]
+	dec		a
+	ld		b, a
+.enemy_data_found_loop
+	inc		de
+	ld		a, b
+	cp		4
+	jr		nz, .continue_with_loop
+	inc 	hl ;skips where the animation address will be stored
+	
+.continue_with_loop
+	ld		a, [de]
+	ld		[hli], a
+	dec		b
+	jr		nz, .enemy_data_found_loop
+	
+	dec		hl
+	dec		hl
+	dec		hl
+	dec		hl
 	
 .anim_data_setup
 	call	GetAnimationData
 	ld		a, [hl]
 	cp		$ff
-	jr		z, .cancel_setup
+	jr		z, .cancel_setup_anim
 	
+	push	hl
+	
+	ld		a, c
+	cp		4
+	jr		z, .enemy_1x1_anim_sprite
+	cp		6
+	jr		z, .enemy_2x1_anim_sprite
+	cp		10
+	jr		z, .enemy_2x2_anim_sprite
+	cp		0
+	jr		z, .boss_anim_sprite
+	
+.enemy_1x1_anim_sprite
+	ld		hl, EnemyAnim1x1Data
+	ld		a, EnemyAnimData1x1Count
+	ld		b, a
+	ld		c, 5
+	jr		.find_anim_data
+.enemy_2x1_anim_sprite
+	ld		hl, EnemyAnim2x1Data
+	ld		a, EnemyAnimData2x1Count
+	ld		b, a
+	ld		c, 8
+	jr		.find_anim_data
+.enemy_2x2_anim_sprite
+	ld		hl, EnemyAnim2x2Data
+	ld		a, EnemyAnimData2x2Count
+	ld		b, a
+	ld		c, 14
+	jr		.find_anim_data
+.boss_anim_sprite
+	ld		hl, EnemyAnimBossData
+	ld		a, EnemyAnimDataBossCount
+	ld		b, a
+	ld		c, 29
+	
+.find_anim_data
+	push	de
 	ld		a, [enemy_tile]
-	cp		18
-	jr		z, .enemy_0_anim_sprite
-	cp		19
-	jr		z, .enemy_1_anim_sprite
-	cp		23
-	jr		z, .boss_0_anim_sprite
+	ld		d, a
+.find_anim_data_loop
+	ld		a, [hl]
+	cp		d
+	jr		z, .enemy_anim_data_found
 	
-.enemy_0_anim_sprite
-	call	Enemy0AnimSprite
-	jp		.end_setup
-.enemy_1_anim_sprite
-	call	Enemy1AnimSprite
-	jp		.end_setup
-.boss_0_anim_sprite
-	call	Boss0AnimSprite
-	jp		.end_setup
+	dec		b
+	ld		d, 0
+	ld		e, c
+	add		hl, de
+	ld		a, [enemy_tile]
+	ld		d, a
 	
-.cancel_setup
+	jr		nz, .find_anim_data_loop
+	
+.enemy_anim_data_found
+	ld		a, c
+	cp		5
+	jr		z, .enemy_1x1_anim_data_length
+	cp		8
+	jr		z, .enemy_2x1_anim_data_length
+	cp		14
+	jr		z, .enemy_2x2_anim_data_length
+	cp		29
+	jr		z, .boss_anim_data_length
+	
+.enemy_1x1_anim_data_length
+	ld		b, 3
+	jr		.transfer_anim_data
+.enemy_2x1_anim_data_length
+	ld		b, 5
+	jr		.transfer_anim_data
+.enemy_2x2_anim_data_length
+	ld		b, 9
+	jr		.transfer_anim_data
+.boss_anim_data_length
+	ld		b, 19
+
+.transfer_anim_data
+	pop 	de
+	inc		hl
+.transfer_anim_data_loop
+	ld		a, [hli]
+	ld		[de], a
+	inc 	de
+	dec		b
+	jr		nz, .transfer_anim_data_loop
+	
+.set_initial_sprites
+	inc		hl
+	ld		bc, hl
+	pop		hl
+	
+	push	bc
+	call	GetEmptySpriteAddress
+	pop 	bc
+	
+	ld		hl, bc
+	
+	;hl contains curent external data pos at start of initial tiles
+	;de contains start of sprite addresses
+	;transfer hl to de
+	
+	jr		.end_setup
+	
+.cancel_setup_anim
 	dec		hl
 	dec		hl
 	dec		hl
+.cancel_setup_data
 	dec		hl
 	ld		a, $ff
 	ld		[hl], a
@@ -111,6 +223,7 @@ GetAnimationData::
 	
 .setupBossAnimData
 	ld		de, boss_animation_data
+	ld		c, 0
 	jr		.found_empty_anim_data
 	
 .get_anim_data_loop
@@ -215,4 +328,4 @@ GetEmptySpriteAddress::
 
 	ret
 	
-INCLUDE "Projects/PieInTheSky/EnemySetup.asm"
+INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyEnemyData.z80"
