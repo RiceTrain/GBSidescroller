@@ -10,6 +10,7 @@
 ; column 7: misc
 
 EnemyBehaviourDataCount   EQU 2
+EnemyBehaviourDataItemLength   EQU 7
 
 EnemyBehaviourData::
 DB $12,$03,$02,$01,$00,$00,$00 ; Enemy Id 18

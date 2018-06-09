@@ -125,7 +125,11 @@ enemy_tile:
 ds		1;
 new_enemy_y_pos:
 ds		1;
+new_enemy_anim_data_length:
+ds		1;
 enemy_tile_count:
+ds		1;
+enemy_tile_width:
 ds		1;
 
 bullet_data:
