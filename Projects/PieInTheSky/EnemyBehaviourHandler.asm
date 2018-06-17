@@ -63,7 +63,7 @@ UpdateEnemySpritePositions::
 	jr		z, .end_update
 	cp		3
 	jr		z, .update_2x1
-	cp		3
+	cp		4
 	jr		z, .update_2x2
 	cp		6
 	jr		z, .update_boss

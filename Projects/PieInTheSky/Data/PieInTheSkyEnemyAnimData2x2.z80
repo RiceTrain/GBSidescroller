@@ -6,7 +6,7 @@
 ; column 3-10: tile numbers
 ; column 11-14: initial tile numbers
 
-EnemyAnimData2x2Count   EQU 1
-
 EnemyAnim2x2Data::
-DB $fe,$1e,$13,$12,$15,$14,$12,$13,$14,$15,$13,$12,$15,$14
+DB $13,$1e,$13,$12,$15,$14,$12,$13,$14,$15,$13,$12,$15,$14
+
+EnemyAnimData2x2Count   EQU 1

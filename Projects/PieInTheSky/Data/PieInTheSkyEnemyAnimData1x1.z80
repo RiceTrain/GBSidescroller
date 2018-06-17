@@ -6,7 +6,7 @@
 ; column 3-4: tile number
 ; column 5: initial tile number
 
-EnemyAnimData1x1Count   EQU 1
-
 EnemyAnim1x1Data::
 DB $13,$46,$13,$12,$13
+
+EnemyAnimData1x1Count   EQU 1

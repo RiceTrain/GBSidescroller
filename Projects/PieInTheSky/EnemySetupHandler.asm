@@ -42,6 +42,7 @@ SetupNewEnemy::
 	
 	dec 	b
 	jp		z, .cancel_setup_data
+	jr		nz, .find_enemy_in_data_loop
 	
 .enemy_data_found
 	ld		a, [enemy_data_size]
@@ -152,6 +153,7 @@ SetupNewEnemy::
 
 .transfer_anim_data
 	pop 	de
+	inc		de
 	inc		hl
 .transfer_anim_data_loop
 	ld		a, [hli]
@@ -161,7 +163,7 @@ SetupNewEnemy::
 	jr		nz, .transfer_anim_data_loop
 	
 .set_initial_sprites
-	inc		hl
+	dec 	de
 	ld		b, h
 	ld		c, l
 	pop		hl

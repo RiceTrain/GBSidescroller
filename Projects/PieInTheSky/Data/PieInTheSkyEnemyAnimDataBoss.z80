@@ -6,7 +6,7 @@
 ; column 3-20: tile number
 ; column 21-29: initial tile number
 
-EnemyAnimDataBossCount   EQU 1
-
 EnemyAnimBossData::
 DB $17,$0a, $17,$18,$17,$1a,$1a,$1a,$19,$18,$19, $17,$18,$17,$1a,$1a,$1a,$19,$18,$19, $17,$18,$17,$1a,$1a,$1a,$19,$18,$19
+
+EnemyAnimDataBossCount   EQU 1
