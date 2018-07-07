@@ -22,6 +22,28 @@ SELECT_BUTTON_MASK		equ		%00000100
 B_BUTTON_MASK			equ		%00000010
 A_BUTTON_MASK			equ		%00000001
 
+AUD_1_SWEEP				equ		$10
+AUD_1_LENGTH			equ		$11
+AUD_1_ENV				equ		$12
+AUD_1_LOW				equ		$13
+AUD_1_HIGH				equ		$14
+AUD_2_LENGTH			equ		$16
+AUD_2_ENV				equ		$17
+AUD_2_LOW				equ		$18
+AUD_2_HIGH				equ		$19
+AUD_3_ENA				equ		$1A
+AUD_3_LENGTH			equ		$1B
+AUD_3_LEVEL				equ		$1C
+AUD_3_LOW				equ		$1D
+AUD_3_HIGH				equ		$1E
+AUD_4_LENGTH			equ		$20
+AUD_4_ENV				equ		$21
+AUD_4_POLY				equ		$22
+AUD_4_GO				equ		$23
+AUD_VOLUME				equ		$24
+AUD_TERM				equ		$25
+AUD_ENA					equ		$26
+
 DIV_REGISTER			equ		$04		; divide timer... read to get time, write to reset it to 0
 TIMA_REGISTER			equ		$05		; main timer... freq is set in TAC reg, generates interupt when overflows
 TMA_REGISTER			equ		$06		; Timer Modulo... main timer loaded with this value after it overflows

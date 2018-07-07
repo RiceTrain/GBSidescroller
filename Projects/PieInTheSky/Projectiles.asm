@@ -216,6 +216,8 @@ LaunchBullet::
 	inc		hl
 	ld		[hl], 0
 
+	call	PlayBulletSound
+	
 	pop		de
 	pop		bc
 	pop		af

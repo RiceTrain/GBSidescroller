@@ -259,7 +259,8 @@ PlayerDeathFrame3::
 	
 	ret
 	
-INCLUDE "Projects/PieInTheSky/Hardware.asm"
+INCLUDE "Projects/PieInTheSky/Input.asm"
+INCLUDE "Projects/PieInTheSky/SoundEffectsPlayer.asm"
 INCLUDE "Projects/PieInTheSky/Player.asm"
 INCLUDE "Projects/PieInTheSky/Projectiles.asm"
 INCLUDE "Projects/PieInTheSky/Enemies.asm"
