@@ -21,6 +21,8 @@ start::
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
 	ldh		[SCROLL_BKG_Y], a
 	
+	call 	InitSoundChannels
+	
 	ld		a, 38
 	ld		[TestMapBlockTotal], a
 	ld		a, 8
