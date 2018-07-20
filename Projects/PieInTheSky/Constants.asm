@@ -118,7 +118,37 @@ SPRITE_FLAGS_PRIORITY	equ		%10000000	; sprite display priority (0=on top bkg & w
 ; start of the game rom (address 0000)
 ;-------------------------------------------------------------------------
 SECTION	"ROM_Start",HOME[$0000]
-  
+RST_00:	
+	jp	$100
+
+SECTION	"Org $08",HOME[$08]
+RST_08:	
+	jp	$100
+
+SECTION	"Org $10",HOME[$10]
+RST_10:
+	jp	$100
+
+SECTION	"Org $18",HOME[$18]
+RST_18:
+	jp	$100
+
+SECTION	"Org $20",HOME[$20]
+RST_20:
+	jp	$100
+
+SECTION	"Org $28",HOME[$28]
+RST_28:
+	jp	$100
+
+SECTION	"Org $30",HOME[$30]
+RST_30:
+	jp	$100
+
+SECTION	"Org $38",HOME[$38]
+RST_38:
+	jp	$100
+	
 SECTION	"VBlank_IRQ_Jump",HOME[$0040]
 ; Vertical Blanking interrupt
 	jp	VBlankFunc
@@ -142,7 +172,7 @@ SECTION	"Joypad_IRQ_Jump",HOME[$0060]
 SECTION	"GameBoy_Header_Start",HOME[$0100]
 ; begining of Game Boy game header
 	nop
-	jp 		$150         ; goto beginning of game code
+	jp 		start         ; goto beginning of game code
 
 ; Game Boy standard header... DO NOT CHANGE!
 db $CE,$ED,$66,$66,$CC,$0D,$00,$0B,$03,$73,$00,$83,$00,$0C,$00,$0D
