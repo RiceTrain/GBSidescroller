@@ -2,12 +2,12 @@
 ; Plays sound effects
 ;-----------------------------------------------------------------------
 InitSoundChannels::
-	ld		a, %11111111
-	ld		[AUD_VOLUME], a
-	ld		a, %11111111
-	ld		[AUD_TERM], a
-	ld		a, %11110001
-	ld		[AUD_ENA], a
+	;ld		a, %11111111
+	;ld		[AUD_VOLUME], a
+	;ld		a, %11111111
+	;ld		[AUD_TERM], a
+	;ld		a, %11110001
+	;ld		[AUD_ENA], a
 
 	ret
 PlayBulletSound::

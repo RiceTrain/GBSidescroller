@@ -7,6 +7,9 @@ InitWorkingVariables::
 	ld		[CurrentWindowTileX], a
 	ld		[CurrentMapBlock], a
 	ld		[current_bullet_direction], a
+	ld		[ScrollTimer], a
+	ld		[joypad_held], a
+	ld		[joypad_down], a
 	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a

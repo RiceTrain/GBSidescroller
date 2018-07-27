@@ -15,15 +15,6 @@ start::
 	ld		a, VBLANK_INT			; set vblank interrupt bit
 	ldh		[INTERRUPT_ENABLE], a	; load it to the hardware register
 
-	;call 	InitSoundChannels
-	
-	ld		a, 38
-	ld		[TestMapBlockTotal], a
-	ld		a, 8
-	ld		[enemy_data_size], a
-	
-	;call	InitLevelStart
-	
 	ld		a, 0
 	ld		[vblank_flag], a
 	
@@ -35,6 +26,8 @@ start::
 	cp		0
 	jr		z, .wait_for_vblank
 	
+	di
+	
 	; standard inits
 	sub		a	;	a = 0
 	ldh		[LCDC_STATUS], a	; init status
@@ -42,20 +35,32 @@ start::
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
 	ldh		[SCROLL_BKG_Y], a
 	
+	ld		a, 38
+	ld		[TestMapBlockTotal], a
+	ld		a, 8
+	ld		[enemy_data_size], a
+	
+	call	InitLevelStart
+	
 	; set display to on, background on, window off, sprites on, sprite size 8x8
 	;	tiles at $8000, background map at $9800, window map at $9C00
 	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_MAP_LOC
 	ldh		[LCDC_CONTROL],a
+	
+	call 	InitSoundChannels
+	
+	ld		a, 0
+	ld		[vblank_flag], a
+	
+	call 	DMA_COPY
+	ei
 
 ; main game loop
 Game_Loop::
-	halt
-	nop
-	
 	; don't do a frame update unless we have had a vblank
 	ld		a, [vblank_flag]
 	cp		0
-	jp		z, Game_Loop
+	jr		z, Game_Loop
 	
 	; reset vblank flag
 	ld		a, 0
@@ -63,6 +68,7 @@ Game_Loop::
 	
 	call 	Main_Game
 	
+	call	$FF80
 	jr		Game_Loop
 
 Main_Game::
@@ -109,38 +115,6 @@ Main_Game_Loop::
 	call	AnimateShip
 	
 	ret
-	
-;---------------------------------------------------
-; my vblank routine - do all graphical changes here
-; while the display is not drawing
-;---------------------------------------------------
-VBlankFunc::
-	di		; disable interrupts
-	push	af
-	push    bc
-    push    de
-    push    hl
-	
-; load the sprite attrib table to OAM memory
-.vblank_sprite_DMA
-	ld		a, $c0				; dma from $c000 (where I have my local copy of the attrib table)
-	ldh		[DMA_REGISTER], a	; start the dma
-
-	ld		a, $28		; wait for 160 microsec (using a loop)
-.vblank_dma_wait
-	dec		a
-	jr		nz, .vblank_dma_wait
-
-	; set the vblank occured flag
-	ld		a, 1
-	ld		[vblank_flag], a
-	
-	pop     hl
-	pop     de
-	pop     bc
-	pop 	af
-	ei		; enable interrupts
-	reti	; and done
 	
 InitLevelStart::
 	call 	InitWorkingVariables
@@ -304,7 +278,41 @@ PlayerDeathFrame3::
 	ld		[spaceshipLAnim2_flags], a
 	
 	ret
+
+DMA_COPY::
+  ; load de with the HRAM destination address
+  ld  de,$FF80
+
+  rst $28
+
+  ; the amount of data we want to copy into HRAM, $000D which is 13 bytes
+  DB  $00,$0D
+
+  ; this is the above DMA subroutine hand assembled, which is 13 bytes long
+  DB  $F5, $3E, $C0, $EA, $46, $FF, $3E, $28, $3D, $20, $FD, $F1, $D9
+  ret
+  
+;---------------------------------------------------
+; my vblank routine - do all graphical changes here
+; while the display is not drawing
+;---------------------------------------------------
+VBlankFunc::
+	di		; disable interrupts
+	push	af
+	push    bc
+    push    de
+    push    hl
+
+	; set the vblank occured flag
+	ld		a, 1
+	ld		[vblank_flag], a
 	
+	pop     hl
+	pop     de
+	pop     bc
+	pop 	af
+	reti	; and done
+  
 INCLUDE "Projects/PieInTheSky/Input.asm"
 INCLUDE "Projects/PieInTheSky/SoundEffectsPlayer.asm"
 INCLUDE "Projects/PieInTheSky/Player.asm"
