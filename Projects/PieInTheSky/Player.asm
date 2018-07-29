@@ -75,6 +75,8 @@ ResolvePlayerScrollCollisions::
 	inc 	hl
 	inc 	hl
 	
+	call	Wait_For_Vram
+	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		nz, .MoveShipBackLeft
@@ -85,6 +87,8 @@ ResolvePlayerScrollCollisions::
 	ld		c, a
 	add		hl, bc
 	
+	call	Wait_For_Vram
+	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		z, .return_to_main
@@ -92,6 +96,8 @@ ResolvePlayerScrollCollisions::
 .MoveShipBackLeft
 	call 	StoreCurrentPlayerAnimAddress
 	inc		hl
+	
+	call	Wait_For_Vram
 	
 	ld		a, [spaceshipL_xpos]
 	dec		a
@@ -108,12 +114,14 @@ ResolvePlayerScrollCollisions::
 	jr		z, .store_vertical_gun_addr
 	
 	ld		de, spaceshipGun_xpos
-	jp		.scroll_gun_left
+	jr		.scroll_gun_left
 	
 .store_vertical_gun_addr
 	ld		de, spaceshipGunVertical_xpos
 
 .scroll_gun_left
+	call	Wait_For_Vram
+	
 	ld		a, [de]
 	dec		a
 	ld		[de], a
@@ -186,6 +194,8 @@ CheckDirectionInputs::
 	bit		DPAD_UP, a
 	jp		z, .check_for_down	; if button not pressed then done
 
+	call	Wait_For_Vram
+	
 	; move sprite up a pixel
 	ld		a, [spaceshipL_ypos]
 	
@@ -196,24 +206,20 @@ CheckDirectionInputs::
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
+	ld		a, [de]
+	dec		a
+	ld		[de], a
+	
 	push	hl
 	call 	StoreCurrentPlayerAnimAddress
 	ld		a, [spaceshipL_ypos]
 	ld		[hl], a
 	pop		hl
 	
-	ld		a, [de]
-	dec		a
-	ld		[de], a
-
 	call 	FindShipTileIndexes
 	call 	StoreCurrentGunSpriteAddr
 	
-	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		0
-	jr		nz, .MoveShipBackDown
-
-	inc		hl
+	call	Wait_For_Vram
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
@@ -221,25 +227,37 @@ CheckDirectionInputs::
 
 	inc		hl
 	
+	call	Wait_For_Vram
+	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		z, .check_for_left
+	jr		nz, .MoveShipBackDown
+
+	inc		hl
+	
+	call	Wait_For_Vram
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		0
+	jp		z, .check_for_left
 	
 .MoveShipBackDown
+	call	Wait_For_Vram
+	
 	ld		a, [spaceshipL_ypos]
 	inc		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
+	ld		a, [de]
+	inc		a
+	ld		[de], a
+	
 	push	hl
 	call 	StoreCurrentPlayerAnimAddress
 	ld		a, [spaceshipL_ypos]
 	ld		[hl], a
 	pop		hl
-	
-	ld		a, [de]
-	inc		a
-	ld		[de], a
 	
 	; don't check down, since up + down should never occur
 	jp		.check_for_left
@@ -249,6 +267,8 @@ CheckDirectionInputs::
 	bit		DPAD_DOWN, a
 	jp		z, .check_for_left	; if button not pressed then done
 
+	call	Wait_For_Vram
+	
 	; move sprite up a pixel
 	ld		a, [spaceshipL_ypos]
 	
@@ -259,15 +279,15 @@ CheckDirectionInputs::
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
+	ld		a, [de]
+	inc		a
+	ld		[de], a
+	
 	push	hl
 	call 	StoreCurrentPlayerAnimAddress
 	ld		a, [spaceshipL_ypos]
 	ld		[hl], a
 	pop		hl
-	
-	ld		a, [de]
-	inc		a
-	ld		[de], a
 	
 	call 	FindShipTileIndexes
 	call 	StoreCurrentGunSpriteAddr
@@ -278,37 +298,45 @@ CheckDirectionInputs::
 	ld		c, a
 	add		hl, bc
 	
-	ld		a, [hl] ;Tile ship is on stored at hl
-	cp		0
-	jr		nz, .MoveShipBackUp
-	
-	inc 	hl
+	call	Wait_For_Vram
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		nz, .MoveShipBackUp
 	
 	inc 	hl
+	
+	call	Wait_For_Vram
+	
+	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		0
+	jr		nz, .MoveShipBackUp
+	
+	inc 	hl
+	
+	call	Wait_For_Vram
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		z, .check_for_left
 	
 .MoveShipBackUp
+	call	Wait_For_Vram
+	
 	ld		a, [spaceshipL_ypos]
 	dec		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
+	
+	ld		a, [de]
+	dec		a
+	ld		[de], a
 	
 	push	hl
 	call 	StoreCurrentPlayerAnimAddress
 	ld		a, [spaceshipL_ypos]
 	ld		[hl], a
 	pop		hl
-	
-	ld		a, [de]
-	dec		a
-	ld		[de], a
 	
 .check_for_left
 	inc 	de
@@ -317,6 +345,8 @@ CheckDirectionInputs::
 	bit		DPAD_LEFT, a
 	jp		z, .check_for_right	; if button not pressed then done
 
+	call	Wait_For_Vram
+	
 	; move sprite left one pixel
 	ld		a, [spaceshipL_xpos]
 	
@@ -328,6 +358,10 @@ CheckDirectionInputs::
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 
+	ld		a, [de]
+	dec		a
+	ld		[de], a
+	
 	push	hl
 	call 	StoreCurrentPlayerAnimAddress
 	inc		hl
@@ -336,13 +370,11 @@ CheckDirectionInputs::
 	ld		[hl], a
 	pop		hl
 	
-	ld		a, [de]
-	dec		a
-	ld		[de], a
-	
 	call 	FindShipTileIndexes
 	call 	StoreCurrentGunSpriteAddr
 	inc		de
+	
+	call	Wait_For_Vram
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
@@ -354,16 +386,24 @@ CheckDirectionInputs::
 	ld		c, a
 	add		hl, bc
 	
+	call	Wait_For_Vram
+	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		z, .done_checking_dpad
+	jp		z, .done_checking_dpad
 	
 .MoveShipBackRight
+	call	Wait_For_Vram
+	
 	ld		a, [spaceshipL_xpos]
 	inc		a
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
+	
+	ld		a, [de]
+	inc		a
+	ld		[de], a
 	
 	push	hl
 	call 	StoreCurrentPlayerAnimAddress
@@ -373,10 +413,6 @@ CheckDirectionInputs::
 	ld		[hl], a
 	pop		hl
 	
-	ld		a, [de]
-	inc		a
-	ld		[de], a
-	
 	jp		.done_checking_dpad	; if left was pressed, don't check right
 
 .check_for_right
@@ -384,6 +420,8 @@ CheckDirectionInputs::
 	bit		DPAD_RIGHT, a
 	jp		z, .done_checking_dpad	; if button not pressed then done
 
+	call	Wait_For_Vram
+	
 	; move sprite left one pixel
 	ld		a, [spaceshipL_xpos]
 	
@@ -395,6 +433,10 @@ CheckDirectionInputs::
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 
+	ld		a, [de]
+	inc		a
+	ld		[de], a
+	
 	push	hl
 	call 	StoreCurrentPlayerAnimAddress
 	inc		hl
@@ -403,16 +445,14 @@ CheckDirectionInputs::
 	ld		[hl], a
 	pop		hl
 	
-	ld		a, [de]
-	inc		a
-	ld		[de], a
-	
 	call 	FindShipTileIndexes
 	call 	StoreCurrentGunSpriteAddr
 	inc 	de
 	
 	inc 	hl
 	inc 	hl
+	
+	call	Wait_For_Vram
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
@@ -424,16 +464,24 @@ CheckDirectionInputs::
 	ld		c, a
 	add		hl, bc
 	
+	call	Wait_For_Vram
+	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		z, .done_checking_dpad
 	
 .MoveShipBackLeft
+	call	Wait_For_Vram
+	
 	ld		a, [spaceshipL_xpos]
 	dec		a
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
+	
+	ld		a, [de]
+	dec		a
+	ld		[de], a
 	
 	push	hl
 	call 	StoreCurrentPlayerAnimAddress
@@ -442,10 +490,6 @@ CheckDirectionInputs::
 	sub		8
 	ld		[hl], a
 	pop		hl
-	
-	ld		a, [de]
-	dec		a
-	ld		[de], a
 	
 .done_checking_dpad
 	ret

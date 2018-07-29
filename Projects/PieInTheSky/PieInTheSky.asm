@@ -7,7 +7,7 @@ INCLUDE "Projects/PieInTheSky/Constants.asm"
 SECTION	"Game_Code_Start",HOME[$0150]
 ; begining of game code
 start::
-	di
+	ei
 	; init the stack pointer
 	ld		sp, STACK_TOP
 	
@@ -18,53 +18,53 @@ start::
 	ld		a, 0
 	ld		[vblank_flag], a
 	
-	; allow interrupts to start occuring
-	ei
-	
-.wait_for_vblank
-	ld		a, [vblank_flag]
-	cp		0
-	jr		z, .wait_for_vblank
-	
-	di
+	call	Wait_For_Vblank
 	
 	; standard inits
 	sub		a	;	a = 0
 	ldh		[LCDC_STATUS], a	; init status
 	ldh		[LCDC_CONTROL], a	; init LCD to everything off
-	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
-	ldh		[SCROLL_BKG_Y], a
 	
-	ld		a, 38
-	ld		[TestMapBlockTotal], a
-	ld		a, 8
-	ld		[enemy_data_size], a
-	
-	call	InitLevelStart
+	call	CLEAR_MAP
+	call 	CLEAR_OAM
+	call 	CLEAR_RAM
 	
 	; set display to on, background on, window off, sprites on, sprite size 8x8
 	;	tiles at $8000, background map at $9800, window map at $9C00
 	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_MAP_LOC
 	ldh		[LCDC_CONTROL],a
 	
+	ld		a, 38
+	ld		[TestMapBlockTotal], a
+	ld		a, 8
+	ld		[enemy_data_size], a
+	
+	ld		a, 0
+	ld		[vblank_flag], a
+	
+	call	Wait_For_Vblank
+	
+	call	InitLevelStart
 	call 	InitSoundChannels
 	
 	ld		a, 0
 	ld		[vblank_flag], a
 	
 	call 	DMA_COPY
-	ei
 
 ; main game loop
 Game_Loop::
-	; don't do a frame update unless we have had a vblank
-	ld		a, [vblank_flag]
-	cp		0
-	jr		z, Game_Loop
+	halt
+	nop
+	
+	call	Wait_For_Vblank
 	
 	; reset vblank flag
 	ld		a, 0
 	ld		[vblank_flag], a
+	
+	; get this frame's joypad info
+	call	ReadJoypad
 	
 	call 	Main_Game
 	
@@ -100,9 +100,6 @@ Main_Game_Loop::
 	call 	ScrollLevel
 	call 	UpdateBulletTimers
 	
-	; get this frame's joypad info
-	call	ReadJoypad
-
 	; update any active bullets
 	; do this before MoveSpaceship, since we want the bullet to display at
 	; its launch position for one frame
@@ -140,6 +137,54 @@ InitLevelStart::
 	
 	ret
 	
+CLEAR_MAP::
+  ld  hl, MAP_MEM_LOC_0
+  ld  bc, $400
+  push hl
+
+.clear_map_loop
+  ;wait for hblank
+  ld  h, $ff
+  ld  l, LCDC_STATUS
+  bit 1,[hl]
+  jr  nz,.clear_map_loop
+  pop hl
+
+  ld  a,$0
+  ld  [hli],a
+  push hl
+  
+  dec bc
+  ld  a,b
+  or  c
+  jr  nz,.clear_map_loop
+  pop hl
+  ret
+
+CLEAR_OAM::
+  ld  hl, SPRITE_ATTRIB_MEM_LOC
+  ld  bc, $A0
+.clear_oam_loop
+  ld  a,$0
+  ld  [hli],a
+  dec bc
+  ld  a,b
+  or  c
+  jr  nz,.clear_oam_loop
+  ret
+
+CLEAR_RAM::
+  ld  hl,$C100
+  ld  bc,$A0
+.clear_ram_loop
+  ld  a,$0
+  ld  [hli],a
+  dec bc
+  ld  a,b
+  or  c
+  jr  nz,.clear_ram_loop
+  ret
+  
 Level_Complete_Update::
 
 	ret
@@ -292,12 +337,24 @@ DMA_COPY::
   DB  $F5, $3E, $C0, $EA, $46, $FF, $3E, $28, $3D, $20, $FD, $F1, $D9
   ret
   
+Wait_For_Vblank::
+	ld		a, [vblank_flag]
+	cp		0
+	jr		z, Wait_For_Vblank
+	ret
+	
+Wait_For_Vram::
+	; only write during
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE		; don't write during sprite and transfer modes
+	jr		nz, Wait_For_Vram
+	ret
+	
 ;---------------------------------------------------
 ; my vblank routine - do all graphical changes here
 ; while the display is not drawing
 ;---------------------------------------------------
 VBlankFunc::
-	di		; disable interrupts
 	push	af
 	push    bc
     push    de

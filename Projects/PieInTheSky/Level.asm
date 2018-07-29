@@ -99,14 +99,19 @@ LoadMapToBkg::
 	jr		c, .load_tile
 
 .load_zero
-	ld		a, 0
-	jr		.load_into_map_mem
+	ld		b, 0
+	jr		.wait_for_write_mode
 	
 .load_tile
-	ld  	a,[de]
+	ld  	a, [de]
+	ld		b, a
 	inc 	de
 	
+.wait_for_write_mode
+	call Wait_For_Vram
+	
 .load_into_map_mem
+	ld		a, b
 	ld  	[hl],a
 	
 	ld		a, c
@@ -332,14 +337,19 @@ HandleColumnLoad::
 	jr		c, .load_tile
 
 .load_zero
-	ld		a, 0
-	jr		.load_into_map_mem
+	ld		b, 0
+	jr		.wait_for_write_mode
 	
 .load_tile
 	ld		a, [hl]
+	ld		b, a
 	inc 	hl
 	
+.wait_for_write_mode
+	call Wait_For_Vram
+	
 .load_into_map_mem
+	ld		a, b
 	ld		[de], a
 	
 	cp		10

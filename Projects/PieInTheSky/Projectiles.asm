@@ -143,6 +143,8 @@ LaunchBullet::
 	ret
 
 .found_empty_bullet
+	call	Wait_For_Vram
+	
 	ld		a, [spaceshipR_xpos]
 	sub		4
 	ld		b, a
@@ -164,6 +166,8 @@ LaunchBullet::
 	ld		b, a
 	
 .setup_y_pos
+	call	Wait_For_Vram
+	
 	; calc bullet y launch pos
 	ld		a, [spaceshipR_ypos]
 	ld		c, a
@@ -207,6 +211,8 @@ LaunchBullet::
 
 	add		hl, de	; I should be pointing at the correct sprite addr
 
+	call	Wait_For_Vram
+	
 	; load the sprite info
 	ld		[hl], c
 	inc		hl
@@ -260,6 +266,8 @@ UpdateBulletTimers::
 	ld		hl, bullet_sprites
 	add		hl, de
 
+	call	Wait_For_Vram
+	
 	ld		a, $00
 	ld		[hli], a
 	ld		[hl], a		; turn of the sprite in the attrib table
@@ -305,6 +313,8 @@ UpdateBulletPositions::
 	ld		e, l	; store the address in de
 	pop		hl
 
+	call	Wait_For_Vram
+	
 .bullet_fly
 	; update this sprite's position
 	ld		a, [de]
@@ -327,6 +337,8 @@ UpdateBulletPositions::
 	ld		c, a
 	
 .update_y_pos
+	call	Wait_For_Vram
+	
 	ld		a, c
 	ld		[de], a
 	ld		[current_bullet_ypos], a
@@ -353,6 +365,8 @@ UpdateBulletPositions::
 	ld		c, a
 	
 .update_x_pos
+	call	Wait_For_Vram
+	
 	ld		a, c
 	ld		[de], a
 	ld		[current_bullet_xpos], a
@@ -368,6 +382,8 @@ UpdateBulletPositions::
 	add		4
 	
 	call FindBulletTileIndexes
+	
+	call	Wait_For_Vram
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
@@ -408,6 +424,8 @@ UpdateBulletPositions::
 	ld		a, $ff
 	ld		[hl], a
 	
+	call	Wait_For_Vram
+	
 	ld		a, 0
 	ld		[de], a
 	inc		de
@@ -447,6 +465,8 @@ UpdateBulletPositions::
 	dec		hl
 	dec		hl
 	
+	call	Wait_For_Vram
+	
 	;Check bullet positions in relation to enemy positions and width
 	;Check bottom point
 	ld		a, [de]
@@ -455,7 +475,7 @@ UpdateBulletPositions::
 	add		8
 
 	cp		c
-	jr		z, .check_enemy_pos_loop_end
+	jp		z, .check_enemy_pos_loop_end
 	jr		c, .check_enemy_pos_loop_end
 	
 	ld		a, [current_enemy_height]
@@ -466,6 +486,8 @@ UpdateBulletPositions::
 	add		8
 	dec		c
 	jr		nz, .height_loop_start
+	
+	call	Wait_For_Vram
 	
 	ld		c, a
 	ld		a, [de]
@@ -478,6 +500,8 @@ UpdateBulletPositions::
 	jr		nc, .check_enemy_pos_loop_end
 
 .check_x_points
+	call	Wait_For_Vram
+	
 	inc		de
 	ld		a, [de]
 	ld		c, a
@@ -497,6 +521,8 @@ UpdateBulletPositions::
 	add		8
 	dec		c
 	jr		nz, .width_loop_start
+	
+	call	Wait_For_Vram
 	
 	ld		c, a
 	inc		de
@@ -536,6 +562,8 @@ UpdateBulletPositions::
 	
 	ld		a, $ff
 	ld		[hl], a
+	
+	call	Wait_For_Vram
 	
 	ld		a, 0
 	ld		[de], a
