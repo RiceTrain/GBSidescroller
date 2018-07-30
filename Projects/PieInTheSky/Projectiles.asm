@@ -383,6 +383,10 @@ UpdateBulletPositions::
 	
 	call FindBulletTileIndexes
 	
+	ld		a, h
+	cp		$9a
+	jr		nc, .destroy_bullet_on_collision_or_bounds
+	
 	call	Wait_For_Vram
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
@@ -487,9 +491,10 @@ UpdateBulletPositions::
 	dec		c
 	jr		nz, .height_loop_start
 	
+	ld		c, a
+	
 	call	Wait_For_Vram
 	
-	ld		c, a
 	ld		a, [de]
 	add		c
 	ld		c, a
@@ -522,9 +527,10 @@ UpdateBulletPositions::
 	dec		c
 	jr		nz, .width_loop_start
 	
+	ld		c, a
+	
 	call	Wait_For_Vram
 	
-	ld		c, a
 	inc		de
 	ld		a, [de]
 	dec 	de
@@ -624,18 +630,18 @@ FindBulletTileIndexes::
 	jr		c, .StartYLoop
 	sub		8
 	inc 	b
-	jp		.XSubLoop
+	jr		.XSubLoop
 
 .StartYLoop
+	ld		c, 0
 	ld 		a, [current_bullet_ypos]
-	sub		4
-	ld		c, -2
+	sub		28
 	
 .YSubLoop
 	jr		c, .EndTileIndexLoops
 	sub		8
 	inc 	c
-	jp		.YSubLoop
+	jr		.YSubLoop
 	
 .EndTileIndexLoops
 	ld		a, 0
