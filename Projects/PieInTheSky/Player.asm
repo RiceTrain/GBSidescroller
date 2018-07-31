@@ -203,10 +203,12 @@ CheckDirectionInputs::
 	jp 		z, .check_for_left
 	
 	dec		a
+	dec		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
 	ld		a, [de]
+	dec		a
 	dec		a
 	ld		[de], a
 	
@@ -250,10 +252,12 @@ CheckDirectionInputs::
 	
 	ld		a, [spaceshipL_ypos]
 	inc		a
+	inc		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
 	ld		a, [de]
+	inc		a
 	inc		a
 	ld		[de], a
 	
@@ -280,10 +284,12 @@ CheckDirectionInputs::
 	jp 		z, .check_for_left
 	
 	inc		a
+	inc		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
 	ld		a, [de]
+	inc		a
 	inc		a
 	ld		[de], a
 	
@@ -329,10 +335,12 @@ CheckDirectionInputs::
 	
 	ld		a, [spaceshipL_ypos]
 	dec		a
+	dec		a
 	ld		[spaceshipL_ypos], a
 	ld		[spaceshipR_ypos], a
 	
 	ld		a, [de]
+	dec		a
 	dec		a
 	ld		[de], a
 	
@@ -358,11 +366,13 @@ CheckDirectionInputs::
 	jp 		z, .done_checking_dpad
 	
 	dec		a
+	dec		a
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 
 	ld		a, [de]
+	dec		a
 	dec		a
 	ld		[de], a
 	
@@ -401,11 +411,13 @@ CheckDirectionInputs::
 	
 	ld		a, [spaceshipL_xpos]
 	inc		a
+	inc		a
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 	
 	ld		a, [de]
+	inc		a
 	inc		a
 	ld		[de], a
 	
@@ -433,11 +445,13 @@ CheckDirectionInputs::
 	jp 		z, .done_checking_dpad
 	
 	inc		a
+	inc		a
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 
 	ld		a, [de]
+	inc		a
 	inc		a
 	ld		[de], a
 	
@@ -479,11 +493,13 @@ CheckDirectionInputs::
 	
 	ld		a, [spaceshipL_xpos]
 	dec		a
+	dec		a
 	ld		[spaceshipL_xpos], a
 	add		a, 8
 	ld		[spaceshipR_xpos], a
 	
 	ld		a, [de]
+	dec		a
 	dec		a
 	ld		[de], a
 	

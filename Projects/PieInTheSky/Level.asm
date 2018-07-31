@@ -168,10 +168,9 @@ LoadMapToBkg::
 ; init the palettes to basic
 ;----------------------------------------------------
 InitPalettes::
-	ld		a, %10010011	; set palette colors
-
-	; load it to all the palettes
+	ld		a, %10011100	; set palette colors
 	ldh		[PALETTE_BKG], a
+	ld		a, %10010011	; set palette colors
 	ldh		[PALETTE_SPRITE_0], a
 	ldh		[PALETTE_SPRITE_1], a
 
@@ -187,7 +186,7 @@ ScrollLevel::
 	ld		[ScrollTimer], a
 	
 	; is it time to scroll yet?
-	and		%00000111
+	and		%00000110
 	jr		nz, .return_to_main
 	
 	ld		a, [CurrentMapBlock]
