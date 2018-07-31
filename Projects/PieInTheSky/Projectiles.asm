@@ -383,8 +383,8 @@ UpdateBulletPositions::
 	
 	call FindBulletTileIndexes
 	
-	ld		a, h
-	cp		$9a
+	ld		a, h ;check if in sprite ram area
+	cp		$9c
 	jr		nc, .destroy_bullet_on_collision_or_bounds
 	
 	call	Wait_For_Vram
@@ -633,9 +633,9 @@ FindBulletTileIndexes::
 	jr		.XSubLoop
 
 .StartYLoop
-	ld		c, 0
+	ld		c, -2
 	ld 		a, [current_bullet_ypos]
-	sub		28
+	sub		4
 	
 .YSubLoop
 	jr		c, .EndTileIndexLoops

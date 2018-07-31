@@ -221,6 +221,10 @@ CheckDirectionInputs::
 	
 	call	Wait_For_Vram
 	
+	ld		a, h ;check if in sprite ram area
+	cp		$9c
+	jr		nc, .MoveShipBackDown
+	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		nz, .MoveShipBackDown
