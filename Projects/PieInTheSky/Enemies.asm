@@ -211,6 +211,8 @@ CheckIfEnemyTile::
 ; enemy just defeated, start death anim
 ;------------------------------------------------------
 StartEnemyExplosion::
+	call 	PlayEnemyExplosionSound
+	
 	push	bc
 	
 	inc		hl

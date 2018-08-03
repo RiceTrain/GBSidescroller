@@ -696,7 +696,8 @@ ResolveShipEnemyCollisions::
 	ret
 	
 DestroyShip::
-	;destroy ship
+	call	PlayEnemyExplosionSound
+	
 	ld		a, 0
 	ld		[spaceshipR_ypos], a
 	ld		[spaceshipR_xpos], a

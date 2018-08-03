@@ -1,3 +1,5 @@
 BulletSoundData::
-DB $3A,$61,$32,$C0
+DB $35,$a1,$32,$C0
+EnemyExplosionSoundData::
+DB $22,$f2,$7b,$80
 	
