@@ -10,35 +10,53 @@ InitSoundChannels::
 	ld		[AUD_ENA], a
 
 	ret
+	
 PlayBulletSound::
 	push	hl
-	push	de
-	push	bc
-	
 	ld		hl, BulletSoundData
-	call	PlaySoundOnChannel4
-	
-	pop		bc
-	pop		de
+	call	PlaySoundOnChannelOne
 	pop		hl
 	
+	ret
+	
+PlaySoundOnChannelOne::
+	ld		a, [hli]
+	ldh		[AUD_1_SWEEP], a
+	ld		a, [hli]
+	ldh		[AUD_1_LENGTH], a
+	ld		a, [hli]
+	ldh		[AUD_1_ENV], a
+	ld		a, [hli]
+	ldh		[AUD_1_LOW], a
+	ld		a, [hl]
+	ldh		[AUD_1_HIGH], a
 	ret
 	
 PlayEnemyExplosionSound::
 	push	hl
-	push	de
-	push	bc
-	
 	ld		hl, EnemyExplosionSoundData
-	call	PlaySoundOnChannel4
-	
-	pop		bc
-	pop		de
+	call	PlaySoundOnChannelFour
 	pop		hl
 	
 	ret
 	
-PlaySoundOnChannel4::
+PlayPlayerBossExplosionSound::
+	push	hl
+	ld		hl, PlayerExplosionSoundData
+	call	PlaySoundOnChannelFour
+	pop		hl
+	
+	ret
+	
+PlayEnemyHitSound::
+	push	hl
+	ld		hl, BossHitSoundData
+	call	PlaySoundOnChannelFour
+	pop		hl
+	
+	ret
+	
+PlaySoundOnChannelFour::
 	ld		a, [hli]
 	ldh		[AUD_4_LENGTH], a
 	ld		a, [hli]
@@ -48,5 +66,6 @@ PlaySoundOnChannel4::
 	ld		a, [hl]
 	ldh		[AUD_4_GO], a
 	ret
+	
 INCLUDE "Projects/PieInTheSky/Data/SoundEffects.z80"
 	

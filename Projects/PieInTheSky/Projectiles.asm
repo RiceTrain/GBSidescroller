@@ -480,7 +480,7 @@ UpdateBulletPositions::
 
 	cp		c
 	jp		z, .check_enemy_pos_loop_end
-	jr		c, .check_enemy_pos_loop_end
+	jp		c, .check_enemy_pos_loop_end
 	
 	ld		a, [current_enemy_height]
 	ld		c, a
@@ -542,6 +542,17 @@ UpdateBulletPositions::
 	jr		z, .check_enemy_pos_loop_end
 	jr		nc, .check_enemy_pos_loop_end
 
+.try_play_hit_sound
+	ld		a, [current_enemy_width]
+	cp		3
+	jr		nz, .bullet_collided_with_enemy
+	
+	ld		a, [current_enemy_height]
+	cp		3
+	jr		nz, .bullet_collided_with_enemy
+	
+	call	PlayEnemyHitSound
+	
 .bullet_collided_with_enemy
 	inc 	hl
 	ld		a, [hl]

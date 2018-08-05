@@ -1,5 +1,9 @@
-BulletSoundData::
-DB $35,$a1,$32,$C0
-EnemyExplosionSoundData::
+BulletSoundData:: ;Channel 1
+DB $15,$4d,$7e,$7b,$86
+EnemyExplosionSoundData:: ;Channel 4
 DB $22,$f2,$7b,$80
+PlayerExplosionSoundData:: ;Channel 4
+DB $3f,$f7,$37,$80
+BossHitSoundData:: ;Channel 4
+DB $1c,$96,$37,$80
 	

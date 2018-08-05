@@ -211,8 +211,6 @@ CheckIfEnemyTile::
 ; enemy just defeated, start death anim
 ;------------------------------------------------------
 StartEnemyExplosion::
-	call 	PlayEnemyExplosionSound
-	
 	push	bc
 	
 	inc		hl
@@ -236,6 +234,8 @@ StartEnemyExplosion::
 	jr		z, .sprite_boss_count
 	
 .sprite_1x1_count
+	call 	PlayEnemyExplosionSound
+	
 	ld		a, 20
 	ld		[hl], a
 	
@@ -246,6 +246,8 @@ StartEnemyExplosion::
 	jp		.end_routine
 	
 .sprite_2x1_count
+	call 	PlayEnemyExplosionSound
+	
 	ld		a, 30
 	ld		[hl], a
 	
@@ -268,6 +270,8 @@ StartEnemyExplosion::
 	jr		.display_explosion_tile
 	
 .sprite_2x2_count
+	call 	PlayEnemyExplosionSound
+	
 	ld		a, 40
 	ld		[hl], a
 	
@@ -283,6 +287,8 @@ StartEnemyExplosion::
 	jr		.display_explosion_tile
 	
 .sprite_boss_count
+	call 	PlayPlayerBossExplosionSound
+	
 	ld		a, 40
 	ld		[hl], a
 	

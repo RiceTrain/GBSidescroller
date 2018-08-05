@@ -201,6 +201,7 @@ CheckDirectionInputs::
 	
 	cp 		16
 	jp 		z, .check_for_left
+	jp 		c, .check_for_left
 	
 	dec		a
 	dec		a
@@ -282,6 +283,7 @@ CheckDirectionInputs::
 	
 	cp 		152
 	jp 		z, .check_for_left
+	jp 		nc, .check_for_left
 	
 	inc		a
 	inc		a
@@ -364,6 +366,7 @@ CheckDirectionInputs::
 	
 	cp 		8
 	jp 		z, .done_checking_dpad
+	jp 		c, .done_checking_dpad
 	
 	dec		a
 	dec		a
@@ -438,11 +441,12 @@ CheckDirectionInputs::
 
 	call	Wait_For_Vram
 	
-	; move sprite left one pixel
+	; move sprite right one pixel
 	ld		a, [spaceshipL_xpos]
 	
 	cp 		152
 	jp 		z, .done_checking_dpad
+	jp 		nc, .done_checking_dpad
 	
 	inc		a
 	inc		a
@@ -696,7 +700,7 @@ ResolveShipEnemyCollisions::
 	ret
 	
 DestroyShip::
-	call	PlayEnemyExplosionSound
+	call	PlayPlayerBossExplosionSound
 	
 	ld		a, 0
 	ld		[spaceshipR_ypos], a
