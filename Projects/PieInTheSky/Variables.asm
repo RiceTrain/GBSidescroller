@@ -1,39 +1,7 @@
-InitWorkingVariables::
-	ld		a, 0
-	ld		[vblank_flag], a
-	ld 		[PixelsScrolled], a
-	ld 		[TotalTilesScrolled], a
-	ld 		[CurrentBGMapScrollTileX], a
-	ld		[CurrentWindowTileX], a
-	ld		[CurrentMapBlock], a
-	ld		[current_bullet_direction], a
-	ld		[ScrollTimer], a
-	ld		[joypad_held], a
-	ld		[joypad_down], a
-	
-	ld		a, $ff
-	ld		[checkpoint_pixels], a
-	
-	ret
-
-;------------------------------------------
-; init the local copy of the sprites
-;------------------------------------------
-InitSprites::
-	ld		hl, $c000	; my sprites are at $c000
-	ld		b, 40*4		; 40 sprites, 4 bytes per sprite
-	ld		a, 0
-.init_sprites_loop
-	ld		[hli], a
-	dec		b
-	jr		nz, .init_sprites_loop
-	
-	ret
-
 ;-------------------------------------------------------------------------
 ; Internal RAM... store dynamic data here
 ;-------------------------------------------------------------------------
-SECTION	"RAM_Start_Sprites",BSS[$c000]
+SECTION	"RAM_Start_Sprites",WRAM0[$c000]
 ; local version of sprite attrib table
 spaceshipL_ypos:
 ds		1
@@ -103,7 +71,7 @@ ds		40
 enemy_sprites_2x2:
 ds		48
 
-SECTION	"RAM_Working_Variables",BSS[$c0A0]
+SECTION	"RAM_Working_Variables",WRAM0[$c0A0]
 
 ; Enemy anim data starts here (8 * 4 of them)
 enemy_animation_data_1x1:
@@ -219,3 +187,53 @@ level_end_reached:
 ds		1
 boss_defeated:
 ds		1
+
+;gbt_player vars
+gbt_playing: DS 1
+
+; pointer to the pattern pointer array
+gbt_pattern_array_ptr:  DS 2 ; LSB first
+IF DEF(GBT_USE_MBC5_512BANKS)
+gbt_pattern_array_bank: DS 2 ; LSB first
+ELSE
+gbt_pattern_array_bank: DS 1
+ENDC
+
+; playing speed
+gbt_speed:: DS 1
+
+; Up to 12 bytes per step are copied here to be handled in functions in bank 1
+gbt_temp_play_data:: DS 12
+
+gbt_loop_enabled:            DS 1
+gbt_ticks_elapsed::          DS 1
+gbt_current_step::           DS 1
+gbt_current_pattern::        DS 1
+gbt_current_step_data_ptr::  DS 2 ; pointer to next step data - LSB first
+IF DEF(GBT_USE_MBC5_512BANKS)
+gbt_current_step_data_bank:: DS 2 ; bank of current pattern data - LSB first
+ELSE
+gbt_current_step_data_bank:: DS 1 ; bank of current pattern data
+ENDC
+
+gbt_channels_enabled:: DS 1
+
+gbt_pan::   DS 4*1 ; Ch 1-4
+gbt_vol::   DS 4*1 ; Ch 1-4
+gbt_instr:: DS 4*1 ; Ch 1-4
+gbt_freq::  DS 3*2 ; Ch 1-3
+
+gbt_channel3_loaded_instrument:: DS 1 ; current loaded instrument ($FF if none)
+
+; Arpeggio -> Ch 1-3
+gbt_arpeggio_freq_index:: DS 3*3 ; {base index, base index+x, base index+y} * 3
+gbt_arpeggio_enabled::    DS 3*1 ; if 0, disabled
+gbt_arpeggio_tick::       DS 3*1
+
+; Cut note
+gbt_cut_note_tick:: DS 4*1 ; If tick == gbt_cut_note_tick, stop note.
+
+; Last step of last pattern this is set to 1
+gbt_have_to_stop_next_step:: DS 1
+
+gbt_update_pattern_pointers:: DS 1 ; set to 1 by jump effects

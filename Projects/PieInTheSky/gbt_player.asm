@@ -33,65 +33,6 @@
 
 ;###############################################################################
 
-    SECTION "GBT_VAR_1",WRAM0
-
-;-------------------------------------------------------------------------------
-
-gbt_playing: DS 1
-
-; pointer to the pattern pointer array
-gbt_pattern_array_ptr:  DS 2 ; LSB first
-IF DEF(GBT_USE_MBC5_512BANKS)
-gbt_pattern_array_bank: DS 2 ; LSB first
-ELSE
-gbt_pattern_array_bank: DS 1
-ENDC
-
-; playing speed
-gbt_speed:: DS 1
-
-; Up to 12 bytes per step are copied here to be handled in functions in bank 1
-gbt_temp_play_data:: DS 12
-
-gbt_loop_enabled:            DS 1
-gbt_ticks_elapsed::          DS 1
-gbt_current_step::           DS 1
-gbt_current_pattern::        DS 1
-gbt_current_step_data_ptr::  DS 2 ; pointer to next step data - LSB first
-IF DEF(GBT_USE_MBC5_512BANKS)
-gbt_current_step_data_bank:: DS 2 ; bank of current pattern data - LSB first
-ELSE
-gbt_current_step_data_bank:: DS 1 ; bank of current pattern data
-ENDC
-
-gbt_channels_enabled:: DS 1
-
-gbt_pan::   DS 4*1 ; Ch 1-4
-gbt_vol::   DS 4*1 ; Ch 1-4
-gbt_instr:: DS 4*1 ; Ch 1-4
-gbt_freq::  DS 3*2 ; Ch 1-3
-
-gbt_channel3_loaded_instrument:: DS 1 ; current loaded instrument ($FF if none)
-
-; Arpeggio -> Ch 1-3
-gbt_arpeggio_freq_index:: DS 3*3 ; {base index, base index+x, base index+y} * 3
-gbt_arpeggio_enabled::    DS 3*1 ; if 0, disabled
-gbt_arpeggio_tick::       DS 3*1
-
-; Cut note
-gbt_cut_note_tick:: DS 4*1 ; If tick == gbt_cut_note_tick, stop note.
-
-; Last step of last pattern this is set to 1
-gbt_have_to_stop_next_step:: DS 1
-
-gbt_update_pattern_pointers:: DS 1 ; set to 1 by jump effects
-
-;###############################################################################
-
-    SECTION "GBT_BANK0",ROM0
-
-;-------------------------------------------------------------------------------
-
 gbt_get_pattern_ptr:: ; a = pattern number
 
     ; loads a pointer to pattern a into gbt_current_step_data_ptr and
@@ -100,15 +41,15 @@ gbt_get_pattern_ptr:: ; a = pattern number
     ld      e,a
     ld      d,0
 
-IF DEF(GBT_USE_MBC5_512BANKS)
-    ld      a,[gbt_pattern_array_bank+0]
-    ld      [rROMB0],a ; MBC5 - Set bank
-    ld      a,[gbt_pattern_array_bank+1]
-    ld      [rROMB1],a ; MBC5 - Set bank
-ELSE
-    ld      a,[gbt_pattern_array_bank]
-    ld      [rROMB0],a ; MBC1, MBC3, MBC5 - Set bank
-ENDC
+;IF DEF(GBT_USE_MBC5_512BANKS)
+;    ld      a,[gbt_pattern_array_bank+0]
+;    ld      [rROMB0],a ; MBC5 - Set bank
+;    ld      a,[gbt_pattern_array_bank+1]
+;    ld      [rROMB1],a ; MBC5 - Set bank
+;ELSE
+;    ld      a,[gbt_pattern_array_bank]
+;    ld      [rROMB0],a ; MBC1, MBC3, MBC5 - Set bank
+;ENDC
 
     ld      hl,gbt_pattern_array_ptr
     ld      a,[hl+]
@@ -375,15 +316,15 @@ ENDC
 
     ; Change to bank with song data
 
-IF DEF(GBT_USE_MBC5_512BANKS)
-    ld      a,[gbt_current_step_data_bank+0]
-    ld      [$2000],a ; MBC5 - Set bank
-    ld      a,[gbt_current_step_data_bank+1]
-    ld      [$3000],a ; MBC5 - Set bank
-ELSE
-    ld      a,[gbt_current_step_data_bank]
-    ld      [$2000],a ; MBC1, MBC3, MBC5 - Set bank
-ENDC
+;IF DEF(GBT_USE_MBC5_512BANKS)
+;    ld      a,[gbt_current_step_data_bank+0]
+;    ld      [$2000],a ; MBC5 - Set bank
+;    ld      a,[gbt_current_step_data_bank+1]
+;    ld      [$3000],a ; MBC5 - Set bank
+;ELSE
+;    ld      a,[gbt_current_step_data_bank]
+;    ld      [$2000],a ; MBC1, MBC3, MBC5 - Set bank
+;ENDC
 
     ; Get step data
 

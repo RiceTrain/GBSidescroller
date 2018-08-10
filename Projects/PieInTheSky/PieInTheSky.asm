@@ -4,7 +4,7 @@
 
 INCLUDE "Projects/PieInTheSky/Constants.asm"
 
-SECTION	"Game_Code_Start",HOME[$0150]
+SECTION	"Game_Code_Start",ROM0[$0150]
 ; begining of game code
 start::
 	ei
@@ -111,29 +111,7 @@ Main_Game_Loop::
 	
 	call	AnimateShip
 	
-	ret
-	
-InitLevelStart::
-	call 	InitWorkingVariables
-	call 	InitLevel
-	
-	ld		a, 0
-	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
-	ldh		[SCROLL_BKG_Y], a
-	ld		[checkpoint_map_block], a
-	ld		[checkpoint_tiles_scrolled], a
-	ld		hl, TestMap
-	call	LoadMapToBkg
-	
-	call	InitSprites
-	
-	call 	InitBulletData
-	call 	InitEnemyData
-	call	InitPlayerData
-	
-	ld		a, 76
-	ld		[checkpoint_ship_y], a
-	call 	InitPlayerSprite
+	call    gbt_update ; Update player
 	
 	ret
 	
@@ -185,6 +163,48 @@ CLEAR_RAM::
   jr  nz,.clear_ram_loop
   ret
   
+InitLevelStart::
+	call 	InitWorkingVariables
+	call 	InitLevel
+	
+	ld		a, 0
+	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
+	ldh		[SCROLL_BKG_Y], a
+	ld		[checkpoint_map_block], a
+	ld		[checkpoint_tiles_scrolled], a
+	ld		hl, TestMap
+	call	LoadMapToBkg
+	
+	call	InitSprites
+	
+	call 	InitBulletData
+	call 	InitEnemyData
+	call	InitPlayerData
+	
+	ld		a, 76
+	ld		[checkpoint_ship_y], a
+	call 	InitPlayerSprite
+	
+	ret
+	
+InitWorkingVariables::
+	ld		a, 0
+	ld		[vblank_flag], a
+	ld 		[PixelsScrolled], a
+	ld 		[TotalTilesScrolled], a
+	ld 		[CurrentBGMapScrollTileX], a
+	ld		[CurrentWindowTileX], a
+	ld		[CurrentMapBlock], a
+	ld		[current_bullet_direction], a
+	ld		[ScrollTimer], a
+	ld		[joypad_held], a
+	ld		[joypad_down], a
+	
+	ld		a, $ff
+	ld		[checkpoint_pixels], a
+	
+	ret
+
 Level_Complete_Update::
 
 	ret
@@ -369,11 +389,18 @@ VBlankFunc::
 	pop     bc
 	pop 	af
 	reti	; and done
-  
+
 INCLUDE "Projects/PieInTheSky/Input.asm"
-INCLUDE "Projects/PieInTheSky/SoundEffectsPlayer.asm"
 INCLUDE "Projects/PieInTheSky/Player.asm"
 INCLUDE "Projects/PieInTheSky/Projectiles.asm"
 INCLUDE "Projects/PieInTheSky/Enemies.asm"
+INCLUDE "Projects/PieInTheSky/SoundPlayer.asm"
 INCLUDE "Projects/PieInTheSky/Level.asm"
+
+; map is here
+INCLUDE "Projects/PieInTheSky/Data/TestMap.z80"
+; tiles are here
+INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyTiles.z80"
+INCLUDE "Projects/PieInTheSky/Data/GameTheme.asm"
+
 INCLUDE "Projects/PieInTheSky/Variables.asm"

@@ -2,13 +2,18 @@
 ; Plays sound effects
 ;-----------------------------------------------------------------------
 InitSoundChannels::
-	ld		a, %11111111
-	ld		[AUD_VOLUME], a
-	ld		a, %11111111
-	ld		[AUD_TERM], a
-	ld		a, %11110001
-	ld		[AUD_ENA], a
+;	ld		a, %11111111
+;	ld		[AUD_VOLUME], a
+;	ld		a, %11111111
+;	ld		[AUD_TERM], a
+;	ld		a, %11110001
+;	ld		[AUD_ENA], a
 
+	ld      de,GameTheme_data
+    ld      bc,BANK(GameTheme_data)
+    ld      a,$05
+    call    gbt_play ; Play song
+	
 	ret
 	
 PlayBulletSound::
@@ -68,4 +73,5 @@ PlaySoundOnChannelFour::
 	ret
 	
 INCLUDE "Projects/PieInTheSky/Data/SoundEffects.z80"
-	
+INCLUDE "Projects/PieInTheSky/gbt_player.asm"
+INCLUDE "Projects/PieInTheSky/gbt_player_bank1.asm"

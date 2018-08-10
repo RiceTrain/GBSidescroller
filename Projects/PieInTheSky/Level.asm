@@ -1,6 +1,3 @@
-; map is here
-INCLUDE "Projects/PieInTheSky/Data/TestMap.z80"
-
 InitLevel::
 	; load the tiles
 	ld		bc, TileLabel
@@ -44,6 +41,20 @@ LoadTiles::
 	dec		e
 	jp		nz, .load_tiles_loop
 
+	ret
+
+;------------------------------------------
+; init the local copy of the sprites
+;------------------------------------------
+InitSprites::
+	ld		hl, $c000	; my sprites are at $c000
+	ld		b, 40*4		; 40 sprites, 4 bytes per sprite
+	ld		a, 0
+.init_sprites_loop
+	ld		[hli], a
+	dec		b
+	jr		nz, .init_sprites_loop
+	
 	ret
 
 ;----------------------------------------------------
@@ -414,6 +425,3 @@ HandleColumnLoad::
 	jr		nz, .load_next_column_loop
 	
 	ret
-	
-; tiles are here
-INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyTiles.z80"
