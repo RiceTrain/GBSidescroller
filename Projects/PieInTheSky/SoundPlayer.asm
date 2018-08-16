@@ -2,17 +2,20 @@
 ; Plays sound effects
 ;-----------------------------------------------------------------------
 InitSoundChannels::
-;	ld		a, %11111111
-;	ld		[AUD_VOLUME], a
-;	ld		a, %11111111
-;	ld		[AUD_TERM], a
-;	ld		a, %11110001
-;	ld		[AUD_ENA], a
+	ld		a, %11110000
+	ldh		[AUD_VOLUME], a
+	ld		a, %11111111
+	ldh		[AUD_TERM], a
+	ld		a, %11110001
+	ldh		[AUD_ENA], a
 
-	ld      de,GameTheme_data
-    ld      bc,BANK(GameTheme_data)
-    ld      a,$05
+	ld      de,CWGB_data
+    ld      bc,BANK(CWGB_data)
+    ld      a,$06
     call    gbt_play ; Play song
+	
+	ld		a, $01
+	call	gbt_loop
 	
 	ret
 	

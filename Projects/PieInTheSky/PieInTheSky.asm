@@ -401,6 +401,6 @@ INCLUDE "Projects/PieInTheSky/Level.asm"
 INCLUDE "Projects/PieInTheSky/Data/TestMap.z80"
 ; tiles are here
 INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyTiles.z80"
-INCLUDE "Projects/PieInTheSky/Data/GameTheme.asm"
+INCLUDE "Projects/PieInTheSky/Data/CWGB.asm"
 
 INCLUDE "Projects/PieInTheSky/Variables.asm"

@@ -1357,13 +1357,13 @@ gbt_update_bank1::
 
     ; each function will return in de the pointer to next byte
 
-;    call    gbt_channel_1_handle
+    call    gbt_channel_1_handle
 
     call    gbt_channel_2_handle
 
     call    gbt_channel_3_handle
 
-;    call    gbt_channel_4_handle
+    call    gbt_channel_4_handle
 
     ; end of channel handling
 
