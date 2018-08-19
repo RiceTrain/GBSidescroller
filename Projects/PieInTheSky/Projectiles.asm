@@ -465,6 +465,12 @@ UpdateBulletPositions::
 	inc		hl
 	ld		a, [hl]
 	ld		[current_enemy_height], a
+	inc 	hl
+	inc 	hl
+	ld		a, [hl]
+	ld		[current_enemy_score_value], a
+	dec 	hl
+	dec 	hl
 	dec		hl
 	dec		hl
 	dec		hl
@@ -564,6 +570,7 @@ UpdateBulletPositions::
 	
 .destroy_enemy
 	call	StartEnemyExplosion
+	call	AddEnemyScore
 
 .destroy_bullet
 	ld		a, b

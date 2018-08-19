@@ -82,9 +82,9 @@ ds		30
 ; Enemy anim data starts here (3 * 10 of them)
 enemy_animation_data_2x2:
 ds		30
-; Enemy data starts here (16 * 5 of them)
+; Enemy data starts here (16 * 9 of them)
 enemy_data:
-ds		128
+ds		144
 
 boss_animation_data:
 ds		20
@@ -118,6 +118,8 @@ current_enemy_address_upper:
 ds		1
 current_enemy_address_lower:
 ds		1
+current_enemy_score_value:
+ds		1
 
 ; frame timing
 vblank_flag:
@@ -139,6 +141,15 @@ ds		1
 current_anim_frame_upper:
 ds		1
 current_anim_frame_lower:
+ds		1
+lives:
+ds		1
+
+current_score:
+ds		1
+score_tracker_lower:
+ds		1
+score_tracker_higher:
 ds		1
 
 ;checkpoint data

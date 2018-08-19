@@ -52,7 +52,7 @@ SetupNewEnemy::
 .enemy_data_found_loop
 	inc		de
 	ld		a, b
-	cp		3
+	cp		4
 	jr		nz, .continue_with_loop
 	inc 	hl ;skips where the animation address will be stored
 	
@@ -62,6 +62,7 @@ SetupNewEnemy::
 	dec		b
 	jr		nz, .enemy_data_found_loop
 	
+	dec		hl
 	dec		hl
 	dec		hl
 	dec		hl

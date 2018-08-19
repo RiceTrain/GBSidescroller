@@ -719,6 +719,10 @@ DestroyShip::
 	ld		a, 20
 	ld		[spaceshipL_tile], a ;use sprite for explosion
 	
+	ld		a, [lives]
+	dec		a
+	ld		[lives], a
+	
 	ret
 	
 AnimateShip::

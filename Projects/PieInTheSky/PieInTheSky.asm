@@ -36,7 +36,7 @@ start::
 	
 	ld		a, 38
 	ld		[TestMapBlockTotal], a
-	ld		a, 8
+	ld		a, 9
 	ld		[enemy_data_size], a
 	
 	ld		a, 0
@@ -199,9 +199,15 @@ InitWorkingVariables::
 	ld		[ScrollTimer], a
 	ld		[joypad_held], a
 	ld		[joypad_down], a
+	ld		[current_score], a
+	ld		[score_tracker_lower], a
+	ld		[score_tracker_higher], a
 	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
+	
+	ld		a, 3
+	ld		[lives], a
 	
 	ret
 
@@ -215,11 +221,18 @@ Player_Dead_Update::
 	ld		[death_timer], a
 	cp		0
 	jp		nz, .animate_explosion
+
+.check_game_over
+	ld		a, [lives]
+	cp		0
+	jr		nz, .reset_player
+	
+	;start game over sequence
 	
 .reset_player
 ;TODO: Check for game over
 	call	ResetPlayerOnDeath
-	jp		.dead_update_end
+	jr		.dead_update_end
 	
 .animate_explosion
 	cp		110
@@ -394,6 +407,7 @@ INCLUDE "Projects/PieInTheSky/Input.asm"
 INCLUDE "Projects/PieInTheSky/Player.asm"
 INCLUDE "Projects/PieInTheSky/Projectiles.asm"
 INCLUDE "Projects/PieInTheSky/Enemies.asm"
+INCLUDE "Projects/PieInTheSky/Score.asm"
 INCLUDE "Projects/PieInTheSky/SoundPlayer.asm"
 INCLUDE "Projects/PieInTheSky/Level.asm"
 
