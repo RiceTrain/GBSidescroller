@@ -31,7 +31,7 @@ start::
 	
 	; set display to on, background on, window off, sprites on, sprite size 8x8
 	;	tiles at $8000, background map at $9800, window map at $9C00
-	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_MAP_LOC
+	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_DISP_FLAG | WINDOW_MAP_LOC
 	ldh		[LCDC_CONTROL],a
 	
 	ld		a, 38
@@ -43,6 +43,11 @@ start::
 	ld		[vblank_flag], a
 	
 	call	Wait_For_Vblank
+	
+	ld		a, 138
+	ldh		[POS_WINDOW_Y], a
+	ld		a, 0
+	ldh		[POS_WINDOW_X], a
 	
 	call	InitLevelStart
 	call 	InitSoundChannels
