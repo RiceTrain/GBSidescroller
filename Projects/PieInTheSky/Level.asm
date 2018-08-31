@@ -3,6 +3,9 @@ InitLevel::
 	ld		bc, TileLabel
 	call	LoadTiles
 	
+	ld		bc, WindowTiles
+	call	LoadWindowTiles
+	
 	; init the palettes
 	call	InitPalettes
 	
@@ -21,7 +24,7 @@ InitLevel::
 LoadTiles::
 	ld		hl, TILES_MEM_LOC_1	; load the tiles to tiles bank 1
 
-	ld		de, 26 * 16
+;	ld		de, 26 * 16
 	ld		d, $10  ; 16 bytes per tile
 	ld		e, $1a  ; number of tiles to load
 
@@ -37,10 +40,11 @@ LoadTiles::
 
 	; now loop de times
 	dec		d
-	jp		nz, .load_tiles_loop
+	jr		nz, .load_tiles_loop
+	ld		d, $10  ; 16 bytes per tile
 	dec		e
-	jp		nz, .load_tiles_loop
-
+	jr		nz, .load_tiles_loop
+	
 	ret
 
 ;------------------------------------------
@@ -119,7 +123,7 @@ LoadMapToBkg::
 	inc 	de
 	
 .wait_for_write_mode
-	call Wait_For_Vram
+	call 	Wait_For_Vram
 	
 .load_into_map_mem
 	ld		a, b

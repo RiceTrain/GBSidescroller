@@ -180,6 +180,8 @@ InitLevelStart::
 	ld		hl, TestMap
 	call	LoadMapToBkg
 	
+	call 	LoadMapToWindow
+	
 	call	InitSprites
 	
 	call 	InitBulletData
@@ -415,11 +417,15 @@ INCLUDE "Projects/PieInTheSky/Enemies.asm"
 INCLUDE "Projects/PieInTheSky/Score.asm"
 INCLUDE "Projects/PieInTheSky/SoundPlayer.asm"
 INCLUDE "Projects/PieInTheSky/Level.asm"
+INCLUDE "Projects/PieInTheSky/WindowHandler.asm"
 
-; map is here
+; Map is here
 INCLUDE "Projects/PieInTheSky/Data/TestMap.z80"
-; tiles are here
+INCLUDE "Projects/PieInTheSky/Data/WindowMap.z80"
+; Tiles are here
 INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyTiles.z80"
+INCLUDE "Projects/PieInTheSky/Data/WinTiles.z80"
+; Music is here
 INCLUDE "Projects/PieInTheSky/Data/CWGB.asm"
 
 INCLUDE "Projects/PieInTheSky/Variables.asm"
