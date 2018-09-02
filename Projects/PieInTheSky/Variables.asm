@@ -189,6 +189,8 @@ CurrentMapBlock:
 ds		1;
 TestMapBlockTotal:
 ds		1;
+CurrentTilesetWidth:
+ds		1;
 
 CurrentColumnHeight:
 ds		1;

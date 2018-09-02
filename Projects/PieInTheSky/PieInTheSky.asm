@@ -44,9 +44,9 @@ start::
 	
 	call	Wait_For_Vblank
 	
-	ld		a, 138
+	ld		a, 136
 	ldh		[POS_WINDOW_Y], a
-	ld		a, 0
+	ld		a, 7
 	ldh		[POS_WINDOW_X], a
 	
 	call	InitLevelStart
@@ -263,6 +263,7 @@ Player_Dead_Update::
 ResetPlayerOnDeath::
 	call 	InitWorkingVariables
 	
+	ld		a, 0
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
 	ldh		[SCROLL_BKG_Y], a
 	ld		hl, TestMap

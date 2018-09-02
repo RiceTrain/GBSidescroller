@@ -1,6 +1,5 @@
 ; bc contains window tiles address
 LoadWindowTiles::
-;	ld		de, 13 * 16
 	ld		d, $10  ; 16 bytes per tile
 	ld		e, $0d  ; number of tiles to load
 
@@ -26,8 +25,10 @@ LoadWindowTiles::
 LoadMapToWindow::
 	ld		hl, MAP_MEM_LOC_1
 	ld		de, WindowMap
-	ld		a, 19
+	ld		a, 20
 	ld		b, a
+	ld		a, [CurrentTilesetWidth]
+	ld		c, a
 	
 .display_tiles_loop
 	; only write during
@@ -36,11 +37,128 @@ LoadMapToWindow::
 	jr		nz, .display_tiles_loop
 	
 	ld		a, [de]
-	add		26
+	add		c
 	ld		[hli], a
 	
 	inc 	de
 	dec		b
 	jr		nz, .display_tiles_loop
 	
+	ret
+
+; b holds the amount the player just scored
+UpdateScoreDisplay::
+	ld		hl, MAP_MEM_LOC_1
+	ld		d, 0
+	ld		e, 6
+	
+	ld		a, b
+	
+	ld		c, 1
+	cp		10
+	jr		c, .offset_found
+	dec		e
+	ld		c, 10
+	cp		100
+	jr		c, .offset_found
+	dec		e
+	ld		c, 100
+	
+.offset_found
+	add		hl, de
+	
+	; hl = current window address, b = amount scored, c = score decrement
+.increase_next_score_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .increase_next_score_loop
+	; get current tile index
+	ld		a, [hl]
+	dec		a
+	dec		a
+	ld		d, a
+	
+.increase_current_score_loop
+	; increment tile index (increase number)
+	inc		d
+	ld		a, [CurrentTilesetWidth]
+	ld		e, a
+	ld		a, d
+	sub		e
+	cp		10
+	; check if tile index is above 9
+	; if not, take c away from current score and loop
+	jr		nz, .subtract_c
+	; if so, reset index to 0 and increment number to left of this. 
+	; Repeat this check and consequence on that number
+	ld		a, [CurrentTilesetWidth]
+	ld		d, a
+	
+	ld		e, 1
+.incrementing_to_left_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .incrementing_to_left_loop
+	
+	dec		hl
+	ld		a, [hl]
+	dec		a
+	sub		d
+	cp		10
+	jr		nz, .finished_incrementing_to_left
+	ld		a, 0
+	inc		a
+	inc 	a
+	add		d
+	ld		[hl], a
+	inc		e
+	jr		.incrementing_to_left_loop
+	
+.finished_incrementing_to_left
+	inc		a
+	inc 	a
+	add		d
+	ld		[hl], a
+	
+	ld		a, d
+	ld		d, 0
+	add 	hl, de
+	ld		d, a
+	inc		d
+	inc		d
+	
+; take c away from current score
+.subtract_c
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .subtract_c
+	
+	ld		a, b
+	sub 	c
+	ld		b, a
+	cp		c
+	jr		nc, .increase_current_score_loop
+	jr		z, .increase_current_score_loop
+	; if there is a carry flag, move down to c / 10 and index to right
+	; if there is a carry flag and c = 1 then the score has been added
+	ld		a, d
+	inc		a
+	inc 	a
+	ld		[hl], a
+	inc		hl
+	
+	ld		a, c
+	cp		1
+	jr		z, .end_display_routine
+	cp		10
+	jr		z, .loop_with_1
+	
+.loop_with_10
+	ld		c, 10
+	jr		.increase_next_score_loop
+.loop_with_1
+	ld		c, 1
+	jr		.increase_next_score_loop
+	
+.end_display_routine
 	ret

@@ -43,7 +43,9 @@ AddAToCurrentScore::
 	ld		a, h
 	ld		[score_tracker_higher], a
 	
-.score_adding_finished	
+.score_adding_finished
+	call 	UpdateScoreDisplay
+	
 	pop		bc
 	pop 	de
 	pop		hl

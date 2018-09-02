@@ -1,4 +1,7 @@
 InitLevel::
+	ld		a, $1a
+	ld		[CurrentTilesetWidth], a
+	
 	; load the tiles
 	ld		bc, TileLabel
 	call	LoadTiles
@@ -24,9 +27,9 @@ InitLevel::
 LoadTiles::
 	ld		hl, TILES_MEM_LOC_1	; load the tiles to tiles bank 1
 
-;	ld		de, 26 * 16
 	ld		d, $10  ; 16 bytes per tile
-	ld		e, $1a  ; number of tiles to load
+	ld 		a, [CurrentTilesetWidth] ; number of tiles to load
+	ld		e, a
 
 .load_tiles_loop
 	; only write during
