@@ -19,14 +19,14 @@ AddAToCurrentScore::
 	jr		nz, .continue_adding_score
 	ld		a, [current_score]
 	cp		40 ;if above checks pass, then 40+ in current score means 100,000+. Max reached!
-	jr		z, .score_adding_finished
-	jr		nc, .score_adding_finished
+	jr		z, .display_max_score
+	jr		nc, .display_max_score
 	
 .continue_adding_score
 	ld		a, [current_score]
 	add		a, b
 	ld		[current_score], a
-	jr		nc, .score_adding_finished
+	jr		nc, .update_score_display
 	
 	;if adding has carried over, record result in trackers
 	ld		a, [score_tracker_lower]
@@ -42,10 +42,15 @@ AddAToCurrentScore::
 	ld		[score_tracker_lower], a
 	ld		a, h
 	ld		[score_tracker_higher], a
+
+	jr		.update_score_display
 	
-.score_adding_finished
+.display_max_score
+	call 	DisplayMaxScore
+	jr		.score_adding_finished
+.update_score_display
 	call 	UpdateScoreDisplay
-	
+.score_adding_finished
 	pop		bc
 	pop 	de
 	pop		hl

@@ -73,18 +73,18 @@ UpdateScoreDisplay::
 	and		SPRITE_MODE			; don't write during sprite and transfer modes
 	jr		nz, .increase_next_score_loop
 	; get current tile index
+	ld		a, [CurrentTilesetWidth]
+	ld		e, a
 	ld		a, [hl]
 	dec		a
 	dec		a
+	sub		e
 	ld		d, a
 	
 .increase_current_score_loop
 	; increment tile index (increase number)
 	inc		d
-	ld		a, [CurrentTilesetWidth]
-	ld		e, a
 	ld		a, d
-	sub		e
 	cp		10
 	; check if tile index is above 9
 	; if not, take c away from current score and loop
@@ -106,6 +106,10 @@ UpdateScoreDisplay::
 	sub		d
 	cp		10
 	jr		nz, .finished_incrementing_to_left
+.wait_for_sprite_mode_end_1
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .wait_for_sprite_mode_end_1
 	ld		a, 0
 	inc		a
 	inc 	a
@@ -123,16 +127,9 @@ UpdateScoreDisplay::
 	ld		a, d
 	ld		d, 0
 	add 	hl, de
-	ld		d, a
-	inc		d
-	inc		d
 	
 ; take c away from current score
 .subtract_c
-	ldh		a, [LCDC_STATUS]	; get the status
-	and		SPRITE_MODE			; don't write during sprite and transfer modes
-	jr		nz, .subtract_c
-	
 	ld		a, b
 	sub 	c
 	ld		b, a
@@ -141,11 +138,23 @@ UpdateScoreDisplay::
 	jr		z, .increase_current_score_loop
 	; if there is a carry flag, move down to c / 10 and index to right
 	; if there is a carry flag and c = 1 then the score has been added
+	ld		a, [CurrentTilesetWidth]
+	ld		e, a
+.wait_for_sprite_mode_end_2
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .wait_for_sprite_mode_end_2
+	
 	ld		a, d
 	inc		a
 	inc 	a
+	add		e
 	ld		[hl], a
 	inc		hl
+	; if score left is zero then end routine
+	ld		a, b
+	cp		0
+	jr		z, .end_display_routine
 	
 	ld		a, c
 	cp		1
@@ -161,4 +170,28 @@ UpdateScoreDisplay::
 	jr		.increase_next_score_loop
 	
 .end_display_routine
+	ret
+	
+DisplayMaxScore::
+	ld		hl, MAP_MEM_LOC_1
+	inc 	hl
+	inc 	hl
+	
+	ld		a, [CurrentTilesetWidth]
+	add 	11
+	ld		b, a
+	
+	ld		c, 6
+	
+.max_score_display_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .max_score_display_loop
+	
+	ld		a, b
+	ld		[hli], a
+	
+	dec		c
+	jr 		nz, .max_score_display_loop
+	
 	ret
