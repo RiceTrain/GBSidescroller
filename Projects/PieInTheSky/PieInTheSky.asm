@@ -209,6 +209,9 @@ InitWorkingVariables::
 	ld		[current_score], a
 	ld		[score_tracker_lower], a
 	ld		[score_tracker_higher], a
+	ld		[checkpoint_current_score], a
+	ld		[checkpoint_score_tracker_lower], a
+	ld		[checkpoint_score_tracker_higher], a
 	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
@@ -279,6 +282,8 @@ ResetPlayerOnDeath::
 	call	InitPlayerData
 	
 	call 	InitPlayerSprite
+	
+	call 	ResetScoreToCheckpoint
 	
 	ret
 

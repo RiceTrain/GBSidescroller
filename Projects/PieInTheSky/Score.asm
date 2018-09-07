@@ -56,3 +56,33 @@ AddAToCurrentScore::
 	pop		hl
 	
 	ret
+	
+ResetScoreToCheckpoint::
+	call	DisplayMinScore
+	
+	ld		a, 0
+	ld		[current_score], a
+	ld		a, 0
+	ld		[score_tracker_lower], a
+	ld		a, 0
+	ld		[score_tracker_higher], a
+	
+	ld		a, [checkpoint_score_tracker_lower]
+	cp 		0
+	jr		z, .add_current_score
+	
+	ld		c, a
+	ld		a, [checkpoint_score_tracker_higher]
+	ld		b, a
+	
+.add_score_loop
+	ld		a, $ff
+	call	AddAToCurrentScore
+	dec		bc
+	jr		nz, .add_score_loop
+	
+.add_current_score
+	ld		a, [checkpoint_current_score]
+	call	AddAToCurrentScore
+	
+	ret

@@ -53,6 +53,8 @@ UpdateScoreDisplay::
 	ld		e, 6
 	
 	ld		a, b
+	cp		0
+	jr		z, .end_display_routine
 	
 	ld		c, 1
 	cp		10
@@ -193,5 +195,29 @@ DisplayMaxScore::
 	
 	dec		c
 	jr 		nz, .max_score_display_loop
+	
+	ret
+
+DisplayMinScore::
+	ld		hl, MAP_MEM_LOC_1
+	inc 	hl
+	inc 	hl
+	
+	ld		a, [CurrentTilesetWidth]
+	add 	2
+	ld		b, a
+	
+	ld		c, 6
+	
+.min_score_display_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .min_score_display_loop
+	
+	ld		a, b
+	ld		[hli], a
+	
+	dec		c
+	jr 		nz, .min_score_display_loop
 	
 	ret

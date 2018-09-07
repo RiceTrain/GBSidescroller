@@ -381,6 +381,13 @@ HandleColumnLoad::
 	ld		a, [TotalTilesScrolled]
 	ld		[checkpoint_appearance_tiles_scrolled], a
 	
+	ld		a, [current_score]
+	ld		[checkpoint_current_score], a
+	ld		a, [score_tracker_lower]
+	ld		[checkpoint_score_tracker_lower], a
+	ld		a, [score_tracker_higher]
+	ld		[checkpoint_score_tracker_higher], a
+	
 	ld		a, c
 	ld		b, a
 	ld		a, 34

@@ -167,6 +167,12 @@ checkpoint_tiles_scrolled:
 ds		1
 checkpoint_ship_y:
 ds		1
+checkpoint_current_score:
+ds		1
+checkpoint_score_tracker_lower:
+ds		1
+checkpoint_score_tracker_higher:
+ds		1
 
 current_enemy_width:
 ds		1
