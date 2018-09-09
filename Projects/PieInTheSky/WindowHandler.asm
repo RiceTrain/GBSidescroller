@@ -221,3 +221,24 @@ DisplayMinScore::
 	jr 		nz, .min_score_display_loop
 	
 	ret
+	
+UpdateLivesDisplay::
+	ld		hl, MAP_MEM_LOC_1
+	ld		b, 0
+	ld		c, 19
+	add		hl, bc
+	
+	ld		a, [CurrentTilesetWidth]
+	add 	2
+	ld		b, a
+.wait_for_sprite_mode_end
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .wait_for_sprite_mode_end
+	
+	ld		a, [lives]
+	add		b
+	
+	ld		[hl], a
+	
+	ret

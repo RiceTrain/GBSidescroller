@@ -49,6 +49,9 @@ start::
 	ld		a, 7
 	ldh		[POS_WINDOW_X], a
 	
+	ld		a, 3
+	ld		[lives], a
+	
 	call	InitLevelStart
 	call 	InitSoundChannels
 	
@@ -181,6 +184,7 @@ InitLevelStart::
 	call	LoadMapToBkg
 	
 	call 	LoadMapToWindow
+	call 	UpdateLivesDisplay
 	
 	call	InitSprites
 	
@@ -215,9 +219,6 @@ InitWorkingVariables::
 	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
-	
-	ld		a, 3
-	ld		[lives], a
 	
 	ret
 
@@ -284,6 +285,7 @@ ResetPlayerOnDeath::
 	call 	InitPlayerSprite
 	
 	call 	ResetScoreToCheckpoint
+	call 	UpdateLivesDisplay
 	
 	ret
 

@@ -202,6 +202,8 @@ CurrentColumnHeight:
 ds		1;
 
 ;level state
+level_no:
+ds		1
 level_end_reached:
 ds		1
 boss_defeated:
