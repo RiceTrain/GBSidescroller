@@ -173,6 +173,8 @@ checkpoint_score_tracker_lower:
 ds		1
 checkpoint_score_tracker_higher:
 ds		1
+enemies_destroyed:
+ds		1
 
 current_enemy_width:
 ds		1
@@ -207,6 +209,12 @@ ds		1
 level_end_reached:
 ds		1
 boss_defeated:
+ds		1
+end_level_sequence_timer:
+ds		1
+end_level_sequence_phase:
+ds		1
+current_level_completion_bonus:
 ds		1
 
 ;gbt_player vars

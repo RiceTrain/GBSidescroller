@@ -350,6 +350,8 @@ CleanupEnemy::
 	ld		a, 1
 	ld		[boss_defeated], a
 	
+	call	DisplayLevelEndStats
+	
 .get_anim_data_address
 	ld		a, [hl]
 	ld		c, a

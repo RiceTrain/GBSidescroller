@@ -219,6 +219,13 @@ ScrollLevel::
 	
 	ld		a, 1
 	ld		[level_end_reached], a
+	
+	ld		a, [boss_defeated]
+	cp		0
+	jr		z, .return_to_main
+	
+	call	DisplayLevelEndStats
+	
 	jr		.return_to_main
 	
 .continue_scrolling

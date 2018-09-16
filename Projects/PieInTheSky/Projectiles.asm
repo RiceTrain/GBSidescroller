@@ -507,8 +507,8 @@ UpdateBulletPositions::
 	ld		a, [current_bullet_ypos]
 	
 	cp 		c
-	jr		z, .check_enemy_pos_loop_end
-	jr		nc, .check_enemy_pos_loop_end
+	jp		z, .check_enemy_pos_loop_end
+	jp		nc, .check_enemy_pos_loop_end
 
 .check_x_points
 	call	Wait_For_Vram
@@ -571,6 +571,10 @@ UpdateBulletPositions::
 .destroy_enemy
 	call	StartEnemyExplosion
 	call	AddEnemyScore
+	
+	ld		a, [enemies_destroyed]
+	inc 	a
+	ld		[enemies_destroyed], a
 
 .destroy_bullet
 	ld		a, b

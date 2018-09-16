@@ -38,6 +38,8 @@ start::
 	ld		[TestMapBlockTotal], a
 	ld		a, 9
 	ld		[enemy_data_size], a
+	ld		a, 152
+	ld		[current_level_completion_bonus], a
 	
 	ld		a, 0
 	ld		[vblank_flag], a
@@ -75,6 +77,8 @@ Game_Loop::
 	call	ReadJoypad
 	
 	call 	Main_Game
+	
+	call	AnimateShip
 	
 	call	$FF80
 	jr		Game_Loop
@@ -116,8 +120,6 @@ Main_Game_Loop::
 	
 	; adjust sprite due to d-pad presses
 	call	MoveSpaceship
-	
-	call	AnimateShip
 	
 	call    gbt_update ; Update player
 	
@@ -216,12 +218,173 @@ InitWorkingVariables::
 	ld		[checkpoint_current_score], a
 	ld		[checkpoint_score_tracker_lower], a
 	ld		[checkpoint_score_tracker_higher], a
+	ld		[enemies_destroyed], a
+	ld		[end_level_sequence_timer], a
+	ld		[end_level_sequence_phase], a
 	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
 	
 	ret
 
+DisplayLevelEndStats::
+	ld		a, 240
+	ld		[end_level_sequence_timer], a
+	
+	push	hl
+	push	de
+	push	bc
+	
+	ld 		a, [CurrentBGMapScrollTileX]
+	add		a, 22 ;offset for scrolling
+	add		a, 3 ;columns across
+	add		a, 160 ;rows down 5 * 32
+	ld		c, a
+	ld		a, 0
+	ld		b, a
+	
+	ld		hl, MAP_MEM_LOC_0
+	add		hl, bc
+	ld		de, LevelEndMap
+	ld		b, 15
+	
+.display_first_line_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .display_first_line_loop
+	
+	ld		a, [de]
+	ld		[hli], a
+	inc 	de
+	dec 	b
+	jr		nz, .display_first_line_loop
+	
+	ld		c, 49
+	add		hl, bc ;add one row and a bit
+	
+	ld		b, 10
+	
+.display_second_line_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .display_second_line_loop
+	
+	ld		a, [de]
+	ld		[hli], a
+	inc 	de
+	dec 	b
+	jr		nz, .display_second_line_loop
+	
+	ld		a, [enemies_destroyed]
+	ld		c, a
+	call 	DisplayDigitTen
+	
+.display_second_digit
+	inc		hl
+	
+	ld 		a, [CurrentTilesetWidth]
+	add		2
+	add		c
+	ld		[hl], a
+	
+	ld		b, 0
+	ld		c, 53
+	add		hl, bc ;add one row and a bit
+	
+	inc		de
+	inc		de
+	inc		de
+	inc		de
+	
+	ld		b, 11
+	
+.display_third_line_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .display_third_line_loop
+	
+	ld		a, [de]
+	ld		[hli], a
+	inc 	de
+	dec 	b
+	jr		nz, .display_third_line_loop
+	
+	dec		hl
+	dec		hl
+	dec		hl
+	
+	ld		a, [current_level_completion_bonus]
+	ld		c, a
+	call 	DisplayDigitHundred
+	inc		hl
+	call 	DisplayDigitTen
+	inc		hl
+	
+	ld 		a, [CurrentTilesetWidth]
+	add		2
+	add		c
+	ld		[hl], a
+	
+	pop		bc
+	pop		de
+	pop		hl
+	
+	ret
+
+DisplayDigitTen::
+	ld 		a, [CurrentTilesetWidth]
+	add		2
+	ld		b, a
+	ld		a, c
+	cp		10
+	jr		c, .end_display
+	
+.calculate_digit_loop
+	inc 	b
+	ld		a, c
+	sub		10
+	ld		c, a
+	cp		10
+	jr		nc, .calculate_digit_loop
+	
+.wait_for_non_sprite_mode
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .wait_for_non_sprite_mode
+	
+	ld		a, b
+	ld		[hl], a
+	
+.end_display
+	ret
+	
+DisplayDigitHundred::
+	ld 		a, [CurrentTilesetWidth]
+	add		2
+	ld		b, a
+	ld		a, c
+	cp		100
+	jr		c, .end_display
+	
+.calculate_digit_loop
+	inc 	b
+	ld		a, c
+	sub		100
+	ld		c, a
+	cp		100
+	jr		nc, .calculate_digit_loop
+	
+.wait_for_non_sprite_mode
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .wait_for_non_sprite_mode
+	
+	ld		a, b
+	ld		[hl], a
+	
+.end_display
+	ret
+	
 Level_Complete_Update::
 
 	ret
@@ -430,6 +593,7 @@ INCLUDE "Projects/PieInTheSky/WindowHandler.asm"
 ; Map is here
 INCLUDE "Projects/PieInTheSky/Data/TestMap.z80"
 INCLUDE "Projects/PieInTheSky/Data/WindowMap.z80"
+INCLUDE "Projects/PieInTheSky/Data/LevelEndMap.z80"
 ; Tiles are here
 INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyTiles.z80"
 INCLUDE "Projects/PieInTheSky/Data/WinTiles.z80"
