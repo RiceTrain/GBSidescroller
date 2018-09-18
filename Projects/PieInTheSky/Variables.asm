@@ -193,7 +193,7 @@ CurrentWindowTileX:
 ds		1;
 CurrentMapBlock:
 ds		1;
-TestMapBlockTotal:
+CurrentMapBlockTotal:
 ds		1;
 CurrentTilesetWidth:
 ds		1;

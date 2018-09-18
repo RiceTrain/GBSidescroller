@@ -34,25 +34,19 @@ start::
 	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_DISP_FLAG | WINDOW_MAP_LOC
 	ldh		[LCDC_CONTROL],a
 	
-	ld		a, 38
-	ld		[TestMapBlockTotal], a
-	ld		a, 9
-	ld		[enemy_data_size], a
-	
 	ld		a, 0
 	ld		[vblank_flag], a
 	
 	call	Wait_For_Vblank
+	
+	call	InitWorkingVariablesOnStartup
 	
 	ld		a, 136
 	ldh		[POS_WINDOW_Y], a
 	ld		a, 7
 	ldh		[POS_WINDOW_X], a
 	
-	ld		a, 3
-	ld		[lives], a
-	
-	call	InitLevelStart
+	call	NewGameStart
 	call 	InitSoundChannels
 	
 	ld		a, 0
@@ -170,9 +164,42 @@ CLEAR_RAM::
   or  c
   jr  nz,.clear_ram_loop
   ret
-  
+
+InitWorkingVariablesOnStartup::
+	ld		a, 0
+	ld		[joypad_held], a
+	ld		[joypad_down], a
+	
+	ld		a, 9
+	ld		[enemy_data_size], a
+	
+	ret
+	
+NewGameStart::
+	call 	InitWorkingVariablesOnNewGame
+	call 	InitLevelStart
+	
+	call 	LoadMapToWindow
+	
+	ret
+
+InitWorkingVariablesOnNewGame::
+	ld		a, 0
+	ld		[level_no], a
+	ld		[current_score], a
+	ld		[score_tracker_lower], a
+	ld		[score_tracker_higher], a
+	ld		[checkpoint_current_score], a
+	ld		[checkpoint_score_tracker_lower], a
+	ld		[checkpoint_score_tracker_higher], a
+	
+	ld		a, 3
+	ld		[lives], a
+	
+	ret
+	
 InitLevelStart::
-	call 	InitWorkingVariables
+	call 	InitWorkingVariablesOnLevelStart
 	call 	InitLevel
 	
 	ld		a, 0
@@ -180,10 +207,9 @@ InitLevelStart::
 	ldh		[SCROLL_BKG_Y], a
 	ld		[checkpoint_map_block], a
 	ld		[checkpoint_tiles_scrolled], a
-	ld		hl, TestMap
+	call	LoadCurrentMapIntoHL
 	call	LoadMapToBkg
 	
-	call 	LoadMapToWindow
 	call 	UpdateLivesDisplay
 	
 	call	InitSprites
@@ -197,10 +223,9 @@ InitLevelStart::
 	call 	InitPlayerSprite
 	
 	ret
-	
-InitWorkingVariables::
+
+InitWorkingVariablesOnLevelStart::
 	ld		a, 0
-	ld		[vblank_flag], a
 	ld 		[PixelsScrolled], a
 	ld 		[TotalTilesScrolled], a
 	ld 		[CurrentBGMapScrollTileX], a
@@ -210,18 +235,25 @@ InitWorkingVariables::
 	ld		[ScrollTimer], a
 	ld		[joypad_held], a
 	ld		[joypad_down], a
-	ld		[current_score], a
-	ld		[score_tracker_lower], a
-	ld		[score_tracker_higher], a
-	ld		[checkpoint_current_score], a
-	ld		[checkpoint_score_tracker_lower], a
-	ld		[checkpoint_score_tracker_higher], a
 	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
 	
 	ret
-
+	
+LoadCurrentMapIntoHL::
+	ld		a, [level_no]
+	
+	cp		0
+	jr		z, .load_level_1
+	
+.load_level_1
+	ld		a, 38
+	ld		[CurrentMapBlockTotal], a
+	ld		hl, TestMap
+.map_loaded
+	ret
+	
 Level_Complete_Update::
 
 	ret
@@ -241,7 +273,6 @@ Player_Dead_Update::
 	;start game over sequence
 	
 .reset_player
-;TODO: Check for game over
 	call	ResetPlayerOnDeath
 	jr		.dead_update_end
 	
@@ -265,7 +296,7 @@ Player_Dead_Update::
 	ret
 	
 ResetPlayerOnDeath::
-	call 	InitWorkingVariables
+	call 	InitWorkingVariablesOnLevelStart
 	
 	ld		a, 0
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
@@ -288,7 +319,7 @@ ResetPlayerOnDeath::
 	call 	UpdateLivesDisplay
 	
 	ret
-
+	
 PlayerDeathFrame2::
 	ld		a, 21
 	ld		[spaceshipL_tile], a

@@ -209,7 +209,7 @@ ScrollLevel::
 	
 	ld		a, [CurrentMapBlock]
 	ld		c, a
-	ld		a,	[TestMapBlockTotal]
+	ld		a,	[CurrentMapBlockTotal]
 	cp		c
 	jr		nz, .continue_scrolling
 	
