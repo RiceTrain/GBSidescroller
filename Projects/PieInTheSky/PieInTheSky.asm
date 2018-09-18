@@ -235,6 +235,7 @@ InitWorkingVariablesOnLevelStart::
 	ld		[ScrollTimer], a
 	ld		[joypad_held], a
 	ld		[joypad_down], a
+	ld		[enemies_destroyed], a
 	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
@@ -257,6 +258,10 @@ LoadCurrentMapIntoHL::
 	ret
 
 DisplayLevelEndStats::
+	ld		a, [level_no]
+	inc 	a
+	ld		[level_no], a
+	
 	ld		a, 240
 	ld		[end_level_sequence_timer], a
 	
@@ -266,7 +271,7 @@ DisplayLevelEndStats::
 	
 	ld 		a, [CurrentBGMapScrollTileX]
 	add		a, 22 ;offset for scrolling
-	add		a, 3 ;columns across
+	add		a, 11 ;columns across
 	add		a, 160 ;rows down 5 * 32
 	ld		c, a
 	ld		a, 0
@@ -276,6 +281,8 @@ DisplayLevelEndStats::
 	add		hl, bc
 	ld		de, LevelEndMap
 	ld		b, 15
+	ld		a, [CurrentTilesetWidth]
+	ld		c, a
 	
 .display_first_line_loop
 	ldh		a, [LCDC_STATUS]	; get the status
@@ -283,6 +290,7 @@ DisplayLevelEndStats::
 	jr		nz, .display_first_line_loop
 	
 	ld		a, [de]
+	add		c
 	ld		[hli], a
 	inc 	de
 	dec 	b
@@ -292,6 +300,8 @@ DisplayLevelEndStats::
 	add		hl, bc ;add one row and a bit
 	
 	ld		b, 10
+	ld		a, [CurrentTilesetWidth]
+	ld		c, a
 	
 .display_second_line_loop
 	ldh		a, [LCDC_STATUS]	; get the status
@@ -299,6 +309,7 @@ DisplayLevelEndStats::
 	jr		nz, .display_second_line_loop
 	
 	ld		a, [de]
+	add		c
 	ld		[hli], a
 	inc 	de
 	dec 	b
@@ -310,6 +321,11 @@ DisplayLevelEndStats::
 	
 .display_second_digit
 	inc		hl
+	
+.wait_for_mode
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .wait_for_mode
 	
 	ld 		a, [CurrentTilesetWidth]
 	add		2
@@ -325,7 +341,9 @@ DisplayLevelEndStats::
 	inc		de
 	inc		de
 	
-	ld		b, 11
+	ld		b, 12
+	ld		a, [CurrentTilesetWidth]
+	ld		c, a
 	
 .display_third_line_loop
 	ldh		a, [LCDC_STATUS]	; get the status
@@ -333,11 +351,13 @@ DisplayLevelEndStats::
 	jr		nz, .display_third_line_loop
 	
 	ld		a, [de]
+	add		c
 	ld		[hli], a
 	inc 	de
 	dec 	b
 	jr		nz, .display_third_line_loop
 	
+	dec		hl
 	dec		hl
 	dec		hl
 	dec		hl
