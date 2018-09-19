@@ -258,12 +258,11 @@ LoadCurrentMapIntoHL::
 	ret
 
 DisplayLevelEndStats::
-	ld		a, [level_no]
-	inc 	a
-	ld		[level_no], a
-	
 	ld		a, 240
 	ld		[end_level_sequence_timer], a
+	
+	ld		a, 0
+	ld		[end_level_sequence_phase], a
 	
 	push	hl
 	push	de
@@ -435,7 +434,160 @@ DisplayDigitHundred::
 	ret
 
 Level_Complete_Update::
-
+	ld		a, [end_level_sequence_phase]
+	cp		0
+	jr		z, .update_timer
+	cp		1
+	jr		z, .update_enemy_count_sequence
+	cp		2
+	jr		z, .update_timer
+	cp		3
+	jr		z, .add_bonus_points
+	cp		4
+	jr		z, .update_timer
+	
+.update_timer
+	ld		a, [end_level_sequence_timer]
+	dec		a
+	ld		[end_level_sequence_timer], a
+	cp		0
+	jr 		nz, .end_update
+	
+	ld		a, 30
+	ld		[end_level_sequence_timer], a
+	jr		.increment_phase
+	
+.update_enemy_count_sequence
+	ld		a, [end_level_sequence_timer]
+	dec		a
+	ld		[end_level_sequence_timer], a
+	cp		0
+	jr 		nz, .end_update
+	
+	call	StoreScorePositionInHL
+	ld		a, [enemies_destroyed]
+	dec		a
+	ld		c, a
+	ld		[enemies_destroyed], a
+	call 	DisplayDigitTen
+	inc		hl
+	
+.wait_for_mode
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .wait_for_mode
+	
+	ld 		a, [CurrentTilesetWidth]
+	add		2
+	add		c
+	ld		[hl], a
+	
+	ld		a, 10
+	call	AddAToCurrentScore
+	
+	ld		a, [enemies_destroyed]
+	cp 		0
+	jr		z, .increment_timer_for_next_phase
+	
+.increment_timer_for_next_enemy
+	ld		a, 30
+	ld		[end_level_sequence_timer], a
+	jr		.end_update
+	
+.increment_timer_for_next_phase
+	ld		a, 120
+	ld		[end_level_sequence_timer], a
+	jr		.increment_phase
+	
+.add_bonus_points
+	call 	StoreBonusPositionInHL
+	ld 		a, [CurrentTilesetWidth]
+	add		2
+	ld		c, a
+	ld		b, 4
+	
+.display_bonus_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .display_bonus_loop
+	
+	ld		a, c
+	ld		[hli], a
+	dec		b
+	jr		nz, .display_bonus_loop
+	
+	ld		a, [current_level_completion_bonus]
+	call	AddAToCurrentScore
+	
+	ld		a, 120
+	ld		[end_level_sequence_timer], a
+	jr		.increment_phase
+	
+.finish_end_level_sequence
+	ld		a, 0
+	ld		[end_level_sequence_phase], a
+	call 	LoadNextLevel
+	jr		.end_update
+	
+.increment_phase
+	ld		a, [end_level_sequence_phase]
+	inc		a
+	ld		[end_level_sequence_phase], a
+	
+.end_update
+	ret
+	
+StoreScorePositionInHL::
+	;get top left starting point here
+	ld 		a, [CurrentBGMapScrollTileX]
+	add		a, 22 ;offset for scrolling
+	add		a, 11 ;columns across
+	add		a, 160 ;rows down 5 * 32
+	ld		l, a
+	ld		h, 0
+	
+	;get to score location here
+	ld		a, 64
+	add		10
+	ld		c, a
+	ld		b, 0
+	add		hl, bc
+	ld		b, h
+	ld		c, l
+	
+	ld		hl, MAP_MEM_LOC_0
+	add		hl, bc
+	
+	ret
+	
+StoreBonusPositionInHL::
+	;get top left starting point here
+	ld 		a, [CurrentBGMapScrollTileX]
+	add		a, 22 ;offset for scrolling
+	add		a, 11 ;columns across
+	add		a, 160 ;rows down 5 * 32
+	ld		l, a
+	ld		h, 0
+	
+	;get to score location here
+	ld		a, 128
+	add		8
+	ld		c, a
+	ld		b, 0
+	add		hl, bc
+	ld		b, h
+	ld		c, l
+	
+	ld		hl, MAP_MEM_LOC_0
+	add		hl, bc
+	
+	ret
+	
+LoadNextLevel::
+	ld		a, [level_no]
+	inc 	a
+	ld		[level_no], a
+	
 	ret
 	
 Player_Dead_Update::
