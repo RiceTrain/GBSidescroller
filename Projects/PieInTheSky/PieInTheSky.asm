@@ -258,9 +258,6 @@ LoadCurrentMapIntoHL::
 	ret
 
 DisplayLevelEndStats::
-	ld		a, 240
-	ld		[end_level_sequence_timer], a
-	
 	ld		a, 0
 	ld		[end_level_sequence_phase], a
 	
@@ -268,15 +265,13 @@ DisplayLevelEndStats::
 	push	de
 	push	bc
 	
-	ld 		a, [CurrentBGMapScrollTileX]
-	add		a, 22 ;offset for scrolling
-	add		a, 11 ;columns across
-	add		a, 160 ;rows down 5 * 32
+	ld		a, 3 ;columns across
+	add		a, 192 ;rows down 5 * 32
 	ld		c, a
 	ld		a, 0
 	ld		b, a
 	
-	ld		hl, MAP_MEM_LOC_0
+	ld		hl, MAP_MEM_LOC_1
 	add		hl, bc
 	ld		de, LevelEndMap
 	ld		b, 15
@@ -381,7 +376,7 @@ DisplayLevelEndStats::
 
 DisplayDigitTen::
 	ld 		a, [CurrentTilesetWidth]
-	add		2
+	add		1
 	ld		b, a
 	ld		a, c
 	cp		10
@@ -436,15 +431,28 @@ DisplayDigitHundred::
 Level_Complete_Update::
 	ld		a, [end_level_sequence_phase]
 	cp		0
-	jr		z, .update_timer
+	jr		z, .move_window_up
 	cp		1
-	jr		z, .update_enemy_count_sequence
+	jr		z, .update_timer
 	cp		2
-	jr		z, .update_timer
+	jr		z, .update_enemy_count_sequence
 	cp		3
-	jr		z, .add_bonus_points
-	cp		4
 	jr		z, .update_timer
+	cp		4
+	jr		z, .add_bonus_points
+	cp		5
+	jr		z, .update_timer
+
+.move_window_up
+	ldh		a, [POS_WINDOW_Y]
+	dec 	a
+	ldh		[POS_WINDOW_Y], a
+	cp		0
+	jp		nz, .end_update
+	
+	ld		a, 240
+	ld		[end_level_sequence_timer], a
+	jp		.increment_phase
 	
 .update_timer
 	ld		a, [end_level_sequence_timer]
@@ -539,10 +547,8 @@ Level_Complete_Update::
 	
 StoreScorePositionInHL::
 	;get top left starting point here
-	ld 		a, [CurrentBGMapScrollTileX]
-	add		a, 22 ;offset for scrolling
-	add		a, 11 ;columns across
-	add		a, 160 ;rows down 5 * 32
+	ld		a, 3 ;columns across
+	add		a, 192 ;rows down 5 * 32
 	ld		l, a
 	ld		h, 0
 	
@@ -555,17 +561,15 @@ StoreScorePositionInHL::
 	ld		b, h
 	ld		c, l
 	
-	ld		hl, MAP_MEM_LOC_0
+	ld		hl, MAP_MEM_LOC_1
 	add		hl, bc
 	
 	ret
 	
 StoreBonusPositionInHL::
 	;get top left starting point here
-	ld 		a, [CurrentBGMapScrollTileX]
-	add		a, 22 ;offset for scrolling
-	add		a, 11 ;columns across
-	add		a, 160 ;rows down 5 * 32
+	ld		a, 3 ;columns across
+	add		a, 192 ;rows down 5 * 32
 	ld		l, a
 	ld		h, 0
 	
@@ -578,7 +582,7 @@ StoreBonusPositionInHL::
 	ld		b, h
 	ld		c, l
 	
-	ld		hl, MAP_MEM_LOC_0
+	ld		hl, MAP_MEM_LOC_1
 	add		hl, bc
 	
 	ret
