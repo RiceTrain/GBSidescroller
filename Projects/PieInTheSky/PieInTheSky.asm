@@ -376,11 +376,17 @@ DisplayLevelEndStats::
 
 DisplayDigitTen::
 	ld 		a, [CurrentTilesetWidth]
-	add		1
+	add		2
 	ld		b, a
 	ld		a, c
 	cp		10
 	jr		c, .end_display
+	jr		nz, .calculate_digit_loop
+	
+	ld		a, c
+	sub 	10
+	ld		c, a
+	jr		.wait_for_non_sprite_mode
 	
 .calculate_digit_loop
 	inc 	b
@@ -408,6 +414,12 @@ DisplayDigitHundred::
 	ld		a, c
 	cp		100
 	jr		c, .end_display
+	jr		nz, .calculate_digit_loop
+	
+	ld		a, c
+	sub 	100
+	ld		c, a
+	jr		.wait_for_non_sprite_mode
 	
 .calculate_digit_loop
 	inc 	b
@@ -543,6 +555,73 @@ Level_Complete_Update::
 	ld		[end_level_sequence_phase], a
 	
 .end_update
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .end_update
+	
+	call	StoreCurrentPlayerAnimAddress
+	call 	StoreCurrentGunSpriteAddr
+	ld		a, [de]
+	ld		b, a
+	ld		a, [spaceshipL_ypos]
+	ld		c, a
+	cp		128
+	jr		z, .move_ship_x
+	jr		nc, .move_y_up
+	
+	inc		c
+	inc 	b
+	jr		.store_new_y
+	
+.move_y_up
+	dec		c
+	dec		b
+.store_new_y
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .store_new_y
+	
+	ld		a, c
+	ld		[spaceshipL_ypos], a
+	ld		[spaceshipR_ypos], a
+	ld		[hl], a
+	ld		a, b
+	ld		[de], a
+	
+.move_ship_x
+	inc		hl
+	inc		de
+	ld		a, [de]
+	ld		c, a
+	ld		a, [spaceshipL_xpos]
+	ld		b, a
+	cp		80
+	jr		z, .move_ship_finished
+	jr		nc, .move_x_left
+	
+	inc 	b
+	inc		c
+	jr		.store_new_x
+	
+.move_x_left
+	dec		b
+	dec		c
+	
+.store_new_x
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .store_new_x
+	
+	ld		a, b
+	ld		[spaceshipL_xpos], a
+	add 	8
+	ld		[spaceshipR_xpos], a
+	sub 	16
+	ld		[hl], a
+	ld		a, c
+	ld		[de], a
+	
+.move_ship_finished
 	ret
 	
 StoreScorePositionInHL::
