@@ -78,8 +78,11 @@ ResetScoreToCheckpoint::
 .add_score_loop
 	ld		a, $ff
 	call	AddAToCurrentScore
-	dec		bc
+	dec		c
 	jr		nz, .add_score_loop
+	ld		c, $ff
+	dec		b
+	jr		z, .add_score_loop
 	
 .add_current_score
 	ld		a, [checkpoint_current_score]

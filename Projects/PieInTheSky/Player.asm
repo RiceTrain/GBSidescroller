@@ -79,7 +79,7 @@ ResolvePlayerScrollCollisions::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		nz, .MoveShipBackLeft
+	jr		nz, .CheckForItemScroll
 	
 	ld		a, 0
 	ld		b, a
@@ -92,6 +92,13 @@ ResolvePlayerScrollCollisions::
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		z, .return_to_main
+	
+.CheckForItemScroll
+	cp		9
+	jr		nz, .MoveShipBackLeft
+	
+	call	ItemCollected
+	jr		.return_to_main
 	
 .MoveShipBackLeft
 	call 	StoreCurrentPlayerAnimAddress
@@ -230,7 +237,7 @@ CheckDirectionInputs::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		nz, .MoveShipBackDown
+	jr		nz, .CheckForItemDown
 
 	inc		hl
 	
@@ -238,7 +245,7 @@ CheckDirectionInputs::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		nz, .MoveShipBackDown
+	jr		nz, .CheckForItemDown
 
 	inc		hl
 	
@@ -247,6 +254,13 @@ CheckDirectionInputs::
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jp		z, .check_for_left
+	
+.CheckForItemDown
+	cp		9
+	jr		nz, .MoveShipBackDown
+	
+	call	ItemCollected
+	jp		.check_for_left
 	
 .MoveShipBackDown
 	call	Wait_For_Vram
@@ -314,7 +328,7 @@ CheckDirectionInputs::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		nz, .MoveShipBackUp
+	jr		nz, .CheckForItemUp
 	
 	inc 	hl
 	
@@ -322,7 +336,7 @@ CheckDirectionInputs::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		nz, .MoveShipBackUp
+	jr		nz, .CheckForItemUp
 	
 	inc 	hl
 	
@@ -331,6 +345,13 @@ CheckDirectionInputs::
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		z, .check_for_left
+	
+.CheckForItemUp
+	cp		9
+	jr		nz, .MoveShipBackUp
+	
+	call	ItemCollected
+	jr		.check_for_left
 	
 .MoveShipBackUp
 	call	Wait_For_Vram
@@ -395,7 +416,7 @@ CheckDirectionInputs::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		nz, .MoveShipBackRight
+	jr		nz, .CheckForItemRight
 	
 	ld		a, 0
 	ld		b, a
@@ -408,6 +429,13 @@ CheckDirectionInputs::
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jp		z, .done_checking_dpad
+	
+.CheckForItemRight
+	cp		9
+	jr		nz, .MoveShipBackRight
+	
+	call	ItemCollected
+	jp		.done_checking_dpad
 	
 .MoveShipBackRight
 	call	Wait_For_Vram
@@ -478,7 +506,7 @@ CheckDirectionInputs::
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
-	jr		nz, .MoveShipBackLeft
+	jr		nz, .CheckForItemLeft
 	
 	ld		a, 0
 	ld		b, a
@@ -491,6 +519,13 @@ CheckDirectionInputs::
 	ld		a, [hl] ;Tile ship is on stored at hl
 	cp		0
 	jr		z, .done_checking_dpad
+	
+.CheckForItemLeft
+	cp		9
+	jr		nz, .MoveShipBackLeft
+	
+	call	ItemCollected
+	jr		.done_checking_dpad
 	
 .MoveShipBackLeft
 	call	Wait_For_Vram
@@ -518,6 +553,19 @@ CheckDirectionInputs::
 .done_checking_dpad
 	ret
 	
+ItemCollected::
+	ld		a, 10
+	call	AddAToCurrentScore
+	
+	ld		a, [items_collected]
+	inc		a
+	ld		[items_collected], a
+	
+	ld		a, 0
+	call	Wait_For_Vram
+	ld		[hl], a
+	
+	ret
 ;-----------------------------------------------------------------
 ; Find tile index of 
 ; B = xBottomLeftShipTileIndex, C = yBottomLeftShipTileIndex

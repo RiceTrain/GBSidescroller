@@ -50,8 +50,8 @@ TileLabelTLE8::
 DB $91,$FF,$40,$7F,$24,$3F,$11,$1F
 DB $08,$0F,$04,$07,$02,$03,$01,$01
 TileLabelTLE9::
-DB $80,$FF,$90,$FF,$82,$FF,$90,$FF
-DB $80,$FF,$C2,$FF,$84,$FF,$A0,$FF
+DB $06,$06,$08,$08,$08,$08,$3E,$3E
+DB $45,$7B,$45,$7B,$41,$7F,$3E,$3E
 TileLabelTLE10::
 DB $3E,$3E,$41,$7F,$9E,$FE,$A0,$E0
 DB $A0,$E0,$9E,$FE,$41,$7F,$3E,$3E

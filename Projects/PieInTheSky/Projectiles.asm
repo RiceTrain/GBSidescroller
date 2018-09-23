@@ -390,6 +390,9 @@ UpdateBulletPositions::
 	call	Wait_For_Vram
 	
 	ld		a, [hl] ;Tile ship is on stored at hl
+	cp		9
+	jr		z, .finish_screen_checks
+	
 	cp		0
 	jr		nz, .destroy_bullet_on_collision_or_bounds
 	
@@ -414,6 +417,7 @@ UpdateBulletPositions::
 	jr		z, .destroy_bullet_on_collision_or_bounds
 	jr		c, .destroy_bullet_on_collision_or_bounds
 	
+.finish_screen_checks
 	pop 	de
 	pop		bc
 	pop		hl

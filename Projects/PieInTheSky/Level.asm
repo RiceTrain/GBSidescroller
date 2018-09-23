@@ -395,6 +395,11 @@ HandleColumnLoad::
 	ld		a, [score_tracker_higher]
 	ld		[checkpoint_score_tracker_higher], a
 	
+	ld		a, [enemies_destroyed]
+	ld		[checkpoint_enemies_destroyed], a
+	ld		a, [items_collected]
+	ld		[checkpoint_items_collected], a
+	
 	ld		a, c
 	ld		b, a
 	ld		a, 34
@@ -443,6 +448,6 @@ HandleColumnLoad::
 	dec		c
 	ld		a, b
 	or 		c
-	jr		nz, .load_next_column_loop
+	jp		nz, .load_next_column_loop
 	
 	ret

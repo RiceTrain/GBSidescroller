@@ -236,7 +236,10 @@ InitWorkingVariablesOnLevelStart::
 	ld		[joypad_held], a
 	ld		[joypad_down], a
 	ld		[enemies_destroyed], a
+	ld		[items_collected], a
 	
+	ld		[checkpoint_enemies_destroyed], a
+	ld		[checkpoint_items_collected], a
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
 	
@@ -266,7 +269,7 @@ DisplayLevelEndStats::
 	push	bc
 	
 	ld		a, 3 ;columns across
-	add		a, 192 ;rows down 5 * 32
+	add		a, 160 ;rows down 5 * 32
 	ld		c, a
 	ld		a, 0
 	ld		b, a
@@ -313,9 +316,7 @@ DisplayLevelEndStats::
 	ld		c, a
 	call 	DisplayDigitTen
 	
-.display_second_digit
 	inc		hl
-	
 .wait_for_mode
 	ldh		a, [LCDC_STATUS]	; get the status
 	and		SPRITE_MODE			; don't write during sprite and transfer modes
@@ -334,8 +335,9 @@ DisplayLevelEndStats::
 	inc		de
 	inc		de
 	inc		de
+	inc		de
 	
-	ld		b, 12
+	ld		b, 10
 	ld		a, [CurrentTilesetWidth]
 	ld		c, a
 	
@@ -351,7 +353,47 @@ DisplayLevelEndStats::
 	dec 	b
 	jr		nz, .display_third_line_loop
 	
-	dec		hl
+	ld		a, [items_collected]
+	ld		c, a
+	call 	DisplayDigitTen
+	
+	inc		hl
+.wait_for_mode_2
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .wait_for_mode_2
+	
+	ld 		a, [CurrentTilesetWidth]
+	add		2
+	add		c
+	ld		[hl], a
+	
+	ld		b, 0
+	ld		c, 53
+	add		hl, bc ;add one row and a bit
+	
+	inc		de
+	inc		de
+	inc		de
+	inc		de
+	inc		de
+	
+	ld		b, 11
+	ld		a, [CurrentTilesetWidth]
+	ld		c, a
+	
+.display_fourth_line_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .display_fourth_line_loop
+	
+	ld		a, [de]
+	add		c
+	ld		[hli], a
+	inc 	de
+	dec 	b
+	jr		nz, .display_fourth_line_loop
+	
 	dec		hl
 	dec		hl
 	dec		hl
@@ -380,13 +422,7 @@ DisplayDigitTen::
 	ld		b, a
 	ld		a, c
 	cp		10
-	jr		c, .end_display
-	jr		nz, .calculate_digit_loop
-	
-	ld		a, c
-	sub 	10
-	ld		c, a
-	jr		.wait_for_non_sprite_mode
+	jr		c, .wait_for_non_sprite_mode
 	
 .calculate_digit_loop
 	inc 	b
@@ -413,13 +449,7 @@ DisplayDigitHundred::
 	ld		b, a
 	ld		a, c
 	cp		100
-	jr		c, .end_display
-	jr		nz, .calculate_digit_loop
-	
-	ld		a, c
-	sub 	100
-	ld		c, a
-	jr		.wait_for_non_sprite_mode
+	jr		c, .wait_for_non_sprite_mode
 	
 .calculate_digit_loop
 	inc 	b
@@ -451,8 +481,12 @@ Level_Complete_Update::
 	cp		3
 	jr		z, .update_timer
 	cp		4
-	jr		z, .add_bonus_points
+	jr		z, .update_item_count_sequence
 	cp		5
+	jr		z, .update_timer
+	cp		6
+	jp		z, .add_bonus_points
+	cp		7
 	jr		z, .update_timer
 
 .move_window_up
@@ -471,24 +505,42 @@ Level_Complete_Update::
 	dec		a
 	ld		[end_level_sequence_timer], a
 	cp		0
-	jr 		nz, .end_update
+	jp 		nz, .end_update
 	
 	ld		a, 30
 	ld		[end_level_sequence_timer], a
-	jr		.increment_phase
+	jp		.increment_phase
 	
 .update_enemy_count_sequence
 	ld		a, [end_level_sequence_timer]
 	dec		a
 	ld		[end_level_sequence_timer], a
 	cp		0
-	jr 		nz, .end_update
+	jp 		nz, .end_update
 	
 	call	StoreScorePositionInHL
 	ld		a, [enemies_destroyed]
 	dec		a
 	ld		c, a
+	ld		d, a
 	ld		[enemies_destroyed], a
+	jr		.store_next_digit
+	
+.update_item_count_sequence
+	ld		a, [end_level_sequence_timer]
+	dec		a
+	ld		[end_level_sequence_timer], a
+	cp		0
+	jr 		nz, .end_update
+	
+	call	StoreItemPositionInHL
+	ld		a, [items_collected]
+	dec		a
+	ld		c, a
+	ld		d, a
+	ld		[items_collected], a
+	
+.store_next_digit
 	call 	DisplayDigitTen
 	inc		hl
 	
@@ -505,17 +557,17 @@ Level_Complete_Update::
 	ld		a, 10
 	call	AddAToCurrentScore
 	
-	ld		a, [enemies_destroyed]
+	ld		a, d
 	cp 		0
 	jr		z, .increment_timer_for_next_phase
 	
-.increment_timer_for_next_enemy
-	ld		a, 30
+.increment_timer_for_next_deduction
+	ld		a, 15
 	ld		[end_level_sequence_timer], a
 	jr		.end_update
 	
 .increment_timer_for_next_phase
-	ld		a, 120
+	ld		a, 60
 	ld		[end_level_sequence_timer], a
 	jr		.increment_phase
 	
@@ -625,11 +677,7 @@ Level_Complete_Update::
 	ret
 	
 StoreScorePositionInHL::
-	;get top left starting point here
-	ld		a, 3 ;columns across
-	add		a, 192 ;rows down 5 * 32
-	ld		l, a
-	ld		h, 0
+	call	StoreTopLeftPositionInHL
 	
 	;get to score location here
 	ld		a, 64
@@ -645,15 +693,28 @@ StoreScorePositionInHL::
 	
 	ret
 	
-StoreBonusPositionInHL::
-	;get top left starting point here
-	ld		a, 3 ;columns across
-	add		a, 192 ;rows down 5 * 32
-	ld		l, a
-	ld		h, 0
+StoreItemPositionInHL::
+	call	StoreTopLeftPositionInHL
 	
 	;get to score location here
 	ld		a, 128
+	add		10
+	ld		c, a
+	ld		b, 0
+	add		hl, bc
+	ld		b, h
+	ld		c, l
+	
+	ld		hl, MAP_MEM_LOC_1
+	add		hl, bc
+	
+	ret
+	
+StoreBonusPositionInHL::
+	call	StoreTopLeftPositionInHL
+	
+	;get to score location here
+	ld		a, 192
 	add		8
 	ld		c, a
 	ld		b, 0
@@ -663,6 +724,15 @@ StoreBonusPositionInHL::
 	
 	ld		hl, MAP_MEM_LOC_1
 	add		hl, bc
+	
+	ret
+	
+StoreTopLeftPositionInHL::
+	;get top left starting point here
+	ld		a, 3 ;columns across
+	add		a, 160 ;rows down 5 * 32
+	ld		l, a
+	ld		h, 0
 	
 	ret
 	
@@ -696,22 +766,22 @@ Player_Dead_Update::
 	jr		z, PlayerDeathFrame2
 	
 	cp		100
-	jr		z, PlayerDeathFrame3
+	jp		z, PlayerDeathFrame3
 	
 	cp		80
 	jr		z, PlayerDeathFrame4
 	
 	cp		70
-	jr		z, PlayerDeathFrame5
+	jp		z, PlayerDeathFrame5
 	
 	cp		60
-	jr		z, PlayerDeathFrame6
+	jp		z, PlayerDeathFrame6
 	
 .dead_update_end
 	ret
 	
 ResetPlayerOnDeath::
-	call 	InitWorkingVariablesOnLevelStart
+	call 	InitWorkingVariablesOnDeath
 	
 	ld		a, 0
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
@@ -732,6 +802,32 @@ ResetPlayerOnDeath::
 	
 	call 	ResetScoreToCheckpoint
 	call 	UpdateLivesDisplay
+	
+	call	ResetStatsToCheckpoint
+	
+	ret
+	
+InitWorkingVariablesOnDeath::
+	ld		a, 0
+	ld 		[PixelsScrolled], a
+	ld 		[TotalTilesScrolled], a
+	ld 		[CurrentBGMapScrollTileX], a
+	ld		[CurrentWindowTileX], a
+	ld		[CurrentMapBlock], a
+	ld		[current_bullet_direction], a
+	ld		[ScrollTimer], a
+	ld		[joypad_held], a
+	ld		[joypad_down], a
+	ld		[enemies_destroyed], a
+	ld		[items_collected], a
+	
+	ret
+	
+ResetStatsToCheckpoint::
+	ld		a, [checkpoint_enemies_destroyed]
+	ld		[enemies_destroyed], a
+	ld		a, [checkpoint_items_collected]
+	ld		[items_collected], a
 	
 	ret
 	

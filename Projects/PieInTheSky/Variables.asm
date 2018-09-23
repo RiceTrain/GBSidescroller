@@ -175,6 +175,12 @@ checkpoint_score_tracker_higher:
 ds		1
 enemies_destroyed:
 ds		1
+items_collected:
+ds		1
+checkpoint_enemies_destroyed:
+ds		1
+checkpoint_items_collected:
+ds		1
 
 current_enemy_width:
 ds		1

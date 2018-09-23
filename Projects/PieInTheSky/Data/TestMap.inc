@@ -6,7 +6,7 @@
 ;   Section       : Map
 ;   Bank          : 0
 ;   Map size      : 304 x 18
-;   Tile set      : C:\Users\rthomas\GBDev\SpriteAndMapEditors\Tiles\PieInTheSky\testEnvironmentTiles.gbr
+;   Tile set      : C:\GBDev\SpriteAndMapEditors\Tiles\PieInTheSky\testEnvironmentTiles.gbr
 ;   Plane count   : 1 plane (8 bits)
 ;   Plane order   : Tiles are continues
 ;   Tile offset   : 0
