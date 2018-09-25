@@ -12,11 +12,6 @@ InitLevel::
 	; init the palettes
 	call	InitPalettes
 	
-	ld		a, 0
-	ld		[level_end_reached], a
-	ld		a, 0
-	ld		[boss_defeated], a
-	
 	ret
 
 ;----------------------------------------------------

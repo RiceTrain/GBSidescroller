@@ -41,11 +41,6 @@ start::
 	
 	call	InitWorkingVariablesOnStartup
 	
-	ld		a, 136
-	ldh		[POS_WINDOW_Y], a
-	ld		a, 7
-	ldh		[POS_WINDOW_X], a
-	
 	call	NewGameStart
 	call 	InitSoundChannels
 	
@@ -180,6 +175,7 @@ NewGameStart::
 	call 	InitLevelStart
 	
 	call 	LoadMapToWindow
+	call 	UpdateLivesDisplay
 	
 	ret
 
@@ -192,6 +188,8 @@ InitWorkingVariablesOnNewGame::
 	ld		[checkpoint_current_score], a
 	ld		[checkpoint_score_tracker_lower], a
 	ld		[checkpoint_score_tracker_higher], a
+	ld		[level_end_reached], a
+	ld		[boss_defeated], a
 	
 	ld		a, 3
 	ld		[lives], a
@@ -202,6 +200,11 @@ InitLevelStart::
 	call 	InitWorkingVariablesOnLevelStart
 	call 	InitLevel
 	
+	ld		a, 136
+	ldh		[POS_WINDOW_Y], a
+	ld		a, 7
+	ldh		[POS_WINDOW_X], a
+	
 	ld		a, 0
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
 	ldh		[SCROLL_BKG_Y], a
@@ -209,8 +212,6 @@ InitLevelStart::
 	ld		[checkpoint_tiles_scrolled], a
 	call	LoadCurrentMapIntoHL
 	call	LoadMapToBkg
-	
-	call 	UpdateLivesDisplay
 	
 	call	InitSprites
 	
@@ -221,6 +222,13 @@ InitLevelStart::
 	ld		a, 76
 	ld		[checkpoint_ship_y], a
 	call 	InitPlayerSprite
+	
+	ld		a, [current_score]
+	ld		[checkpoint_current_score], a
+	ld		a, [score_tracker_lower]
+	ld		[checkpoint_score_tracker_lower], a
+	ld		a, [score_tracker_higher]
+	ld		[checkpoint_score_tracker_higher], a
 	
 	ret
 
@@ -238,10 +246,14 @@ InitWorkingVariablesOnLevelStart::
 	ld		[enemies_destroyed], a
 	ld		[items_collected], a
 	
+	ld		[level_end_reached], a
+	ld		[boss_defeated], a
 	ld		[checkpoint_enemies_destroyed], a
 	ld		[checkpoint_items_collected], a
+	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
+	
 	
 	ret
 
@@ -254,7 +266,7 @@ LoadCurrentMapIntoHL::
 .load_level_1
 	ld		a, 38
 	ld		[CurrentMapBlockTotal], a
-	ld		a, 152
+	ld		a, 100
 	ld		[current_level_completion_bonus], a
 	ld		hl, TestMap
 .map_loaded
@@ -378,7 +390,7 @@ DisplayLevelEndStats::
 	inc		de
 	inc		de
 	
-	ld		b, 11
+	ld		b, 12
 	ld		a, [CurrentTilesetWidth]
 	ld		c, a
 	
@@ -394,6 +406,7 @@ DisplayLevelEndStats::
 	dec 	b
 	jr		nz, .display_fourth_line_loop
 	
+	dec		hl
 	dec		hl
 	dec		hl
 	dec		hl
@@ -488,6 +501,8 @@ Level_Complete_Update::
 	jp		z, .add_bonus_points
 	cp		7
 	jr		z, .update_timer
+	cp		8
+	jp		z, .finish_end_level_sequence
 
 .move_window_up
 	ldh		a, [POS_WINDOW_Y]
@@ -562,7 +577,7 @@ Level_Complete_Update::
 	jr		z, .increment_timer_for_next_phase
 	
 .increment_timer_for_next_deduction
-	ld		a, 15
+	ld		a, 8
 	ld		[end_level_sequence_timer], a
 	jr		.end_update
 	
@@ -599,7 +614,7 @@ Level_Complete_Update::
 	ld		a, 0
 	ld		[end_level_sequence_phase], a
 	call 	LoadNextLevel
-	jr		.end_update
+	jr		.move_ship_finished
 	
 .increment_phase
 	ld		a, [end_level_sequence_phase]
@@ -741,6 +756,9 @@ LoadNextLevel::
 	inc 	a
 	ld		[level_no], a
 	
+	call	Wait_For_Vblank
+	call	InitLevelStart
+	
 	ret
 	
 Player_Dead_Update::
@@ -786,7 +804,7 @@ ResetPlayerOnDeath::
 	ld		a, 0
 	ldh		[SCROLL_BKG_X], a	; background map will start at 0,0
 	ldh		[SCROLL_BKG_Y], a
-	ld		hl, TestMap
+	call	LoadCurrentMapIntoHL
 	call	LoadMapToBkg
 	
 	ld		a, 0
