@@ -11,7 +11,7 @@ Player_Dead_Update::
 	cp		0
 	jr		nz, .reset_player
 	
-	ld		a, 120
+	ld		a, 240
 	ld		[game_over_sequence_timer], a
 	call	Set_Up_Game_Over_Screen
 	jr		.dead_update_end
@@ -174,9 +174,69 @@ PlayerDeathFrame3::
 	ret
 	
 Set_Up_Game_Over_Screen::
+	call	CLEAR_WINDOW_MAP
+	call 	CLEAR_OAM
+	
+	ld		a, 5
+	ld		c, a
+	ld		a, 1 ; 1 = 255 in upper address, so 255 + 6 = 261
+	ld		b, a
+	
+	ld		hl, MAP_MEM_LOC_1
+	add		hl, bc
+	ld		de, GameOverTiles
+	ld		b, 9
+	ld		a, [CurrentTilesetWidth]
+	ld		c, a
+	
+.display_first_line_loop
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .display_first_line_loop
+	
+	ld		a, [de]
+	add		c
+	ld		[hli], a
+	inc 	de
+	dec 	b
+	jr		nz, .display_first_line_loop
+	
+	ld		a, 0
+	ldh		[POS_WINDOW_Y], a
 	
 	ret
 	
+CLEAR_WINDOW_MAP::
+  ld  hl, MAP_MEM_LOC_1
+  ld  bc, $400
+  push hl
+
+.clear_map_loop
+  ;wait for hblank
+  ld  h, $ff
+  ld  l, LCDC_STATUS
+  bit 1,[hl]
+  jr  nz,.clear_map_loop
+  pop hl
+
+  ld  a,$0
+  ld  [hli],a
+  push hl
+  
+  dec bc
+  ld  a,b
+  or  c
+  jr  nz,.clear_map_loop
+  pop hl
+  ret
+  
 Game_Over_Update::
+	ld		a, [game_over_sequence_timer]
+	dec		a
+	ld		[game_over_sequence_timer], a
+	jr		nz, .end_update
 	
+	call	NewGameStart
+	
+.end_update
 	ret

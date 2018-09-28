@@ -148,6 +148,9 @@ CLEAR_OAM::
   ld  hl, SPRITE_ATTRIB_MEM_LOC
   ld  bc, $A0
 .clear_oam_loop
+  ldh		a, [LCDC_STATUS]	; get the status
+  and		LCD_TRANSFER			; don't write during sprite and transfer modes
+  jr		nz, .clear_oam_loop
   ld  a,$0
   ld  [hli],a
   dec bc
@@ -346,6 +349,7 @@ INCLUDE "Projects/PieInTheSky/Data/LevelEndMap.z80"
 ; Tiles are here
 INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyTiles.z80"
 INCLUDE "Projects/PieInTheSky/Data/WinTiles.z80"
+INCLUDE "Projects/PieInTheSky/Data/GameOverMap.z80"
 ; Music is here
 INCLUDE "Projects/PieInTheSky/Data/CWGB.asm"
 

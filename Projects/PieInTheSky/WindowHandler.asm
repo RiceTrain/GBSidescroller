@@ -1,7 +1,7 @@
 ; bc contains window tiles address
 LoadWindowTiles::
 	ld		d, $10  ; 16 bytes per tile
-	ld		e, $19  ; number of tiles to load
+	ld		e, 29  ; number of tiles to load
 
 .load_tiles_loop
 	; only write during
