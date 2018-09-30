@@ -175,7 +175,10 @@ PlayerDeathFrame3::
 	
 Set_Up_Game_Over_Screen::
 	call	CLEAR_WINDOW_MAP
-	call 	CLEAR_OAM
+	call	Wait_For_Vblank
+	ld		a, 0
+	ld		[vblank_flag], a
+	call 	InitSprites
 	
 	ld		a, 5
 	ld		c, a

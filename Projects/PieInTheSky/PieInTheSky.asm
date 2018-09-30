@@ -39,13 +39,13 @@ start::
 	
 	call	Wait_For_Vblank
 	
+	ld		a, 0
+	ld		[vblank_flag], a
+	
 	call	InitWorkingVariablesOnStartup
 	
 	call	NewGameStart
 	call 	InitSoundChannels
-	
-	ld		a, 0
-	ld		[vblank_flag], a
 	
 	call 	DMA_COPY
 
@@ -148,9 +148,6 @@ CLEAR_OAM::
   ld  hl, SPRITE_ATTRIB_MEM_LOC
   ld  bc, $A0
 .clear_oam_loop
-  ldh		a, [LCDC_STATUS]	; get the status
-  and		LCD_TRANSFER			; don't write during sprite and transfer modes
-  jr		nz, .clear_oam_loop
   ld  a,$0
   ld  [hli],a
   dec bc
