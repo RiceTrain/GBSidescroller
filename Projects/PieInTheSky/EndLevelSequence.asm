@@ -6,6 +6,8 @@ DisplayLevelEndStats::
 	push	de
 	push	bc
 	
+	call 	ClearAllSpritesExceptShip
+	
 	ld		a, 3 ;columns across
 	add		a, 160 ;rows down 5 * 32
 	ld		c, a
@@ -474,6 +476,21 @@ StoreTopLeftPositionInHL::
 	add		a, 160 ;rows down 5 * 32
 	ld		l, a
 	ld		h, 0
+	
+	ret
+	
+ClearAllSpritesExceptShip::
+	call	Wait_For_Vblank
+	ld		a, 0
+	ld		[vblank_flag], a
+	
+	ld		hl, $c018	; my sprites are at $c000, exclude ship sprites
+	ld		b, 34*4		; 40 sprites, 4 bytes per sprite
+	ld		a, 0
+.init_sprites_loop
+	ld		[hli], a
+	dec		b
+	jr		nz, .init_sprites_loop
 	
 	ret
 	

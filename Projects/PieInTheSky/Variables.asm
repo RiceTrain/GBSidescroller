@@ -212,6 +212,8 @@ CurrentColumnHeight:
 ds		1;
 
 ;level state
+game_state:
+ds		1
 level_no:
 ds		1
 level_end_reached:

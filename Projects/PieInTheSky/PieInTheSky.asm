@@ -43,8 +43,8 @@ start::
 	ld		[vblank_flag], a
 	
 	call	InitWorkingVariablesOnStartup
+	call	Setup_Main_Menu
 	
-	call	NewGameStart
 	call 	InitSoundChannels
 	
 	call 	DMA_COPY
@@ -63,12 +63,60 @@ Game_Loop::
 	; get this frame's joypad info
 	call	ReadJoypad
 	
+	ld		a, [game_state]
+	cp		1
+	jr		z, .update_main_game
+	cp		2
+	jr		z, .update_end_game
+	
+	call 	Main_Menu_Update
+	jr		.vblank_routine
+	
+.update_main_game
 	call 	Main_Game
-	
 	call	AnimateShip
+	jr		.vblank_routine
 	
+.update_end_game
+	call 	End_Game_Update
+	
+.vblank_routine
 	call	$FF80
 	jr		Game_Loop
+
+InitWorkingVariablesOnStartup::
+	ld		a, 0
+	ld		[joypad_held], a
+	ld		[joypad_down], a
+	ld		[game_state], a
+	
+	ld		a, 9
+	ld		[enemy_data_size], a
+	
+	ret
+	
+Setup_Main_Menu::
+	ld		a, 0
+	ld		[game_state], a
+	
+	call	InitSprites
+	call 	CLEAR_MAP
+	
+	ret
+	
+Main_Menu_Update::
+	ld		a, [joypad_down]
+	bit		START_BUTTON, a
+	jp		z, .end_update	; if button not pressed then done
+	
+	ld		a, [game_state]
+	inc		a
+	ld		[game_state], a
+	
+	call	NewGameStart
+	
+.end_update
+	ret
 
 Main_Game::
 	ld		a, [alive]
@@ -167,16 +215,6 @@ CLEAR_RAM::
   or  c
   jr  nz,.clear_ram_loop
   ret
-
-InitWorkingVariablesOnStartup::
-	ld		a, 0
-	ld		[joypad_held], a
-	ld		[joypad_down], a
-	
-	ld		a, 9
-	ld		[enemy_data_size], a
-	
-	ret
 	
 NewGameStart::
 	call 	InitWorkingVariablesOnNewGame
@@ -281,6 +319,10 @@ LoadCurrentMapIntoHL::
 .map_loaded
 	ret
 
+End_Game_Update::
+	;end of game logic goes here
+	ret
+	
 DMA_COPY::
   ; load de with the HRAM destination address
   ld  de,$FF80

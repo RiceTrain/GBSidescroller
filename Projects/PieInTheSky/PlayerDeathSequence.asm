@@ -11,7 +11,7 @@ Player_Dead_Update::
 	cp		0
 	jr		nz, .reset_player
 	
-	ld		a, 240
+	ld		a, 250
 	ld		[game_over_sequence_timer], a
 	call	Set_Up_Game_Over_Screen
 	jr		.dead_update_end
@@ -239,7 +239,8 @@ Game_Over_Update::
 	ld		[game_over_sequence_timer], a
 	jr		nz, .end_update
 	
-	call	NewGameStart
+	call	CLEAR_WINDOW_MAP
+	call	Setup_Main_Menu
 	
 .end_update
 	ret
