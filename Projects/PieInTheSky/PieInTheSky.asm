@@ -74,13 +74,13 @@ Game_Loop::
 	
 .update_main_game
 	call 	Main_Game
-	call	AnimateShip
 	jr		.vblank_routine
 	
 .update_end_game
 	call 	End_Game_Update
 	
 .vblank_routine
+	call	AnimateShip
 	call	$FF80
 	jr		Game_Loop
 
@@ -99,8 +99,55 @@ Setup_Main_Menu::
 	ld		a, 0
 	ld		[game_state], a
 	
+	call 	InitPlayerData
+	ld		a, 76
+	ld		[checkpoint_ship_y], a
 	call	InitSprites
+	
 	call 	CLEAR_MAP
+	
+	ld		a, 33
+	ld 		[CurrentTilesetWidth], a
+	ld		bc, MainMenuTiles
+	call 	LoadTiles
+	
+	ld		a, 0
+	ldh		[POS_WINDOW_Y], a
+	ld		a, 7
+	ldh		[POS_WINDOW_X], a
+	call 	LoadMainMenuMap
+	
+	call 	InitPlayerSprite
+	
+	ret
+	
+LoadMainMenuMap::
+	ld		hl, MAP_MEM_LOC_1
+	ld		de, MainMenuMap
+	ld		b, 20
+	ld		c, 18
+	
+.display_tiles_loop
+	; only write during
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .display_tiles_loop
+	
+	ld		a, [de]
+	ld		[hli], a
+	
+	inc 	de
+	dec		b
+	jr		nz, .display_tiles_loop
+	
+	push 	bc
+	ld		bc, 12
+	add 	hl, bc
+	pop 	bc
+	
+	ld		b, 20
+	dec		c
+	jr		nz, .display_tiles_loop
 	
 	ret
 	
@@ -266,8 +313,6 @@ InitLevelStart::
 	call 	InitEnemyData
 	call	InitPlayerData
 	
-	ld		a, 76
-	ld		[checkpoint_ship_y], a
 	call 	InitPlayerSprite
 	
 	ld		a, [current_score]
@@ -297,6 +342,9 @@ InitWorkingVariablesOnLevelStart::
 	ld		[boss_defeated], a
 	ld		[checkpoint_enemies_destroyed], a
 	ld		[checkpoint_items_collected], a
+	
+	ld		a, 76
+	ld		[checkpoint_ship_y], a
 	
 	ld		a, $ff
 	ld		[checkpoint_pixels], a
@@ -382,10 +430,12 @@ INCLUDE "Projects/PieInTheSky/Level.asm"
 INCLUDE "Projects/PieInTheSky/WindowHandler.asm"
 
 ; Map is here
+INCLUDE "Projects/PieInTheSky/Data/MainMenuMap.z80"
 INCLUDE "Projects/PieInTheSky/Data/TestMap.z80"
 INCLUDE "Projects/PieInTheSky/Data/WindowMap.z80"
 INCLUDE "Projects/PieInTheSky/Data/LevelEndMap.z80"
 ; Tiles are here
+INCLUDE "Projects/PieInTheSky/Data/MainMenuTiles.z80"
 INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyTiles.z80"
 INCLUDE "Projects/PieInTheSky/Data/WinTiles.z80"
 INCLUDE "Projects/PieInTheSky/Data/GameOverMap.z80"
