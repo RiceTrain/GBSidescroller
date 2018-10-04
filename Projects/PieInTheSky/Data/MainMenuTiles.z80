@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 37
+;   Tiles                : 0 to 39
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -98,5 +98,9 @@ DB $00,$00,$7E,$7E,$42,$42,$42,$42
 DB $42,$42,$42,$42,$7E,$7E,$00,$00
 DB $00,$00,$7E,$7E,$4A,$4A,$4A,$4A
 DB $4A,$4A,$4A,$4A,$4A,$4A,$00,$00
+DB $00,$00,$7E,$7E,$40,$40,$40,$40
+DB $7E,$7E,$40,$40,$40,$40,$00,$00
+DB $00,$00,$42,$42,$62,$62,$52,$52
+DB $4A,$4A,$46,$46,$42,$42,$00,$00
 
 ; End of MAINMENUTILES.Z80

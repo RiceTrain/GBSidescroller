@@ -216,6 +216,8 @@ game_state:
 ds		1
 level_no:
 ds		1
+level_count:
+ds		1
 level_end_reached:
 ds		1
 boss_defeated:

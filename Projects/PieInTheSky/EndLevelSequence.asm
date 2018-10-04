@@ -495,11 +495,88 @@ ClearAllSpritesExceptShip::
 	ret
 	
 LoadNextLevel::
+	ld		a, [level_count]
+	ld		b, a
+	
 	ld		a, [level_no]
 	inc 	a
 	ld		[level_no], a
+	cp 		b
+	jr		z, .start_game_end
 	
 	call	Wait_For_Vblank
 	call	InitLevelStart
+	jr		.end_load_level
 	
+.start_game_end
+	call	Setup_Game_End
+	
+.end_load_level
+	ret
+	
+Setup_Game_End::
+	ld		a, 2
+	ld		[game_state], a
+	
+	call 	CLEAR_MAP
+	
+	call	Wait_For_Vblank
+	call	InitSprites
+	
+	ld		a, 40
+	ld 		[CurrentTilesetWidth], a
+	ld		bc, MainMenuTiles
+	call 	LoadTiles
+	
+	ld		a, 0
+	ldh		[POS_WINDOW_Y], a
+	ld		a, 7
+	ldh		[POS_WINDOW_X], a
+	
+	call 	LoadEndGameMap
+	
+	ret
+	
+LoadEndGameMap::
+	ld		hl, MAP_MEM_LOC_1
+	ld		de, GameEndMap
+	ld		b, 20
+	ld		c, 18
+	
+.display_tiles_loop
+	; only write during
+	ldh		a, [LCDC_STATUS]	; get the status
+	and		SPRITE_MODE			; don't write during sprite and transfer modes
+	jr		nz, .display_tiles_loop
+	
+	ld		a, [de]
+	ld		[hli], a
+	
+	inc 	de
+	dec		b
+	jr		nz, .display_tiles_loop
+	
+	push 	bc
+	ld		bc, 12
+	add 	hl, bc
+	pop 	bc
+	
+	ld		b, 20
+	dec		c
+	jr		nz, .display_tiles_loop
+	
+	ret
+	
+End_Game_Update::
+	ld		a, [joypad_down]
+	bit		START_BUTTON, a
+	jp		z, .end_update	; if button not pressed then done
+	
+	ld		a, 0
+	ld		[game_state], a
+	
+	call	CLEAR_WINDOW_MAP
+	call	Setup_Main_Menu
+	
+.end_update
 	ret
