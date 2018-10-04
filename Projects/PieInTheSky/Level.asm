@@ -9,9 +9,6 @@ InitLevel::
 	ld		bc, WindowTiles
 	call	LoadWindowTiles
 	
-	; init the palettes
-	call	InitPalettes
-	
 	ret
 
 ;----------------------------------------------------

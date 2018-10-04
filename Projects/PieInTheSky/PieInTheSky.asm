@@ -43,6 +43,7 @@ start::
 	ld		[vblank_flag], a
 	
 	call	InitWorkingVariablesOnStartup
+	call	InitPalettes
 	call	Setup_Main_Menu
 	
 	call 	InitSoundChannels
@@ -106,7 +107,7 @@ Setup_Main_Menu::
 	
 	call 	CLEAR_MAP
 	
-	ld		a, 33
+	ld		a, 38
 	ld 		[CurrentTilesetWidth], a
 	ld		bc, MainMenuTiles
 	call 	LoadTiles
@@ -160,6 +161,7 @@ Main_Menu_Update::
 	inc		a
 	ld		[game_state], a
 	
+	call 	CLEAR_WINDOW_MAP
 	call	NewGameStart
 	
 .end_update

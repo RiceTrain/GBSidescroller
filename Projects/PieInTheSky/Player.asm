@@ -655,6 +655,11 @@ ResolveShipEnemyCollisions::
 	ld		a, [hl]
 	cp		$ff
 	jp		z, .check_enemy_pos_loop_end
+	inc		hl
+	ld		a, [hl]
+	dec		hl
+	cp 		0
+	jp		z, .check_enemy_pos_loop_end
 
 	push	bc
 	call	GetSpriteAddress
