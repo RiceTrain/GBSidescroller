@@ -147,11 +147,21 @@ ds		1
 game_over_sequence_timer:
 ds		1
 
+game_paused:	
+ds		1
+
 current_score:
 ds		1
 score_tracker_lower:
 ds		1
 score_tracker_higher:
+ds		1
+
+high_current_score:
+ds		1
+high_score_tracker_lower:
+ds		1
+high_score_tracker_higher:
 ds		1
 
 ;checkpoint data

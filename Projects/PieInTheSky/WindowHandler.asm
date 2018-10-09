@@ -46,9 +46,9 @@ LoadMapToWindow::
 	
 	ret
 
+; hl points at score start map address
 ; b holds the amount the player just scored
 UpdateScoreDisplay::
-	ld		hl, MAP_MEM_LOC_1
 	ld		d, 0
 	ld		e, 6
 	

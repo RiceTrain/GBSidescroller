@@ -49,6 +49,7 @@ AddAToCurrentScore::
 	call 	DisplayMaxScore
 	jr		.score_adding_finished
 .update_score_display
+	ld		hl, MAP_MEM_LOC_1
 	call 	UpdateScoreDisplay
 .score_adding_finished
 	pop		bc
@@ -88,4 +89,36 @@ ResetScoreToCheckpoint::
 	ld		a, [checkpoint_current_score]
 	call	AddAToCurrentScore
 	
+	ret
+	
+SaveHiScore::
+	ld		a, [score_tracker_higher]
+	ld		b, a
+	ld		a, [high_score_tracker_higher]
+	cp		b
+	jr		c, .save_high_score
+	
+	ld		a, [score_tracker_lower]
+	ld		b, a
+	ld		a, [high_score_tracker_lower]
+	cp		b
+	jr		c, .save_high_score
+	
+	ld		a, [current_score]
+	ld		b, a
+	ld		a, [high_current_score]
+	cp		b
+	jr		c, .save_high_score
+	
+	jr		.end_saving
+	
+.save_high_score
+	ld		a, [current_score]
+	ld		[high_current_score], a
+	ld		a, [score_tracker_lower]
+	ld		[high_score_tracker_lower], a
+	ld		a, [score_tracker_higher]
+	ld		[high_score_tracker_higher], a
+	
+.end_saving
 	ret

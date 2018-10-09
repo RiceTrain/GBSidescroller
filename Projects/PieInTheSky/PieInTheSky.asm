@@ -29,10 +29,7 @@ start::
 	call 	CLEAR_OAM
 	call 	CLEAR_RAM
 	
-	; set display to on, background on, window off, sprites on, sprite size 8x8
-	;	tiles at $8000, background map at $9800, window map at $9C00
-	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_DISP_FLAG | WINDOW_MAP_LOC
-	ldh		[LCDC_CONTROL],a
+	call 	SetLCDDisplay
 
 	ld		a, 0
 	ld		[vblank_flag], a
@@ -85,11 +82,23 @@ Game_Loop::
 	call	$FF80
 	jr		Game_Loop
 
+SetLCDDisplay::
+	; set display to on, background on, window off, sprites on, sprite size 8x8
+	;	tiles at $8000, background map at $9800, window map at $9C00
+	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | SPRITE_DISP_FLAG | TILES_LOC | WINDOW_DISP_FLAG | WINDOW_MAP_LOC
+	ldh		[LCDC_CONTROL],a
+	
+	ret
+	
 InitWorkingVariablesOnStartup::
 	ld		a, 0
 	ld		[joypad_held], a
 	ld		[joypad_down], a
 	ld		[game_state], a
+	ld		[game_paused], a
+	ld		[high_current_score], a
+	ld		[high_score_tracker_lower], a
+	ld		[high_score_tracker_higher], a
 	
 	ld		a, 9
 	ld		[enemy_data_size], a
@@ -130,10 +139,14 @@ Main_Game::
 	call	Main_Game_Loop
 
 .end_main_update
-	call 	End_Game_Update
 	ret
 
 Main_Game_Loop::
+	call 	CheckForPause
+	ld		a, [game_paused]
+	cp		1
+	jr		z, .end_update
+	
 	call 	ScrollLevel
 	call 	UpdateBulletTimers
 	
@@ -147,6 +160,42 @@ Main_Game_Loop::
 	call	MoveSpaceship
 	
 	call    gbt_update ; Update player
+	
+.end_update
+	ret
+	
+CheckForPause::
+	ld		a, [joypad_down]
+	bit		START_BUTTON, a
+	jr		z, .end_update	; if button not pressed then done
+	
+	ld		a, [game_paused]
+	cp		0
+	jr		z, .set_paused_on
+	
+	ld		a, 0
+	ld		[game_paused], a
+	
+	call	Wait_For_Vram
+	call	SetLCDDisplay
+	
+	jr		.end_update
+	
+.set_paused_on
+	ld		a, 1
+	ld		[game_paused], a
+	
+	call	Wait_For_Vram
+	call	SetLCDDisplayNoSprites
+	
+.end_update
+	ret
+	
+SetLCDDisplayNoSprites::
+	; set display to on, background on, window off, sprites off, sprite size 8x8
+	;	tiles at $8000, background map at $9800, window map at $9C00
+	ld		a, DISPLAY_FLAG | BKG_DISP_FLAG | TILES_LOC | WINDOW_DISP_FLAG | WINDOW_MAP_LOC
+	ldh		[LCDC_CONTROL],a
 	
 	ret
 	

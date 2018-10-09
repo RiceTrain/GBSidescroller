@@ -174,6 +174,8 @@ PlayerDeathFrame3::
 	ret
 	
 Set_Up_Game_Over_Screen::
+	call 	SaveHiScore
+	
 	call	CLEAR_WINDOW_MAP
 	call	Wait_For_Vblank
 	ld		a, 0

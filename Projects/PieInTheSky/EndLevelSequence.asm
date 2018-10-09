@@ -518,6 +518,8 @@ Setup_Game_End::
 	ld		a, 2
 	ld		[game_state], a
 	
+	call 	SaveHiScore
+	
 	call 	CLEAR_MAP
 	
 	call	Wait_For_Vblank
