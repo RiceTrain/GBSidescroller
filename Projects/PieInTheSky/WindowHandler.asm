@@ -49,6 +49,8 @@ LoadMapToWindow::
 ; hl points at score start map address
 ; b holds the amount the player just scored
 UpdateScoreDisplay::
+	push 	de
+	
 	ld		d, 0
 	ld		e, 6
 	
@@ -172,6 +174,7 @@ UpdateScoreDisplay::
 	jr		.increase_next_score_loop
 	
 .end_display_routine
+	pop 	de
 	ret
 	
 DisplayMaxScore::

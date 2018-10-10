@@ -59,17 +59,17 @@ LoadMainMenuMap::
 Display_Hi_Score::
 	ld		a, 0
 	ld		[current_score], a
-	ld		a, 0
 	ld		[score_tracker_lower], a
-	ld		a, 0
 	ld		[score_tracker_higher], a
+	ld		a, 2
+	ld 		[CurrentTilesetWidth], a
 	
-	ld		a, [high_score_tracker_higher]
+	ld		a, [high_score_tracker_lower]
 	cp 		0
 	jr		z, .add_current_score
 	
 	ld		e, a
-	ld		a, [high_score_tracker_lower]
+	ld		a, [high_score_tracker_higher]
 	ld		d, a
 	
 .add_score_loop
@@ -88,6 +88,9 @@ Display_Hi_Score::
 	ld		b, a
 	call	UpdateScoreDisplay
 	
+	ld		a, 40
+	ld 		[CurrentTilesetWidth], a
+	
 	ret
 	
 StoreHiScorePositionInHL::
@@ -99,7 +102,7 @@ StoreHiScorePositionInHL::
 	push 	bc
 	
 	;get to hi score end location here
-	ld		a, 185
+	ld		a, 190
 	ld		c, a
 	ld		b, 0
 	add		hl, bc
