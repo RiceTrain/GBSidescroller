@@ -97,19 +97,20 @@ SaveHiScore::
 	ld		a, [high_score_tracker_higher]
 	cp		b
 	jr		c, .save_high_score
+	jr		nz, .end_saving
 	
 	ld		a, [score_tracker_lower]
 	ld		b, a
 	ld		a, [high_score_tracker_lower]
 	cp		b
 	jr		c, .save_high_score
+	jr		nz, .end_saving
 	
 	ld		a, [current_score]
 	ld		b, a
 	ld		a, [high_current_score]
 	cp		b
 	jr		c, .save_high_score
-	
 	jr		.end_saving
 	
 .save_high_score

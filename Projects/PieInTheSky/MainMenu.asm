@@ -61,7 +61,6 @@ Display_Hi_Score::
 	ld		[current_score], a
 	ld		[score_tracker_lower], a
 	ld		[score_tracker_higher], a
-	ld		a, 2
 	ld 		[CurrentTilesetWidth], a
 	
 	ld		a, [high_score_tracker_lower]

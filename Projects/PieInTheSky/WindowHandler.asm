@@ -56,7 +56,7 @@ UpdateScoreDisplay::
 	
 	ld		a, b
 	cp		0
-	jr		z, .end_display_routine
+	jp		z, .end_display_routine
 	
 	ld		c, 1
 	cp		10
