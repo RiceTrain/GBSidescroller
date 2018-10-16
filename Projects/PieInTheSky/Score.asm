@@ -28,6 +28,10 @@ AddAToCurrentScore::
 	ld		[current_score], a
 	jr		nc, .update_score_display
 	
+	ld		a, [current_score]
+	inc		a
+	ld		[current_score], a
+	
 	;if adding has carried over, record result in trackers
 	ld		a, [score_tracker_lower]
 	ld		l, a
