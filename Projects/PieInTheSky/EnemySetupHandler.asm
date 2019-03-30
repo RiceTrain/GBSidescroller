@@ -19,14 +19,20 @@ INCLUDE "Projects/PieInTheSky/Data/PieInTheSkyEnemyAnimDataBoss.z80"
 ; hl = data address of enemy (tile no already set)
 ;------------------------------------------------------
 SetupNewEnemy::
-	ld		a, [hli]
+	inc 	hl
+	
+	ld		a, [current_level_enemy_data_upper]
+	ld		d, a
+	ld		a, [current_level_enemy_data_lower]
+	ld		e, a
+	
+	ld		a, [current_level_enemy_count]
 	ld		c, a
 	
-	ld		de, EnemyBehaviourData
-	ld		a, EnemyBehaviourDataCount
+	ld		a, [current_level_enemy_length]
 	ld		b, a
 .find_enemy_in_data_loop
-	ld		a, [de]
+	ld		a, 0
 	cp		c
 	jr		z, .enemy_data_found
 	push	hl
@@ -40,6 +46,7 @@ SetupNewEnemy::
 	ld		e, l
 	pop		hl
 	
+	dec 	c
 	dec 	b
 	jp		z, .cancel_setup_data
 	jr		nz, .find_enemy_in_data_loop
@@ -220,6 +227,9 @@ SetupNewEnemy::
 	ld		[hl], a
 	
 .end_setup
+	ld		a, [current_level_enemy_count]
+	inc 	a
+	ld		[current_level_enemy_count], a
 	ret
 	
 ; enemy animation data setup

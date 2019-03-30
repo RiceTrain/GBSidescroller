@@ -19,15 +19,15 @@ UpdateEnemyBehaviour::
 	ld		a, [hl]
 	
 	cp		18
-	jr		z, .enemy_0_update
+	jr		z, .pattern_enemy_update
 	
 	cp		19
 	jr		z, .enemy_1_update
 
 	jp		.end_update
 	
-.enemy_0_update
-	call	Enemy0Update
+.pattern_enemy_update
+	call	PatternEnemyUpdate
 	jp		.update_sprite_positions
 .enemy_1_update
 	call	Enemy1Update

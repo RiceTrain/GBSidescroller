@@ -87,6 +87,8 @@ ResetStatsToCheckpoint::
 	ld		[enemies_destroyed], a
 	ld		a, [checkpoint_items_collected]
 	ld		[items_collected], a
+	ld		a, [checkpoint_enemy_count]
+	ld		[current_level_enemy_count], a
 	
 	ret
 	

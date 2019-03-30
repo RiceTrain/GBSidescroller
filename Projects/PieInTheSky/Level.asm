@@ -391,6 +391,8 @@ HandleColumnLoad::
 	ld		[checkpoint_enemies_destroyed], a
 	ld		a, [items_collected]
 	ld		[checkpoint_items_collected], a
+	ld		a, [current_level_enemy_count]
+	ld		[checkpoint_enemy_count], a
 	
 	ld		a, c
 	ld		b, a

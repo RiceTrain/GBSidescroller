@@ -321,11 +321,13 @@ InitWorkingVariablesOnLevelStart::
 	ld		[joypad_down], a
 	ld		[enemies_destroyed], a
 	ld		[items_collected], a
+	ld		[current_level_enemy_count], a
 	
 	ld		[level_end_reached], a
 	ld		[boss_defeated], a
 	ld		[checkpoint_enemies_destroyed], a
 	ld		[checkpoint_items_collected], a
+	ld		[checkpoint_enemy_count], a
 	
 	ld		a, 76
 	ld		[checkpoint_ship_y], a
@@ -347,6 +349,16 @@ LoadCurrentMapIntoHL::
 	ld		[CurrentMapBlockTotal], a
 	ld		a, 100
 	ld		[current_level_completion_bonus], a
+	
+	ld		hl, EnemyBehaviourData
+	ld		a, h
+	ld		[current_level_enemy_data_upper], a
+	ld		a, l
+	ld		[current_level_enemy_data_lower], a
+	
+	ld		a, 10
+	ld		[current_level_enemy_length], a
+	
 	ld		hl, TestMap
 .map_loaded
 	ret

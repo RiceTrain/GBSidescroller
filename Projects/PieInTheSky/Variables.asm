@@ -193,6 +193,8 @@ checkpoint_enemies_destroyed:
 ds		1
 checkpoint_items_collected:
 ds		1
+checkpoint_enemy_count:
+ds		1
 
 current_enemy_width:
 ds		1
@@ -237,6 +239,14 @@ ds		1
 end_level_sequence_phase:
 ds		1
 current_level_completion_bonus:
+ds		1
+current_level_enemy_data_upper:
+ds		1
+current_level_enemy_data_lower:
+ds		1
+current_level_enemy_count:
+ds		1
+current_level_enemy_length:
 ds		1
 
 ;gbt_player vars

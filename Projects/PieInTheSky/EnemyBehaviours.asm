@@ -4,8 +4,10 @@
 ; byte 3: tile width
 ; byte 4: tile height
 ; byte 5: animation data address
+; byte 6: score value
+; byte 7-9: misc
 
-Enemy0Update::
+PatternEnemyUpdate::
 	inc		de
 	ld		a, [de]
 	dec		a
