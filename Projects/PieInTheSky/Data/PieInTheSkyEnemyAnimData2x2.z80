@@ -8,5 +8,6 @@
 
 EnemyAnim2x2Data::
 DB $13,$1e,$13,$12,$15,$14,$12,$13,$14,$15,$13,$12,$15,$14
+DB $12,$1e,$13,$12,$15,$14,$12,$13,$14,$15,$13,$12,$15,$14
 
-EnemyAnimData2x2Count   EQU 1
+EnemyAnimData2x2Count   EQU 2

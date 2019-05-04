@@ -1,25 +1,31 @@
 ; Enemy behaviour data
-; Each line is an enemy
+; Each line is an enemy, binary reads right to left i.e. rightmost = 1, leftmost = 128
 ; Data setup:
-; column 1: tile no
-; column 2: health
-; column 3: tile width
-; column 4: tile height
-; column 5: score value
-; column 6: misc
-; column 7: misc
-; column 8: misc
+; column 0: tile no
+; column 1: health
+; column 2: tile width
+; column 3: tile height
+; column 4: score value
+; column 5: y direction data
+;	bit 0 = direction (0 = down, 1 = up), bit 1-7 = reverse dir time (frames)
+; column 6: x direction data
+;	bit 0 = direction (0 = left, 1 = right), bit 1-7 = reverse dir time (frames)
+; column 7: movement frequency
+;	bit 0-3 = y update interval (frames), bit 4-7 = x update interval (frames)
+; column 8: enemy spawn position
+;	bit 0-1: spawn side (00 = top, 01 = right, 10 = bottom, 11 = left)
+;	bit 2-7: distance from origin along side to spawn (0-32)
 
-EnemyBehaviourDataItemLength   EQU 8
+EnemyBehaviourDataItemLength   EQU 9
 
 EnemyBehaviourData::
-DB $12,$03,$01,$01,$01,$00,$00,$00 ; Enemy Id 18
-DB $13,$03,$02,$02,$0a,$00,$00,$00 ; Enemy Id 19
-DB $13,$03,$02,$02,$0a,$00,$00,$00 ; Enemy Id 19
-DB $13,$03,$02,$02,$0a,$00,$00,$00 ; Enemy Id 19
-DB $13,$03,$02,$02,$0a,$00,$00,$00 ; Enemy Id 19
-DB $13,$03,$02,$02,$0a,$00,$00,$00 ; Enemy Id 19
-DB $13,$03,$02,$02,$0a,$00,$00,$00 ; Enemy Id 19
-DB $13,$03,$02,$02,$0a,$00,$00,$00 ; Enemy Id 19
-DB $13,$03,$02,$02,$0a,$00,$00,$00 ; Enemy Id 19
-DB $17,$0c,$03,$03,$0f,$00,$00,$00 ; Enemy Id 23
+DB $12,$03,$01,$01,$01,%00000000,%00000000,%00010000,%00100001 ; Enemy Id 18
+DB $13,$03,$02,$02,$0a,%00000000,%00000000,%00010000,%00010001 ; Enemy Id 19
+DB $13,$03,$02,$02,$0a,%00000000,%00000000,%00010000,%00110001 ; Enemy Id 19
+DB $13,$03,$02,$02,$0a,%00000000,%00000000,%00010000,%00001001 ; Enemy Id 19
+DB $13,$03,$02,$02,$0a,%00000000,%00000000,%00010000,%00011001 ; Enemy Id 19
+DB $13,$03,$02,$02,$0a,%00000000,%00000000,%00010000,%00000101 ; Enemy Id 19
+DB $13,$03,$02,$02,$0a,%00000000,%00000000,%00010000,%00000011 ; Enemy Id 19
+DB $13,$03,$02,$02,$0a,%00000000,%00000000,%00010000,%00000001 ; Enemy Id 19
+DB $13,$03,$02,$02,$0a,%00000000,%00000000,%00010000,%00000101 ; Enemy Id 19
+DB $17,$0c,$03,$03,$0f,%00000000,%00000000,%00010000,%00001001 ; Enemy Id 23

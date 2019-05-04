@@ -100,7 +100,7 @@ InitWorkingVariablesOnStartup::
 	ld		[high_score_tracker_lower], a
 	ld		[high_score_tracker_higher], a
 	
-	ld		a, 9
+	ld		a, 10
 	ld		[enemy_data_size], a
 	
 	ld		a, 1

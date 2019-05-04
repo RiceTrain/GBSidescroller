@@ -135,22 +135,6 @@ CreateEnemy::
 	ret
 
 .found_empty_enemy
-	; calc enemy y pos
-	ld		a, [CurrentColumnHeight]
-	ld		e, a
-	ld		a, 34
-	sub		e
-	ld		e, a
-	ld		a, 0
-	
-.calculate_y_loop
-	add		a, 8
-	dec		e
-	jr		nz, .calculate_y_loop
-	
-	ld		[new_enemy_y_pos], a 
-	
-	; [new_enemy_y_pos] = y pos
 	; [enemy_tile] = tile number
 	; hl = enemy data top
 

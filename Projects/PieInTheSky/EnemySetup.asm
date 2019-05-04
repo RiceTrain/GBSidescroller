@@ -6,13 +6,13 @@
 ; byte 5: animation data address
 ; byte 6: misc
 ; byte 7: misc
-; byte 8: misc
+; byte 8: spawn placement info
 
 Enemy1x1SpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -27,7 +27,7 @@ Enemy2x1SpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -39,7 +39,8 @@ Enemy2x1SpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 200
+	ld		a, [new_enemy_x_pos]
+	add		8
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -54,7 +55,7 @@ Enemy1x2SpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -67,7 +68,7 @@ Enemy1x2SpriteSetup::
 	add		8
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -82,7 +83,7 @@ Enemy2x2SpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -94,7 +95,8 @@ Enemy2x2SpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 200
+	ld		a, [new_enemy_x_pos]
+	add		8
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -107,7 +109,7 @@ Enemy2x2SpriteSetup::
 	add		8
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -120,7 +122,8 @@ Enemy2x2SpriteSetup::
 	add		8
 	ld		[de], a
 	inc		de
-	ld		a, 200
+	ld		a, [new_enemy_x_pos]
+	add		8
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -135,7 +138,7 @@ BossSpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -147,7 +150,8 @@ BossSpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 200
+	ld		a, [new_enemy_x_pos]
+	add		8
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -159,7 +163,8 @@ BossSpriteSetup::
 	ld		a, [new_enemy_y_pos]
 	ld		[de], a
 	inc		de
-	ld		a, 208
+	ld		a, [new_enemy_x_pos]
+	add		16
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -173,7 +178,7 @@ BossSpriteSetup::
 	add 	8
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -186,7 +191,8 @@ BossSpriteSetup::
 	add 	8
 	ld		[de], a
 	inc		de
-	ld		a, 200
+	ld		a, [new_enemy_x_pos]
+	add		8
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -199,7 +205,8 @@ BossSpriteSetup::
 	add 	8
 	ld		[de], a
 	inc		de
-	ld		a, 208
+	ld		a, [new_enemy_x_pos]
+	add		16
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -212,7 +219,7 @@ BossSpriteSetup::
 	add 	16
 	ld		[de], a
 	inc		de
-	ld		a, 192
+	ld		a, [new_enemy_x_pos]
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -225,7 +232,8 @@ BossSpriteSetup::
 	add 	16
 	ld		[de], a
 	inc		de
-	ld		a, 200
+	ld		a, [new_enemy_x_pos]
+	add		8
 	ld		[de], a
 	inc		de
 	ld		a, [hli]
@@ -239,7 +247,8 @@ BossSpriteSetup::
 	add 	16
 	ld		[de], a
 	inc		de
-	ld		a, 208
+	ld		a, [new_enemy_x_pos]
+	add		16
 	ld		[de], a
 	inc		de
 	ld		a, [hli]

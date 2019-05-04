@@ -84,7 +84,7 @@ enemy_animation_data_2x2:
 ds		30
 ; Enemy data starts here (16 * 9 of them)
 enemy_data:
-ds		144
+ds		160
 
 boss_animation_data:
 ds		20
@@ -93,6 +93,8 @@ enemy_data_size:
 ds		1
 
 enemy_tile:
+ds		1;
+new_enemy_x_pos:
 ds		1;
 new_enemy_y_pos:
 ds		1;

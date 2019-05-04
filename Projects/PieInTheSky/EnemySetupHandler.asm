@@ -69,7 +69,11 @@ SetupNewEnemy::
 	dec		b
 	jr		nz, .enemy_data_found_loop
 	
+	call 	StoreEnemySpawnPositions
+	
 	dec		hl
+	ld		a, 0
+	ld		[hl], a
 	dec		hl
 	dec		hl
 	dec		hl
@@ -230,6 +234,93 @@ SetupNewEnemy::
 	ld		a, [current_level_enemy_count]
 	inc 	a
 	ld		[current_level_enemy_count], a
+	ret
+
+;----------------------------------------------
+; Gets enemy start position and stores in
+; new_enemy_x_pos && new_enemy_y_pos
+;----------------------------------------------
+StoreEnemySpawnPositions::
+	ld		a, [de]
+	and 	%00000011
+	cp		0
+	jr		nz, .check_if_left
+	
+	ld		b, 8
+	ld		c, 8
+	call 	AddToXSpawnPosition
+	jr		.position_set
+.check_if_left
+	cp		3
+	jr		nz, .check_if_right
+
+	ld		b, 8
+	ld		c, 8
+	call 	AddToYSpawnPosition
+	jr		.position_set
+.check_if_right
+	cp 		1
+	jr		nz, .set_bottom_position
+	
+	ld		b, 160
+	ld		c, 8
+	call 	AddToYSpawnPosition
+	jr		.position_set
+.set_bottom_position
+	ld		b, 8
+	ld		c, 144
+	call 	AddToXSpawnPosition
+.position_set
+	ld		a, b
+	ld		[new_enemy_x_pos], a
+	ld		a, c
+	ld		[new_enemy_y_pos], a
+	ret
+	
+AddToXSpawnPosition::
+	push 	hl
+	
+	ld		a, [de]
+	and 	%11111100
+	srl 	a
+	srl 	a
+	ld		h, a
+	inc 	h
+	
+	ld		a, b
+.add_loop
+	dec 	h
+	jr		z, .finish_add_loop
+	
+	add 	a, 5
+	jr 		.add_loop
+	
+.finish_add_loop
+	ld		b, a
+	pop 	hl
+	ret
+	
+AddToYSpawnPosition::
+	push 	hl
+	
+	ld		a, [de]
+	and 	%11111100
+	srl 	a
+	srl 	a
+	ld		h, a
+	inc 	h
+	
+	ld		a, c
+.add_loop
+	dec 	h
+	jr		z, .finish_add_loop
+	
+	add 	a, 4
+	jr 		.add_loop
+	
+.finish_add_loop
+	ld		c, a
+	pop 	hl
 	ret
 	
 ; enemy animation data setup
