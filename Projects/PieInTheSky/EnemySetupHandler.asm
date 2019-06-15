@@ -225,6 +225,7 @@ SetupNewEnemy::
 	dec		hl
 	dec		hl
 	dec		hl
+	dec		hl
 .cancel_setup_data
 	dec		hl
 	ld		a, $ff
@@ -333,6 +334,7 @@ AddToYSpawnPosition::
 GetAnimationData::
 	dec		hl
 	dec		hl
+	dec		hl
 	ld		a, [hl]
 	ld		c, a
 	ld		[enemy_tile_width], a
@@ -340,6 +342,7 @@ GetAnimationData::
 	ld		a, [hl]
 	add		a, c
 	ld		[enemy_tile_count], a
+	inc		hl
 	inc		hl
 	
 	cp		2

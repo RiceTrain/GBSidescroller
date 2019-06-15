@@ -8,6 +8,7 @@ GetSpriteAddress::
 	ld		a, [hl]
 	inc		hl
 	inc		hl
+	inc		hl
 	
 	ld		b, $c0
 	cp		3 ;is this a boss? (bosses have dimensions 3x3)
@@ -23,6 +24,7 @@ GetSpriteAddress::
 	ld		a, [bc]
 	ld		e, a
 	
+	dec		hl
 	dec		hl
 	dec		hl
 	dec		hl
@@ -47,6 +49,7 @@ UpdateEnemyAnimation::
 	ld		a, [hl]
 	add		a, b
 	ld		[enemy_tile_count], a
+	inc		hl
 	inc		hl
 	
 	ld		a, b
@@ -157,6 +160,7 @@ UpdateEnemyAnimation::
 	
 .reset_hl
 	pop		hl
+	dec		hl
 	dec		hl
 	dec		hl
 	dec		hl

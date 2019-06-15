@@ -45,7 +45,7 @@ PatternEnemyUpdate::
 	
 .update_y_timer
 	cp		15
-	jr		nz, .reset_y_timer
+	jr		z, .reset_y_timer
 	inc		b
 	jr		.check_x_update
 .reset_y_timer
@@ -80,7 +80,7 @@ PatternEnemyUpdate::
 	
 .update_x_timer
 	cp		15
-	jr		nz, .reset_x_timer
+	jr		z, .reset_x_timer
 	inc		c
 	jr		.end_update
 .reset_x_timer
@@ -110,12 +110,12 @@ UpdatePatternPosition::
 	ld		b, a
 	ld		a, [de]
 	bit		0, b
-	jr		z, .increment
+	jr		z, .decrement
 	
-	dec		a
+	inc		a
 	jr		.pos_updated
-.increment
-	inc 	a
+.decrement
+	dec 	a
 .pos_updated
 	ld		[de], a
 	
@@ -141,12 +141,12 @@ UpdatePatternPosition::
 	
 	ld		a, [hl]
 	bit		0, a
-	jr		z, .reset_bit
+	jr		z, .set_bit
 	
-	set		0, a
-	jr		.save_bit_change
-.reset_bit
 	res		0, a
+	jr		.save_bit_change
+.set_bit
+	set		0, a
 .save_bit_change
 	ld		[hl], a
 	

@@ -324,6 +324,7 @@ CleanupEnemy::
 	ld		a, [hl]
 	inc		hl
 	inc		hl
+	inc		hl
 	
 	ld		b, $c0
 	cp		3
@@ -343,6 +344,7 @@ CleanupEnemy::
 	ld		a, $ff
 	ld		[bc], a
 	
+	dec		hl
 	dec		hl
 	dec		hl
 	ld		a, [hl]
