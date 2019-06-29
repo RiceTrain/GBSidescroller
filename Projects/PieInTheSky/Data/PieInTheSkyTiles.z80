@@ -26,29 +26,29 @@ TileLabelTLE0::
 DB $00,$00,$00,$00,$00,$00,$00,$00
 DB $00,$00,$00,$00,$00,$00,$00,$00
 TileLabelTLE1::
-DB $00,$FF,$02,$FF,$20,$FF,$08,$FF
-DB $00,$FF,$08,$FF,$42,$FF,$00,$FF
+DB $00,$FF,$00,$FF,$00,$FF,$00,$FF
+DB $00,$FF,$00,$FF,$00,$FF,$00,$FF
 TileLabelTLE2::
 DB $01,$01,$02,$03,$04,$07,$08,$0F
-DB $15,$1F,$20,$3F,$48,$7F,$81,$FF
+DB $10,$1F,$21,$3F,$43,$7F,$46,$7E
 TileLabelTLE3::
-DB $FF,$FF,$00,$FF,$48,$FF,$02,$FF
-DB $00,$FF,$48,$FF,$01,$FF,$20,$FF
+DB $FF,$FF,$00,$FF,$00,$FF,$00,$FF
+DB $00,$FF,$00,$FF,$00,$FF,$00,$FF
 TileLabelTLE4::
 DB $80,$80,$40,$C0,$20,$E0,$10,$F0
-DB $48,$F8,$04,$FC,$4A,$FE,$11,$FF
+DB $08,$F8,$84,$FC,$C2,$FE,$62,$7E
 TileLabelTLE5::
-DB $89,$FF,$01,$FF,$25,$FF,$01,$FF
-DB $01,$FF,$A9,$FF,$01,$FF,$23,$FF
+DB $00,$FF,$00,$FF,$00,$FF,$81,$FF
+DB $C3,$FF,$FF,$FF,$7E,$FF,$3C,$FF
 TileLabelTLE6::
-DB $89,$FF,$02,$FE,$54,$FC,$08,$F8
-DB $90,$F0,$20,$E0,$40,$C0,$80,$80
+DB $00,$FF,$00,$FF,$00,$FF,$81,$FF
+DB $C3,$FF,$FF,$FF,$7E,$7E,$3C,$3C
 TileLabelTLE7::
-DB $02,$FF,$40,$FF,$00,$FF,$12,$FF
-DB $00,$FF,$42,$FF,$00,$FF,$FF,$FF
+DB $00,$FF,$00,$FF,$00,$FF,$00,$FF
+DB $00,$FF,$00,$FF,$00,$FF,$FF,$FF
 TileLabelTLE8::
-DB $91,$FF,$40,$7F,$24,$3F,$11,$1F
-DB $08,$0F,$04,$07,$02,$03,$01,$01
+DB $FF,$FF,$81,$89,$81,$DF,$81,$B1
+DB $81,$9D,$81,$AB,$81,$A9,$FF,$FF
 TileLabelTLE9::
 DB $06,$06,$08,$08,$08,$08,$3E,$3E
 DB $45,$7B,$45,$7B,$41,$7F,$3E,$3E

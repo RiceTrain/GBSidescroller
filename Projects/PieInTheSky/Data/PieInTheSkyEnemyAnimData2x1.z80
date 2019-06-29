@@ -7,6 +7,6 @@
 ; column 7-8: initial tile numbers
 
 EnemyAnim2x1Data::
-DB $12,$1e,$12,$00,$13,$01,$12,$13
+DB $13,$08,$12,$00,$13,$01,$12,$13
 
 EnemyAnimData2x1Count   EQU 1

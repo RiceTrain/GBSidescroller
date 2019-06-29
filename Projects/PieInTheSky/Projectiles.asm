@@ -389,7 +389,16 @@ UpdateBulletPositions::
 	
 	call	Wait_For_Vram
 	
-	ld		a, [hl] ;Tile ship is on stored at hl
+	ld		a, [hl] ;Tile bullet is on stored at hl
+	cp		8
+	jr		nz, .check_for_collectible
+	
+	ld		a, 0
+	ld		[hl], a
+	call 	PlayEnemyExplosionSound
+	jr 		.destroy_bullet_on_collision_or_bounds
+	
+.check_for_collectible
 	cp		9
 	jr		z, .finish_screen_checks
 	
